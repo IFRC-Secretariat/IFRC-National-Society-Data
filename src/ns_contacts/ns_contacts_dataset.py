@@ -16,21 +16,19 @@ class NSContactsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def load_data(self, api_key, refresh=True):
+    def __init__(self, filepath, api_key, refresh=True, cleaners=None):
+        super().__init__(filepath=filepath, cleaners=cleaners)
+        self.api_key = api_key
+        self.refresh = refresh
+
+
+    def load_data(self):
         """
         Read in data from the NS Databank API and save to file, or read in as a CSV file from the given filepath.
-
-        Parameters
-        ----------
-        api_key : string (required)
-            API key for the FDRS API used to authenticate.
-
-        refresh : boolean (default=False)
-            If True, the data is pulled from the API and saved locally. If False, the data is read in locally from file.
         """
         # Pull data from FDRS API and save the data locally
-        if refresh:
-            response = requests.get(url='https://data-api.ifrc.org/api/entities/ns?apiKey='+str(api_key))
+        if self.refresh:
+            response = requests.get(url='https://data-api.ifrc.org/api/entities/ns?apiKey='+str(self.api_key))
             response.raise_for_status()
 
             # Convert to a pandas DataFrame and rename columns for consistency with other datasets
@@ -44,4 +42,4 @@ class NSContactsDataset(Dataset):
             data.to_csv(self.filepath, index=False)
 
         # Read the data from file
-        self.data = self.read_csv()
+        self.data = super().load_data()

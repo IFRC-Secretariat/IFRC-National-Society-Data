@@ -12,9 +12,10 @@ class Dataset:
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath):
+    def __init__(self, filepath, cleaners):
         self.filepath = filepath
         self.data = pd.DataFrame()
+        self.cleaners = None
 
 
     def __str__(self):
@@ -24,7 +25,7 @@ class Dataset:
         return repr(self.data)
 
 
-    def read_csv(self):
+    def load_data(self):
         """
         Read in the data as a CSV file from the given file path.
         """
@@ -32,15 +33,10 @@ class Dataset:
         return data
 
 
-    def clean(self, cleaners=None):
+    def clean(self):
         """
         Loop through the data cleaners to clean the data.
-
-        Parameters
-        ----------
-        cleaners : list (default=None)
-            List of data cleaners to be applied to the dataset.
         """
-        if cleaners:
-            for cleaner in cleaners:
+        if self.cleaners:
+            for cleaner in self.cleaners:
                 self.data = cleaner.clean(self.data)
