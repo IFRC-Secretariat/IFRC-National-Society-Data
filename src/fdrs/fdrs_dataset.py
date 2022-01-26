@@ -43,7 +43,7 @@ class FDRSDataset(Dataset):
                               pd.json_normalize(data['data'])], axis=1)
 
             # Save the data
-            data.to_csv(self.filepath)
+            data.to_csv(self.filepath, index=False)
 
         # Read the data from file
         self.data = self.read_csv()
