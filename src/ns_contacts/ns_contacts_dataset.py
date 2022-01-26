@@ -33,7 +33,7 @@ class NSContactsDataset(Dataset):
 
             # Convert to a pandas DataFrame and rename columns for consistency with other datasets
             data = pd.DataFrame(response.json())
-            data.rename(columns={'KPI_DON_code': 'ns_code',
+            data.rename(columns={'KPI_DON_code': 'ns_id',
                                  'NSO_DON_name': 'ns_name',
                                  'NSO_ZON_name': 'zone_name',
                                  'ZON_Code': 'zone_code'}, errors='raise', inplace=True)

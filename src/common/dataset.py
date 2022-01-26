@@ -15,7 +15,7 @@ class Dataset:
     def __init__(self, filepath, cleaners):
         self.filepath = filepath
         self.data = pd.DataFrame()
-        self.cleaners = None
+        self.cleaners = cleaners
 
 
     def __str__(self):
