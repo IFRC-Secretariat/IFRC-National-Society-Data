@@ -3,7 +3,7 @@ Module to handle FDRS data, including loading it from the API, cleaning, and pro
 """
 import requests
 import pandas as pd
-from src.common.dataset import Dataset
+from src.common import Dataset
 
 class FDRSDataset(Dataset):
     """
@@ -13,20 +13,10 @@ class FDRSDataset(Dataset):
     ----------
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
-
-    cleaners : list (optional)
-        List of cleaners to be applied to the dataset.
     """
-    def __str__(self):
-        """
-        Redefinen the str representation to print out the dataset as a pandas DataFrame.
-        """
-        return repr(self.data)
-
-
     def load_data(self, api_key, refresh=True):
         """
-        Read in data from the filepath.
+        Read in data from the NS Databank API and save to file, or read in as a CSV file from the given filepath.
 
         Parameters
         ----------
@@ -56,4 +46,4 @@ class FDRSDataset(Dataset):
             data.to_csv(self.filepath)
 
         # Read the data from file
-        self.data = super().load_data()
+        self.data = self.read_csv()

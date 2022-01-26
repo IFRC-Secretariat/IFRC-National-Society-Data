@@ -17,7 +17,14 @@ class Dataset:
         self.data = pd.DataFrame()
 
 
-    def load_data(self):
+    def __str__(self):
+        """
+        Redefine the str representation to print out the dataset as a pandas DataFrame.
+        """
+        return repr(self.data)
+
+
+    def read_csv(self):
         """
         Read in the data as a CSV file from the given file path.
         """
@@ -25,14 +32,15 @@ class Dataset:
         return data
 
 
-    def clean(self, cleaners=[]):
+    def clean(self, cleaners=None):
         """
         Loop through the data cleaners to clean the data.
 
         Parameters
         ----------
-        cleaners : list (default=[])
+        cleaners : list (default=None)
             List of data cleaners to be applied to the dataset.
         """
-        for cleaner in cleaners:
-            self.data = cleaner.clean(self.data)
+        if cleaners:
+            for cleaner in cleaners:
+                self.data = cleaner.clean(self.data)
