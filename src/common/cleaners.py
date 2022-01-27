@@ -16,6 +16,8 @@ class DatabankNSIDConverter:
     ns_ids : pandas series (required)
         Pandas serise of
     """
+    api_response = None
+
     def __init__(self, api_key, ids_column='ns_id', names_column='ns_name'):
         self.api_key = api_key
         self.ids_column = ids_column
@@ -27,11 +29,12 @@ class DatabankNSIDConverter:
         Convert National Society IDs from the NS Databank, to National Society names.
         """
         # Pull the data from the databank API
-        response = requests.get(url='https://data-api.ifrc.org/api/entities/ns?apiKey='+str(self.api_key))
-        response.raise_for_status()
+        if DatabankNSIDConverter.api_response is None:
+            DatabankNSIDConverter.api_response = requests.get(url=f'https://data-api.ifrc.org/api/entities/ns?apiKey={self.api_key}')
+            DatabankNSIDConverter.api_response.raise_for_status()
 
         # Get a map of NS IDs to NS names
-        ns_ids_names_map = pd.DataFrame(response.json()).set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
+        ns_ids_names_map = pd.DataFrame(DatabankNSIDConverter.api_response.json()).set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
 
         # Map the NS names to the NS IDs in the provided data
         unknown_ids = set(data[self.ids_column]).difference(ns_ids_names_map.keys())
@@ -48,9 +51,12 @@ class NSNamesCleaner:
     Society names to ensure that all names are recognised and consistent.
     Run some basic cleaning including stripping whitespace.
     """
+    ns_names = None
+
     def __init__(self, column='ns_name'):
         self.column = column
-        self.ns_names = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ns_names.yml')))
+        if NSNamesCleaner.ns_names is None:
+            NSNamesCleaner.ns_names = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ns_names.yml')))
 
 
     def clean(self, data):
@@ -58,6 +64,6 @@ class NSNamesCleaner:
         Compare the NS names in a column of the dataset to a known list of National Society names.
         """
         # Read in the known list of National Society names
-        unrecognised_ns_names = set(data[self.column]).difference(self.ns_names)
+        unrecognised_ns_names = set(data[self.column]).difference(NSNamesCleaner.ns_names)
         if unrecognised_ns_names:
             raise ValueError('Unknown NS names in data', unrecognised_ns_names)
