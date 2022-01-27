@@ -12,10 +12,10 @@ class Dataset:
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, cleaners):
+    def __init__(self, filepath, cleaners=None):
         self.filepath = filepath
         self.data = pd.DataFrame()
-        self.cleaners = cleaners
+        self.cleaners = [] if cleaners is None else cleaners
 
 
     def __str__(self):
@@ -37,6 +37,5 @@ class Dataset:
         """
         Loop through the data cleaners to clean the data.
         """
-        if self.cleaners:
-            for cleaner in self.cleaners:
-                self.data = cleaner.clean(self.data)
+        for cleaner in self.cleaners:
+            self.data = cleaner.clean(self.data)

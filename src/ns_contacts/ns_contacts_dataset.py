@@ -28,7 +28,7 @@ class NSContactsDataset(Dataset):
         """
         # Pull data from FDRS API and save the data locally
         if self.refresh:
-            response = requests.get(url='https://data-api.ifrc.org/api/entities/ns?apiKey='+str(self.api_key))
+            response = requests.get(url=f'https://data-api.ifrc.org/api/entities/ns?apiKey={self.api_key}')
             response.raise_for_status()
 
             # Convert to a pandas DataFrame and rename columns for consistency with other datasets

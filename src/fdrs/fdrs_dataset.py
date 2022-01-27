@@ -26,7 +26,7 @@ class FDRSDataset(Dataset):
         """
         # Pull data from FDRS API and save the data locally
         if self.refresh:
-            response = requests.get(url='https://data-api.ifrc.org/api/Data?apiKey='+str(self.api_key))
+            response = requests.get(url=f'https://data-api.ifrc.org/api/Data?apiKey={self.api_key}')
             response.raise_for_status()
 
             # Unnest the response from the API into a tabular format
