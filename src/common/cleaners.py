@@ -41,6 +41,7 @@ class DatabankNSIDConverter:
         if unknown_ids:
             raise ValueError('Unknown NSs IDs in data', unknown_ids)
         data[self.names_column] = data[self.ids_column].map(ns_ids_names_map)
+        data.drop(columns=[self.ids_column], inplace=True)
 
         return data
 
@@ -63,7 +64,12 @@ class NSNamesCleaner:
         """
         Compare the NS names in a column of the dataset to a known list of National Society names.
         """
+        # Run some simple cleaning on the column
+        data[self.column] = data[self.column].str.strip()
+
         # Read in the known list of National Society names
         unrecognised_ns_names = set(data[self.column]).difference(NSNamesCleaner.ns_names)
         if unrecognised_ns_names:
             raise ValueError('Unknown NS names in data', unrecognised_ns_names)
+
+        return data

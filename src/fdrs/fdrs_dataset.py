@@ -14,8 +14,8 @@ class FDRSDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, refresh=True, cleaners=None):
-        super().__init__(filepath=filepath, cleaners=cleaners)
+    def __init__(self, filepath, api_key, refresh=True, cleaners=None, indicators=None):
+        super().__init__(filepath=filepath, cleaners=cleaners, indicators=indicators)
         self.api_key = api_key
         self.refresh = refresh
 
@@ -31,17 +31,34 @@ class FDRSDataset(Dataset):
 
             # Unnest the response from the API into a tabular format
             data = pd.DataFrame(response.json()['data'])
-            if not (data['id'].nunique() == len(data) == 1076):
-                raise RuntimeError('FDRS data does not have the expected length of 1076 indicators.')
             data = data.explode('data', ignore_index=True)
-            data = pd.concat([data.drop(columns=['data']).rename(columns={'id': 'indicator_id'}),
+            data = pd.concat([data.drop(columns=['data']).rename(columns={'id': 'indicator'}),
                               pd.json_normalize(data['data']).rename(columns={'id': 'ns_id'})], axis=1)
             data = data.explode('data', ignore_index=True)
             data = pd.concat([data.drop(columns=['data']),
                               pd.json_normalize(data['data'])], axis=1)
+
+            if data['years'].astype(str).nunique()!=1:
+                raise ValueError('Unexpected values in years column', data['years'].astype(str).unique())
+            data.drop(columns=['years'], inplace=True)
 
             # Save the data
             data.to_csv(self.filepath, index=False)
 
         # Read the data from file
         self.data = super().load_data()
+
+
+    def process(self):
+        """
+        Transform and process the data, including changing the structure and selecting columns.
+        """
+        # Select the required indicators
+        missing_indicators = [indicator for indicator in self.indicators if indicator not in self.data['indicator'].unique()]
+        if missing_indicators:
+            raise ValueError('Indicators missing from dataset', missing_indicators)
+        self.data = self.data.loc[self.data['indicator'].isin(self.indicators)]
+
+        # Pivot the dataframe to have NSs as rows and indicators as columns
+        self.data.dropna(how='any', inplace=True)
+        self.data = self.data.pivot(index=['ns_name', 'year'], columns='indicator', values='value')

@@ -12,10 +12,11 @@ class Dataset:
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, cleaners=None):
+    def __init__(self, filepath, cleaners=None, indicators=None):
         self.filepath = filepath
         self.data = pd.DataFrame()
         self.cleaners = [] if cleaners is None else cleaners
+        self.indicators = [] if indicators is None else indicators
 
 
     def __str__(self):
@@ -39,3 +40,10 @@ class Dataset:
         """
         for cleaner in self.cleaners:
             self.data = cleaner.clean(self.data)
+
+
+    def process(self):
+        """
+        Process the data, including transforming it into the required structure.
+        """
+        pass

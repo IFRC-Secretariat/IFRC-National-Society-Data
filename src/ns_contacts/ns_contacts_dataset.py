@@ -16,8 +16,8 @@ class NSContactsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, refresh=True, cleaners=None):
-        super().__init__(filepath=filepath, cleaners=cleaners)
+    def __init__(self, filepath, api_key, refresh=True, cleaners=None, indicators=None):
+        super().__init__(filepath=filepath, cleaners=cleaners, indicators=indicators)
         self.api_key = api_key
         self.refresh = refresh
 
