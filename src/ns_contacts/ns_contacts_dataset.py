@@ -43,3 +43,13 @@ class NSContactsDataset(Dataset):
 
         # Read the data from file
         self.data = super().load_data()
+
+
+    def process(self):
+        """
+        Transform and process the data, including changing the structure and selecting columns.
+        """
+        # Select the indicators
+        self.data.set_index('ns_name')
+        if self.indicators is not None:
+            self.data = self.data[self.indicators]

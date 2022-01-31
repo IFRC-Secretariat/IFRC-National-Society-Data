@@ -58,4 +58,5 @@ class FDRSDataset(Dataset):
         self.data = self.data.pivot(index=['ns_name', 'year'], columns='indicator', values='value')
 
         # Select the indicators
-        self.data = self.data[self.indicators]
+        if self.indicators is not None:
+            self.data = self.data[self.indicators]
