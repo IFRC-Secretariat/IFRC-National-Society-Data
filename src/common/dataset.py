@@ -16,7 +16,7 @@ class Dataset:
         self.filepath = filepath
         self.data = pd.DataFrame()
         self.cleaners = [] if cleaners is None else cleaners
-        self.indicators = [] if indicators is None else indicators
+        self.indicators = indicators
 
 
     def __str__(self):

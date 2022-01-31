@@ -53,12 +53,9 @@ class FDRSDataset(Dataset):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
-        # Select the required indicators
-        missing_indicators = [indicator for indicator in self.indicators if indicator not in self.data['indicator'].unique()]
-        if missing_indicators:
-            raise ValueError('Indicators missing from dataset', missing_indicators)
-        self.data = self.data.loc[self.data['indicator'].isin(self.indicators)]
-
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data.dropna(how='any', inplace=True)
         self.data = self.data.pivot(index=['ns_name', 'year'], columns='indicator', values='value')
+
+        # Select the indicators
+        self.data = self.data[self.indicators]
