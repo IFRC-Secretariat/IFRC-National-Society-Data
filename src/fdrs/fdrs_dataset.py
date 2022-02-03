@@ -4,6 +4,8 @@ Module to handle FDRS data, including loading it from the API, cleaning, and pro
 import requests
 import pandas as pd
 from src.common import Dataset
+from src.common.cleaners import DatabankNSIDMapper, NSNamesChecker
+
 
 class FDRSDataset(Dataset):
     """
@@ -14,8 +16,8 @@ class FDRSDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, refresh=True, cleaners=None, indicators=None):
-        super().__init__(filepath=filepath, cleaners=cleaners, indicators=indicators)
+    def __init__(self, filepath, api_key, refresh=True, indicators=None):
+        super().__init__(filepath=filepath, indicators=indicators)
         self.api_key = api_key
         self.refresh = refresh
 
@@ -46,13 +48,19 @@ class FDRSDataset(Dataset):
             data.to_csv(self.filepath, index=False)
 
         # Read the data from file
-        self.data = super().load_data()
+        super().load_data()
 
 
     def process(self):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
+        # Convert NS IDs to NS names
+        self.data['ns_name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['ns_id'])
+
+        # Make sure the NS names agree with the central list
+        NSNamesChecker().check(self.data['ns_name'])
+
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data.dropna(how='any', inplace=True)
         self.data = self.data.pivot(index=['ns_name', 'year'], columns='indicator', values='value')

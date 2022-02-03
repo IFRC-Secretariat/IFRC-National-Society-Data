@@ -2,6 +2,8 @@
 Module to define a Dataset Class with methods to load, clean, and process datasets.
 """
 import pandas as pd
+import os
+
 
 class Dataset:
     """
@@ -12,10 +14,9 @@ class Dataset:
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, cleaners=None, indicators=None):
+    def __init__(self, filepath, indicators=None):
         self.filepath = filepath
         self.data = pd.DataFrame()
-        self.cleaners = [] if cleaners is None else cleaners
         self.indicators = indicators
 
 
@@ -28,22 +29,21 @@ class Dataset:
 
     def load_data(self):
         """
-        Read in the data as a CSV file from the given file path.
+        Read in the data as a CSV or Excel file from the given file path.
         """
-        data = pd.read_csv(self.filepath)
-        return data
-
-
-    def clean(self):
-        """
-        Loop through the data cleaners to clean the data.
-        """
-        for cleaner in self.cleaners:
-            self.data = cleaner.clean(self.data)
+        # Check the file extension
+        extension = os.path.splitext(self.filepath)[1][1:]
+        if extension=='csv':
+            self.data = pd.read_csv(self.filepath)
+        elif extension in ['xlsx', 'xls']:
+            self.data = pd.read_excel(self.filepath)
+        else:
+            raise ValueError(f'Unknown file extension {extension}')
 
 
     def process(self):
         """
         Process the data, including transforming it into the required structure.
         """
-        pass
+        # Clean the dataset
+        self.clean()

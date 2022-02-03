@@ -6,6 +6,8 @@ The module can be used to pull this data from the NS Databank API, process, and 
 import requests
 import pandas as pd
 from src.common import Dataset
+from src.common.cleaners import DatabankNSIDMapper, NSNamesChecker
+
 
 class NSContactsDataset(Dataset):
     """
@@ -16,8 +18,8 @@ class NSContactsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, refresh=True, cleaners=None, indicators=None):
-        super().__init__(filepath=filepath, cleaners=cleaners, indicators=indicators)
+    def __init__(self, filepath, api_key, refresh=True, indicators=None):
+        super().__init__(filepath=filepath, indicators=indicators)
         self.api_key = api_key
         self.refresh = refresh
 
@@ -42,13 +44,19 @@ class NSContactsDataset(Dataset):
             data.to_csv(self.filepath, index=False)
 
         # Read the data from file
-        self.data = super().load_data()
+        super().load_data()
 
 
     def process(self):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
+        # Convert NS IDs to NS names
+        self.data['ns_name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['ns_id'])
+
+        # Make sure the NS names agree with the central list
+        NSNamesChecker().check(self.data['ns_name'])
+
         # Select the indicators
         self.data.set_index('ns_name')
         if self.indicators is not None:
