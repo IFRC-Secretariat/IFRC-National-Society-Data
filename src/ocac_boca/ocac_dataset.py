@@ -35,11 +35,11 @@ class OCACDataset(Dataset):
                              .transpose()\
                              .drop(columns=['iso', 'Region', 'SubRegion', 'Month', 'Version', 'Principal facilitator', 'Second facilitator', 'NS Focal point', 'OCAC data public', 'OCAC report public'], errors='raise')\
                              .reset_index(drop=True)\
-                             .rename(columns={'National Society': 'National Society name'})\
-                             .set_index('National Society name')
+                             .rename(columns={'National Society': 'National Society name'})
 
         # Check that the NS names are consistent with the centralised names list
-        NSNamesChecker().check(self.data.index)
+        NSNamesChecker().check(self.data['National Society name'])
+        self.data.set_index(['National Society name', 'Year'], inplace=True)
 
         # Select indicators
         if self.indicators is not None:
