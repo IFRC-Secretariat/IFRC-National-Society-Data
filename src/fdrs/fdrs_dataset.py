@@ -16,39 +16,35 @@ class FDRSDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, refresh=True, indicators=None):
+    def __init__(self, filepath, api_key, reload=True, indicators=None):
         super().__init__(filepath=filepath, indicators=indicators)
         self.api_key = api_key
-        self.refresh = refresh
+        self.reload = reload
 
 
-    def load_data(self):
+    def reload_data(self):
         """
         Read in data from the NS Databank API and save to file, or read in as a CSV file from the given filepath.
         """
         # Pull data from FDRS API and save the data locally
-        if self.refresh:
-            response = requests.get(url=f'https://data-api.ifrc.org/api/Data?apiKey={self.api_key}')
-            response.raise_for_status()
+        response = requests.get(url=f'https://data-api.ifrc.org/api/Data?apiKey={self.api_key}')
+        response.raise_for_status()
 
-            # Unnest the response from the API into a tabular format
-            data = pd.DataFrame(response.json()['data'])
-            data = data.explode('data', ignore_index=True)
-            data = pd.concat([data.drop(columns=['data']).rename(columns={'id': 'indicator'}),
-                              pd.json_normalize(data['data']).rename(columns={'id': 'National Society ID'})], axis=1)
-            data = data.explode('data', ignore_index=True)
-            data = pd.concat([data.drop(columns=['data']),
-                              pd.json_normalize(data['data'])], axis=1)
+        # Unnest the response from the API into a tabular format
+        data = pd.DataFrame(response.json()['data'])
+        data = data.explode('data', ignore_index=True)
+        data = pd.concat([data.drop(columns=['data']).rename(columns={'id': 'indicator'}),
+                          pd.json_normalize(data['data']).rename(columns={'id': 'National Society ID'})], axis=1)
+        data = data.explode('data', ignore_index=True)
+        data = pd.concat([data.drop(columns=['data']),
+                          pd.json_normalize(data['data'])], axis=1)
 
-            if data['years'].astype(str).nunique()!=1:
-                raise ValueError('Unexpected values in years column', data['years'].astype(str).unique())
-            data.drop(columns=['years'], inplace=True)
+        if data['years'].astype(str).nunique()!=1:
+            raise ValueError('Unexpected values in years column', data['years'].astype(str).unique())
+        data.drop(columns=['years'], inplace=True)
 
-            # Save the data
-            data.to_csv(self.filepath, index=False)
-
-        # Read the data from file
-        super().load_data()
+        # Save the data
+        data.to_csv(self.filepath, index=False)
 
 
     def process(self):
