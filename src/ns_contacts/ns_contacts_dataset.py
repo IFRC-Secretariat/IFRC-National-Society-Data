@@ -35,10 +35,10 @@ class NSContactsDataset(Dataset):
 
             # Convert to a pandas DataFrame and rename columns for consistency with other datasets
             data = pd.DataFrame(response.json())
-            data.rename(columns={'KPI_DON_code': 'ns_id',
-                                 'NSO_DON_name': 'ns_name',
-                                 'NSO_ZON_name': 'zone_name',
-                                 'ZON_Code': 'zone_code'}, errors='raise', inplace=True)
+            data.rename(columns={'KPI_DON_code': 'National Society ID',
+                                 'NSO_DON_name': 'National Society name',
+                                 'NSO_ZON_name': 'Region name',
+                                 'ZON_Code': 'Region code'}, errors='raise', inplace=True)
 
             # Save the data
             data.to_csv(self.filepath, index=False)
@@ -52,12 +52,12 @@ class NSContactsDataset(Dataset):
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Convert NS IDs to NS names
-        self.data['ns_name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['ns_id'])
+        self.data['National Society name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['National Society ID'])
 
         # Make sure the NS names agree with the central list
-        NSNamesChecker().check(self.data['ns_name'])
+        NSNamesChecker().check(self.data['National Society name'])
 
         # Select the indicators
-        self.data.set_index('ns_name')
+        self.data.set_index('National Society name')
         if self.indicators is not None:
             self.data = self.data[self.indicators]

@@ -35,7 +35,7 @@ class FDRSDataset(Dataset):
             data = pd.DataFrame(response.json()['data'])
             data = data.explode('data', ignore_index=True)
             data = pd.concat([data.drop(columns=['data']).rename(columns={'id': 'indicator'}),
-                              pd.json_normalize(data['data']).rename(columns={'id': 'ns_id'})], axis=1)
+                              pd.json_normalize(data['data']).rename(columns={'id': 'National Society ID'})], axis=1)
             data = data.explode('data', ignore_index=True)
             data = pd.concat([data.drop(columns=['data']),
                               pd.json_normalize(data['data'])], axis=1)
@@ -56,14 +56,14 @@ class FDRSDataset(Dataset):
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Convert NS IDs to NS names
-        self.data['ns_name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['ns_id'])
+        self.data['National Society name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['National Society ID'])
 
         # Make sure the NS names agree with the central list
-        NSNamesChecker().check(self.data['ns_name'])
+        NSNamesChecker().check(self.data['National Society name'])
 
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data.dropna(how='any', inplace=True)
-        self.data = self.data.pivot(index=['ns_name', 'year'], columns='indicator', values='value')
+        self.data = self.data.pivot(index=['National Society name', 'year'], columns='indicator', values='value')
 
         # Select the indicators
         if self.indicators is not None:
