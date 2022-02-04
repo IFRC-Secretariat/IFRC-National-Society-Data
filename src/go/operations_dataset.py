@@ -62,7 +62,7 @@ class OperationsDataset(Dataset):
                                                'amount_requested': 'Requested amount',
                                                'amount_funded': 'Funded amount'})\
                               .dropna(subset=['National Society name'])
-        
+
         # Check the names of NSs, and select only active operations
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
         self.data = self.data.loc[self.data['Status']=='Active']
