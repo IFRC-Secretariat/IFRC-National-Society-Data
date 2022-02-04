@@ -6,7 +6,7 @@ The module can be used to pull this data from the NS Databank API, process, and 
 import requests
 import pandas as pd
 from src.common import Dataset
-from src.common.cleaners import DatabankNSIDMapper, NSNamesChecker
+from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
 
 
 class NSContactsDataset(Dataset):
@@ -51,5 +51,5 @@ class NSContactsDataset(Dataset):
         self.data['National Society name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['National Society ID'])
 
         # Make sure the NS names agree with the central list
-        NSNamesChecker().check(self.data['National Society name'])
+        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
         self.data.set_index('National Society name')

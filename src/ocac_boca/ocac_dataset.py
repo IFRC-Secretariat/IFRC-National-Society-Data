@@ -4,7 +4,7 @@ Module to handle OCAC data, including loading it from the downloaded data file, 
 import requests
 import pandas as pd
 from src.common import Dataset
-from src.common.cleaners import NSNamesChecker
+from src.common.cleaners import NSNamesCleaner
 
 
 class OCACDataset(Dataset):
@@ -38,7 +38,7 @@ class OCACDataset(Dataset):
                              .rename(columns={'National Society': 'National Society name'})
 
         # Check that the NS names are consistent with the centralised names list
-        NSNamesChecker().check(self.data['National Society name'])
+        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
         self.data.set_index(['National Society name', 'Year'], inplace=True)
 
         return self.data

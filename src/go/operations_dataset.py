@@ -5,7 +5,7 @@ The module can be used to pull this data from the IFRC GO API, process, and clea
 import requests
 import pandas as pd
 from src.common import Dataset
-from src.common.cleaners import DatabankNSIDMapper, NSNamesChecker
+from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
 
 
 class OperationsDataset(Dataset):
@@ -62,23 +62,9 @@ class OperationsDataset(Dataset):
                                                'amount_requested': 'Requested amount',
                                                'amount_funded': 'Funded amount'})\
                               .dropna(subset=['National Society name'])
-
-        # Rename the NSs to be consistent with other datasets
-        self.data['National Society name'].replace({'Djibouti Red Crescent Society': 'Red Crescent Society of Djibouti',
-                                                    'The Fiji Red Cross Society': 'Fiji Red Cross Society',
-                                                    'Haitian Red Cross': 'Haiti Red Cross Society',
-                                                    'The Sri Lanka Red Cross Society': 'Sri Lanka Red Cross Society',
-                                                    'Georgia Red Cross Society': 'Red Cross Society of Georgia',
-                                                    'Cambodian Red Cross': 'Cambodian Red Cross Society',
-                                                    'Magen David Adom in Israel': 'Israel - Magen David Adom in Israel',
-                                                    'Ethiopia Red Cross': 'Ethiopian Red Cross Society',
-                                                    'Afghan Red Crescent Society': 'Afghan Red Crescent',
-                                                    'Estonian Red Cross': 'Estonia Red Cross',
-                                                    'Jamaican Red Cross': 'Jamaica Red Cross',
-                                                    'Red Cross of The Republic of North Macedonia': 'Red Cross of North Macedonia'}, inplace=True)
-
+        
         # Check the names of NSs, and select only active operations
-        NSNamesChecker().check(self.data['National Society name'])
+        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
         self.data = self.data.loc[self.data['Status']=='Active']
         self.data = self.data.drop(columns=['Status'])
         self.data['Funding'] = 100*(self.data['Funded amount']/self.data['Requested amount']).round(0)
@@ -87,6 +73,3 @@ class OperationsDataset(Dataset):
         for column in ['start_date', 'end_date']:
             self.data[column].replace({'0001-01-01T00:00:00Z': float('nan')}, inplace=True)
             self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%dT%H:%M:%SZ')
-
-        # Make sure the NS names agree with the central list
-        NSNamesChecker().check(self.data['National Society name'])

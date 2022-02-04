@@ -4,7 +4,7 @@ Module to handle FDRS data, including loading it from the API, cleaning, and pro
 import requests
 import pandas as pd
 from src.common import Dataset
-from src.common.cleaners import DatabankNSIDMapper, NSNamesChecker
+from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
 
 
 class FDRSDataset(Dataset):
@@ -55,7 +55,7 @@ class FDRSDataset(Dataset):
         self.data['National Society name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['National Society ID'])
 
         # Make sure the NS names agree with the central list
-        NSNamesChecker().check(self.data['National Society name'])
+        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
 
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data.dropna(how='any', inplace=True)

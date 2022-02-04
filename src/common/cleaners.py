@@ -46,7 +46,7 @@ class DatabankNSIDMapper:
         return data.map(ns_ids_names_map)
 
 
-class NSNamesChecker:
+class NSNamesCleaner:
     """
     Compare a list of National Society names against a central list of National
     Society names to ensure that all names are recognised and consistent.
@@ -55,11 +55,11 @@ class NSNamesChecker:
     ns_names = None
 
     def __init__(self):
-        if NSNamesChecker.ns_names is None:
-            NSNamesChecker.ns_names = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ns_names.yml')))
+        if NSNamesCleaner.ns_names is None:
+            NSNamesCleaner.ns_names = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ns_names.yml')))
 
 
-    def check(self, data):
+    def clean(self, data):
         """
         Compare the NS names in the provided data series to a known list of National Society names.
 
@@ -68,7 +68,18 @@ class NSNamesChecker:
         data : pandas Series (required)
             Series of a pandas DataFrame to be cleaned.
         """
+        # Map the list of alternative names to the main name
+        ns_names_map = {}
+        for main_name, alt_names in NSNamesCleaner.ns_names.items():
+            if alt_names:
+                for alt_name in alt_names:
+                    ns_names_map[alt_name] = main_name
+
+        data = data.replace(ns_names_map)
+
         # Read in the known list of National Society names
-        unrecognised_ns_names = set(data.str.strip()).difference(NSNamesChecker.ns_names)
+        unrecognised_ns_names = set(data.str.strip()).difference(NSNamesCleaner.ns_names)
         if unrecognised_ns_names:
             raise ValueError('Unknown NS names in data', unrecognised_ns_names)
+
+        return data
