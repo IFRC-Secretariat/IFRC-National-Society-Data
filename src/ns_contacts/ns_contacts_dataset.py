@@ -52,8 +52,4 @@ class NSContactsDataset(Dataset):
 
         # Make sure the NS names agree with the central list
         NSNamesChecker().check(self.data['National Society name'])
-
-        # Select the indicators
         self.data.set_index('National Society name')
-        if self.indicators is not None:
-            self.data = self.data[self.indicators]

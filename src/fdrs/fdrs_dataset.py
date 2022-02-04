@@ -60,7 +60,3 @@ class FDRSDataset(Dataset):
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data.dropna(how='any', inplace=True)
         self.data = self.data.pivot(index=['National Society name', 'year'], columns='indicator', values='value')
-
-        # Select the indicators
-        if self.indicators is not None:
-            self.data = self.data[self.indicators]

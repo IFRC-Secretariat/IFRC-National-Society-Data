@@ -59,4 +59,13 @@ class Dataset:
         Process the data, including transforming it into the required structure.
         """
         # Clean the dataset
-        self.clean()
+        raise NotImplementedError
+
+
+    def select_indicators(self):
+        """
+        Select only some columns from the dataset.
+        """
+        # Select indicators
+        if self.indicators is not None:
+            self.data = self.data[self.indicators]

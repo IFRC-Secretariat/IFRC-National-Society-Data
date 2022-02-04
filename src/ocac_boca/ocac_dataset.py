@@ -41,8 +41,4 @@ class OCACDataset(Dataset):
         NSNamesChecker().check(self.data['National Society name'])
         self.data.set_index(['National Society name', 'Year'], inplace=True)
 
-        # Select indicators
-        if self.indicators is not None:
-            self.data = self.data[self.indicators]
-
         return self.data
