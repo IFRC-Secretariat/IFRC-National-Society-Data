@@ -17,8 +17,8 @@ class OCACDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, reload=False, indicators=None):
-        super().__init__(filepath=filepath, reload=reload, indicators=indicators)
+    def __init__(self, filepath, indicators=None):
+        super().__init__(filepath=filepath, reload=False, indicators=indicators)
         pass
 
 
