@@ -39,6 +39,10 @@ class OCACDataset(Dataset):
 
         # Check that the NS names are consistent with the centralised names list
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
-        self.data.set_index(['National Society name', 'Year'], inplace=True)
+
+        # Keep only the latest assessment for each NS
+        self.data = self.data.sort_values(by=['National Society name', 'Year'], ascending=[True, False])\
+                             .drop_duplicates(subset=['National Society name'], keep='first')\
+                             .set_index('National Society name')
 
         return self.data

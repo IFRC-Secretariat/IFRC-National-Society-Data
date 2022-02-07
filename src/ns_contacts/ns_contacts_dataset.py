@@ -52,4 +52,4 @@ class NSContactsDataset(Dataset):
 
         # Make sure the NS names agree with the central list
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
-        self.data.set_index('National Society name')
+        self.data.set_index('National Society name', inplace=True)
