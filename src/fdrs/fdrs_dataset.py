@@ -57,6 +57,15 @@ class FDRSDataset(Dataset):
         # Make sure the NS names agree with the central list
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
 
+        # Keep only the latest values for each indicator: keep the smallest value if there are duplicates
+        self.data = self.data.dropna(how='any')\
+                             .sort_values(by=['year', 'value'], ascending=[False, True])\
+                             .drop_duplicates(subset=['National Society name', 'indicator'], keep='first')\
+                             .sort_values(by=['National Society name', 'indicator'], ascending=True)
+
         # Pivot the dataframe to have NSs as rows and indicators as columns
-        self.data.dropna(how='any', inplace=True)
-        self.data = self.data.pivot(index=['National Society name', 'year'], columns='indicator', values='value')
+        self.data = self.data.pivot(index=['National Society name'],
+                                    columns='indicator',
+                                    values=['value', 'year'])\
+                             .swaplevel(axis='columns')\
+                             .sort_index(axis='columns', level=0)
