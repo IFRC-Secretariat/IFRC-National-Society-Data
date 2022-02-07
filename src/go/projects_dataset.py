@@ -5,7 +5,7 @@ The module can be used to pull this data from the IFRC GO API, process, and clea
 import requests
 import pandas as pd
 from src.common import Dataset
-from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
+from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner, DictColumnExpander
 
 
 class ProjectsDataset(Dataset):
@@ -34,15 +34,7 @@ class ProjectsDataset(Dataset):
             response.raise_for_status()
             data += response.json()['results']
             next_url = response.json()['next']
-
-        # Convert to a pandas DataFrame and rename columns for consistency with other datasets
         data = pd.DataFrame(data)
-        data.drop(columns=['modified_by_detail', 'modified_at'], inplace=True)
-        for dict_column in ['project_country_detail', 'dtype_detail', 'event_detail']:
-            dict_expanded = pd.json_normalize(data[dict_column])
-            dict_expanded.rename(columns={column:f'{dict_column}.{column}' for column in dict_expanded.columns}, inplace=True)
-            data = pd.concat([data.drop(columns=[dict_column]),
-                              dict_expanded], axis=1)
 
         # Save the data
         data.to_csv(self.filepath, index=False)
@@ -53,6 +45,12 @@ class ProjectsDataset(Dataset):
         Transform and process the data, including changing the structure and selecting columns.
         Process the data into a NS indicator format.
         """
+        # Expand dict-type columns
+        expand_columns = ['project_country_detail', 'dtype_detail', 'event_detail', 'reporting_ns_detail']
+        self.data = DictColumnExpander().clean(data=self.data,
+                                               columns=expand_columns,
+                                               drop=True)
+
         # Drop columns that aren't needed
         self.data = self.data.drop(columns=['id', 'project_country_detail.iso',
                                             'project_country_detail.iso3', 'project_country_detail.id', 'project_country_detail.record_type', 'project_country_detail.record_type_display', 'project_country_detail.region', 'project_country_detail.independent', 'project_country_detail.is_deprecated', 'project_country_detail.fdrs', 'project_country_detail.name',

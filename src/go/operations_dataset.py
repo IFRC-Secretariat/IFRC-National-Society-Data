@@ -5,7 +5,7 @@ The module can be used to pull this data from the IFRC GO API, process, and clea
 import requests
 import pandas as pd
 from src.common import Dataset
-from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
+from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner, DictColumnExpander
 
 
 class OperationsDataset(Dataset):
@@ -34,14 +34,7 @@ class OperationsDataset(Dataset):
             response.raise_for_status()
             data += response.json()['results']
             next_url = response.json()['next']
-
-        # Convert to a pandas DataFrame and rename columns for consistency with other datasets
         data = pd.DataFrame(data)
-        for dict_column in ['dtype', 'region', 'country']:
-            dict_expanded = pd.json_normalize(data[dict_column])
-            dict_expanded.rename(columns={column:f'{dict_column}.{column}' for column in dict_expanded.columns}, inplace=True)
-            data = pd.concat([data.drop(columns=[dict_column]),
-                              dict_expanded], axis=1)
 
         # Save the data
         data.to_csv(self.filepath, index=False)
@@ -52,6 +45,12 @@ class OperationsDataset(Dataset):
         Transform and process the data, including changing the structure and selecting columns.
         Process the data into a NS indicator format.
         """
+        # Expand dict-type columns
+        expand_columns = ['dtype', 'region', 'country']
+        self.data = DictColumnExpander().clean(data=self.data,
+                                               columns=expand_columns,
+                                               drop=True)
+
         # Drop columns that aren't needed
         self.data = self.data.drop(columns=['aid', 'sector', 'dtype.id', 'dtype.summary', 'atype', 'status', 'code', 'real_data_update', 'created_at', 'modified_at', 'event', 'needs_confirmation', 'country.iso', 'country.id', 'country.record_type', 'country.record_type_display', 'country.region', 'country.independent', 'country.is_deprecated', 'country.fdrs', 'region.name', 'region.id', 'region.region_name', 'region.label', 'id', 'country.name', 'country.iso3'])\
                               .rename(columns={'country.society_name': 'National Society name',
@@ -64,6 +63,7 @@ class OperationsDataset(Dataset):
                               .dropna(subset=['National Society name'])
 
         # Check the names of NSs, and select only active operations
+        self.data = self.data.loc[self.data['National Society name']!='']
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
         self.data = self.data.loc[self.data['Status']=='Active']
         self.data = self.data.drop(columns=['Status'])

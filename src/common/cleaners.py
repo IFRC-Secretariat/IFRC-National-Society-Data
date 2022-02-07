@@ -1,10 +1,11 @@
 """
 Module to define data cleaners.
 """
+import os
+from ast import literal_eval
 import requests
 import pandas as pd
 import yaml
-import os
 
 
 class DatabankNSIDMapper:
@@ -81,5 +82,49 @@ class NSNamesCleaner:
         unrecognised_ns_names = set(data.str.strip()).difference(NSNamesCleaner.ns_names)
         if unrecognised_ns_names:
             raise ValueError('Unknown NS names in data', unrecognised_ns_names)
+
+        return data
+
+
+class DictColumnExpander:
+    """
+    Class to expand a dict-type column in a pandas DataFrame into multiple columns.
+    """
+    def __init__(self):
+        pass
+
+
+    def clean(self, data, columns, drop=False):
+        """
+        Expand the dict-type column into multiple columns
+        Names of the new columns will be in the format column+dict_key.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Pandas DataFrame containing the columns to expand.
+
+        columns : string or list (required)
+            List of columns, or the name of one column, to expand.
+
+        drop : bool (default=False)
+            If True, the original column(s) will be dropped from the DataFrame.
+        """
+        # Convert columns to a list if it is a string
+        if not isinstance(columns, list):
+            columns = [columns]
+        if not isinstance(drop, list):
+            drop = [drop]*len(columns)
+
+        # Loop through the columns to expand, rename them, and append them to the original dataframe
+        for column, drop_column in zip(columns, drop):
+            data[column] = data[column].apply(lambda x: x if x!=x else literal_eval(str(x)))
+            expanded_column = pd.json_normalize(data[column])
+            expanded_column.rename(columns={dict_key: f'{column}.{dict_key}' for dict_key in expanded_column.columns},
+                                   errors='raise',
+                                   inplace=True)
+            data = pd.concat([data, expanded_column], axis=1)
+            if drop_column:
+                data.drop(columns=[column], inplace=True)
 
         return data
