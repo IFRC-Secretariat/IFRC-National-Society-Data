@@ -62,10 +62,11 @@ class FDRSDataset(Dataset):
                              .sort_values(by=['year', 'value'], ascending=[False, True])\
                              .drop_duplicates(subset=['National Society name', 'indicator'], keep='first')\
                              .sort_values(by=['National Society name', 'indicator'], ascending=True)
+        self.data['source'] = 'FDRS'
 
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data = self.data.pivot(index=['National Society name'],
                                     columns='indicator',
-                                    values=['value', 'year'])\
+                                    values=['value', 'year', 'source'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0)
