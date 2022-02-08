@@ -51,8 +51,13 @@ class OperationsDataset(Dataset):
                                                columns=expand_columns,
                                                drop=True)
 
+        # Convert the date type columns to pandas datetimes
+        for column in ['start_date', 'end_date']:
+            self.data[column].replace({'0001-01-01T00:00:00Z': float('nan')}, inplace=True)
+            self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%dT%H:%M:%SZ')
+
         # Drop columns that aren't needed
-        self.data = self.data.drop(columns=['aid', 'sector', 'dtype.id', 'dtype.summary', 'atype', 'status', 'code', 'real_data_update', 'created_at', 'modified_at', 'event', 'needs_confirmation', 'country.iso', 'country.id', 'country.record_type', 'country.record_type_display', 'country.region', 'country.independent', 'country.is_deprecated', 'country.fdrs', 'region.name', 'region.id', 'region.region_name', 'region.label', 'id', 'country.name', 'country.iso3'])\
+        self.data = self.data.drop(columns=['aid', 'sector', 'dtype.id', 'dtype.summary', 'atype', 'status', 'code', 'real_data_update', 'modified_at', 'event', 'needs_confirmation', 'country.iso', 'country.id', 'country.record_type', 'country.record_type_display', 'country.region', 'country.independent', 'country.is_deprecated', 'country.fdrs', 'region.name', 'region.id', 'region.region_name', 'region.label', 'id', 'country.name', 'country.iso3'])\
                               .rename(columns={'country.society_name': 'National Society name',
                                                'atype_display': 'Type',
                                                'status_display': 'Status',
@@ -69,7 +74,8 @@ class OperationsDataset(Dataset):
         self.data = self.data.drop(columns=['Status'])
         self.data['Funding'] = 100*(self.data['Funded amount']/self.data['Requested amount']).round(0)
 
-        # Convert the date type columns to pandas datetimes
-        for column in ['start_date', 'end_date']:
-            self.data[column].replace({'0001-01-01T00:00:00Z': float('nan')}, inplace=True)
-            self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%dT%H:%M:%SZ')
+        # Concatenate the columns to list multiple emergencies in each cell
+        self.data = self.data.sort_values(by='created_at', ascending=False)\
+                              .drop_duplicates(subset=['National Society name', 'Operation name'], keep='first')\
+                              .drop(columns=['created_at'])\
+                              .groupby('National Society name').agg(lambda x: '\n'.join([str(item) for item in x]))

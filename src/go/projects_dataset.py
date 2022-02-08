@@ -78,3 +78,5 @@ class ProjectsDataset(Dataset):
         # Convert the date type columns to pandas datetimes
         for column in ['start_date', 'end_date']:
             self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%d')
+
+        self.data.set_index('National Society name', inplace=True)
