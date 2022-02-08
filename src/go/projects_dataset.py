@@ -51,32 +51,21 @@ class ProjectsDataset(Dataset):
                                                columns=expand_columns,
                                                drop=True)
 
-        # Drop columns that aren't needed
-        self.data = self.data.drop(columns=['id', 'project_country_detail.iso',
-                                            'project_country_detail.iso3', 'project_country_detail.id', 'project_country_detail.record_type', 'project_country_detail.record_type_display', 'project_country_detail.region', 'project_country_detail.independent', 'project_country_detail.is_deprecated', 'project_country_detail.fdrs', 'project_country_detail.name',
-                                            'project_districts_detail', 'programme_type',
-                                            'reporting_ns_detail.iso', 'reporting_ns_detail.iso3', 'reporting_ns_detail.id', 'reporting_ns_detail.record_type', 'reporting_ns_detail.record_type_display', 'reporting_ns_detail.region', 'reporting_ns_detail.independent', 'reporting_ns_detail.is_deprecated', 'reporting_ns_detail.fdrs', 'reporting_ns_detail.name', 'reporting_ns_detail.society_name',
-                                            'dtype_detail.id', 'dtype_detail.summary',
-                                            'regional_project_detail',
-                                            'event_detail.dtype', 'event_detail.id', 'event_detail.parent_event', 'event_detail.slug',
-                                            'target_male', 'target_female', 'target_other', 'reached_male', 'reached_female', 'reached_other',
-                                            'user', 'reporting_ns', 'project_country', 'event', 'dtype', 'regional_project', 'project_districts', 'modified_by'])\
-                             .rename(columns={'dtype_detail.name': 'Disaster type',
-                                              'project_country_detail.society_name': 'National Society name',
-                                              'event_detail.name': 'Event description'})\
+        # Convert the date type columns to pandas datetimes
+        for column in ['start_date', 'end_date']:
+            self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%d')
+
+        # Keep only data with a NS specified, and clean NS names
+        self.data = self.data.rename(columns={'project_country_detail.society_name': 'National Society name'})\
                              .dropna(subset=['National Society name'])
+        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
 
         # Check all data is public, and select only ongoing projects
         if self.data['visibility'].unique() != ['public']:
             raise ValueError('Dataset contains non-public data.')
         self.data = self.data.loc[self.data['status_display']=='Ongoing']
-        self.data.drop(columns=['visibility_display', 'visibility', 'status_display', 'status'], inplace=True)
 
-        # Clean NS names
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
-
-        # Convert the date type columns to pandas datetimes
-        for column in ['start_date', 'end_date']:
-            self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%d')
-
-        self.data.set_index('National Society name', inplace=True)
+        # Concatenate the columns to list multiple emergencies in each cell
+        self.data = self.data.sort_values(by='modified_at', ascending=False)\
+                              .drop_duplicates(subset=['National Society name', 'name'], keep='first')\
+                              .groupby('National Society name').agg(lambda x: '\n'.join([str(item) for item in x]))

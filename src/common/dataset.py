@@ -35,6 +35,14 @@ class Dataset:
         return repr(self.data)
 
 
+    @property
+    def columns(self):
+        """
+        Return the columns of the pandas DataFrame in the data attribute.
+        """
+        return self.data.columns
+
+
     def load_data(self):
         """
         Read in the data as a CSV or Excel file from the given file path.

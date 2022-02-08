@@ -63,7 +63,7 @@ class OperationsDataset(Dataset):
         # Check the names of NSs, and select only active operations
         self.data = self.data.loc[self.data['National Society name']!='']
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
-        self.data = self.data.loc[self.data['status_display']=='Active'].drop(columns=['status_display'])
+        self.data = self.data.loc[self.data['status_display']=='Active']
         self.data['funding'] = 100*(self.data['amount_funded']/self.data['amount_requested']).round(0)
 
         # Concatenate the columns to list multiple emergencies in each cell
