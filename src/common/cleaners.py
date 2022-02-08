@@ -87,6 +87,33 @@ class NSNamesCleaner:
         return data
 
 
+class CountryNSMapper:
+    """
+    Take a list of country ISO3 codes and map them to NS names.
+    """
+    ns_info = None
+
+    def __init__(self):
+        if CountryNSMapper.ns_info is None:
+            CountryNSMapper.ns_info = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'national_societies_info.yml')))
+
+
+    def map(self, data):
+        """
+        Map the country ISO3 codes in the provided data series to National Society names.
+
+        Parameters
+        ----------
+        data : pandas Series (required)
+            Series of a pandas DataFrame to be mapped to National Society names.
+        """
+        # Map the list of alternative names to the main name
+        ns_names_map = {ns['ISO3']: ns['National Society name'] for ns in CountryNSMapper.ns_info}
+
+        # Map the NS names to the NS IDs in the provided data
+        return data.map(ns_names_map)
+
+
 class DictColumnExpander:
     """
     Class to expand a dict-type column in a pandas DataFrame into multiple columns.

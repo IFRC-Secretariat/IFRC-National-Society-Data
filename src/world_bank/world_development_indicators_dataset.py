@@ -55,6 +55,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         self.data = self.data.dropna(subset=['National Society name', 'indicator.value', 'value', 'date'], how='any')\
                              .sort_values(by=['National Society name', 'indicator.value', 'date'], ascending=[True, True, False])\
                              .drop_duplicates(subset=['National Society name', 'indicator.value'], keep='first')\
-                             .pivot(index=['National Society name'], columns='indicator.id', values=['value', 'date'])\
+                             .rename(columns={'date': 'year'})\
+                             .pivot(index=['National Society name'], columns='indicator.id', values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0)
