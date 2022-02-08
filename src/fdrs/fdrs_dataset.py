@@ -17,16 +17,16 @@ class FDRSDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, filepath, api_key, reload=True, indicators=None):
-        super().__init__(filepath=filepath, indicators=indicators)
+        super().__init__(filepath=filepath, reload=reload, indicators=indicators)
         self.api_key = api_key
         self.reload = reload
 
 
     def reload_data(self):
         """
-        Read in data from the NS Databank API and save to file, or read in as a CSV file from the given filepath.
+        Read in data from the NS Databank API and save to file.
         """
-        # Pull data from FDRS API and save the data locally
+        # Pull data from FDRS API
         response = requests.get(url=f'https://data-api.ifrc.org/api/Data?apiKey={self.api_key}')
         response.raise_for_status()
 

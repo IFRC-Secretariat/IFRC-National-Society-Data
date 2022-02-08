@@ -53,11 +53,11 @@ class NSNamesCleaner:
     Society names to ensure that all names are recognised and consistent.
     Run some basic cleaning including stripping whitespace.
     """
-    ns_names = None
+    ns_info = None
 
     def __init__(self):
-        if NSNamesCleaner.ns_names is None:
-            NSNamesCleaner.ns_names = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ns_names.yml')))
+        if NSNamesCleaner.ns_info is None:
+            NSNamesCleaner.ns_info = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'national_societies_info.yml')))
 
 
     def clean(self, data):
@@ -71,15 +71,16 @@ class NSNamesCleaner:
         """
         # Map the list of alternative names to the main name
         ns_names_map = {}
-        for main_name, alt_names in NSNamesCleaner.ns_names.items():
-            if alt_names:
-                for alt_name in alt_names:
-                    ns_names_map[alt_name] = main_name
+        for ns in NSNamesCleaner.ns_info:
+            if 'Alternative names' in ns.keys():
+                for alt_name in ns['Alternative names']:
+                    ns_names_map[alt_name] = ns['National Society name']
 
         data = data.replace(ns_names_map)
 
         # Read in the known list of National Society names
-        unrecognised_ns_names = set(data.str.strip()).difference(NSNamesCleaner.ns_names)
+        known_ns_names = [ns['National Society name'] for ns in NSNamesCleaner.ns_info]
+        unrecognised_ns_names = set(data.str.strip()).difference(known_ns_names)
         if unrecognised_ns_names:
             raise ValueError('Unknown NS names in data', unrecognised_ns_names)
 
