@@ -14,6 +14,12 @@ class Dataset:
     ----------
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
+
+    reload : boolean (default=True)
+        If True, the data will be reloaded from source, e.g. pulled from an API, and saved to filepath.
+
+    indicators : dict (default=None)
+        Dict of indicators mapping the source name to a new name. This can be used to filter and rename the indicator columns in the dataset.
     """
     def __init__(self, filepath, reload=True, indicators=None):
         self.filepath = filepath
@@ -64,8 +70,9 @@ class Dataset:
 
     def select_indicators(self):
         """
-        Select only some columns from the dataset.
+        Select only some columns from the dataset, and rename them.
         """
         # Select indicators
         if self.indicators is not None:
-            self.data = self.data[self.indicators]
+            self.data = self.data[self.indicators.keys()]\
+                                 .rename(columns=self.indicators, errors='raise', level=0)

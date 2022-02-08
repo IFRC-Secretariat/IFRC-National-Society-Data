@@ -57,25 +57,16 @@ class OperationsDataset(Dataset):
             self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%dT%H:%M:%SZ')
 
         # Drop columns that aren't needed
-        self.data = self.data.drop(columns=['aid', 'sector', 'dtype.id', 'dtype.summary', 'atype', 'status', 'code', 'real_data_update', 'modified_at', 'event', 'needs_confirmation', 'country.iso', 'country.id', 'country.record_type', 'country.record_type_display', 'country.region', 'country.independent', 'country.is_deprecated', 'country.fdrs', 'region.name', 'region.id', 'region.region_name', 'region.label', 'id', 'country.name', 'country.iso3'])\
-                              .rename(columns={'country.society_name': 'National Society name',
-                                               'atype_display': 'Type',
-                                               'status_display': 'Status',
-                                               'dtype.name': 'Disaster type',
-                                               'name': 'Operation name',
-                                               'amount_requested': 'Requested amount',
-                                               'amount_funded': 'Funded amount'})\
-                              .dropna(subset=['National Society name'])
+        self.data = self.data.rename(columns={'country.society_name': 'National Society name'})\
+                             .dropna(subset=['National Society name'])
 
         # Check the names of NSs, and select only active operations
         self.data = self.data.loc[self.data['National Society name']!='']
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
-        self.data = self.data.loc[self.data['Status']=='Active']
-        self.data = self.data.drop(columns=['Status'])
-        self.data['Funding'] = 100*(self.data['Funded amount']/self.data['Requested amount']).round(0)
+        self.data = self.data.loc[self.data['status_display']=='Active'].drop(columns=['status_display'])
+        self.data['funding'] = 100*(self.data['amount_funded']/self.data['amount_requested']).round(0)
 
         # Concatenate the columns to list multiple emergencies in each cell
         self.data = self.data.sort_values(by='created_at', ascending=False)\
-                              .drop_duplicates(subset=['National Society name', 'Operation name'], keep='first')\
-                              .drop(columns=['created_at'])\
+                              .drop_duplicates(subset=['National Society name', 'name'], keep='first')\
                               .groupby('National Society name').agg(lambda x: '\n'.join([str(item) for item in x]))
