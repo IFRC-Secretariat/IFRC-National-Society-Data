@@ -69,4 +69,4 @@ class FDRSDataset(Dataset):
                                     columns='indicator',
                                     values=['value', 'year', 'source'])\
                              .swaplevel(axis='columns')\
-                             .sort_index(axis='columns', level=0)
+                             .sort_index(axis='columns', level=0, sort_remaining=False)

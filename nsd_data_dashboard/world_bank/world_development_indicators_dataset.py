@@ -59,4 +59,4 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
                              .rename(columns={'date': 'year'})\
                              .pivot(index=['National Society name'], columns='indicator.id', values=['value', 'year', 'source'])\
                              .swaplevel(axis='columns')\
-                             .sort_index(axis='columns', level=0)
+                             .sort_index(axis='columns', level=0, sort_remaining=False)

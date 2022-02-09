@@ -50,4 +50,4 @@ class OCACDataset(Dataset):
         source_data = pd.DataFrame(data=[['NS Databank']*len(self.data.columns)]*len(self.data),
                                    columns=[list(self.data.columns.get_level_values(0)), ['source']*len(self.data.columns)],
                                    index=self.data.index)
-        self.data = pd.concat([self.data, source_data], axis='columns', levels=0).sort_index(axis='columns', level=0)
+        self.data = pd.concat([self.data, source_data], axis='columns', levels=0).sort_index(axis='columns', level=0, sort_remaining=False)
