@@ -45,3 +45,6 @@ class NSContactsDataset(Dataset):
         self.data.rename(columns={'NSO_DON_name': 'National Society name'}, errors='raise', inplace=True)
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
         self.data.set_index('National Society name', inplace=True)
+
+        # Add another column level
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['']])

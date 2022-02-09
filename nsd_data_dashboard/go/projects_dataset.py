@@ -69,3 +69,6 @@ class ProjectsDataset(Dataset):
         self.data = self.data.sort_values(by='modified_at', ascending=False)\
                               .drop_duplicates(subset=['National Society name', 'name'], keep='first')\
                               .groupby('National Society name').agg(lambda x: '\n'.join([str(item) for item in x]))
+
+        # Add another column level
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['']])
