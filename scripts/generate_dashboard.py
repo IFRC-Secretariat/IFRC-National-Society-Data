@@ -6,6 +6,7 @@ import yaml
 import pandas as pd
 from collections import Counter
 
+sys.path.append('.')
 from nsd_data_dashboard.fdrs import FDRSDataset
 from nsd_data_dashboard.ocac_boca import OCACDataset
 from nsd_data_dashboard.ns_contacts import NSContactsDataset
@@ -101,8 +102,8 @@ EXCEL DASHBOARD GENERATION
 - Merge datasets and categorise
 """
 # Define the writer for the Excel document
-writer = pd.ExcelWriter(path=os.path.join(ROOT_DIR, 'data/NSD Data Dashboard.xlsx'),
-                        engine='xlsxwriter')
+#excel_dashboard = ExcelDashboard(filepath=os.path.join(ROOT_DIR, 'data/NSD Data Dashboard.xlsx'))
+writer = pd.ExcelWriter(path=os.path.join(ROOT_DIR, 'data/NSD Data Dashboard.xlsx'), engine='xlsxwriter')
 
 # Loop through categories and merge the required data and indicators for each
 for category in df_indicators['category'].unique():
@@ -118,8 +119,10 @@ for category in df_indicators['category'].unique():
     # Remove index names, order columns, and write to the Excel document
     df_catetory = pd.concat(category_datasets, axis='columns')
     df_catetory.index.name = None
-    df_catetory.columns.names = (None, None)
+    df_catetory.columns.names = ('National Society', None)
     df_catetory = df_catetory[df_category_indicators['name'].to_list()]
+
+    # Write to Excel and add some formatting
     df_catetory.to_excel(writer, sheet_name=category)
 
 writer.save()
