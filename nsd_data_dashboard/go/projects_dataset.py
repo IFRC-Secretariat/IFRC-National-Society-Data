@@ -4,8 +4,8 @@ The module can be used to pull this data from the IFRC GO API, process, and clea
 """
 import requests
 import pandas as pd
-from src.common import Dataset
-from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner, DictColumnExpander
+from nsd_data_dashboard.common import Dataset
+from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSNamesCleaner, DictColumnExpander
 
 
 class ProjectsDataset(Dataset):

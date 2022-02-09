@@ -1,1 +1,1 @@
-from src.world_bank.world_development_indicators_dataset import WorldDevelopmentIndicatorsDataset
+from nsd_data_dashboard.world_bank.world_development_indicators_dataset import WorldDevelopmentIndicatorsDataset

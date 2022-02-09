@@ -1,1 +1,1 @@
-from src.ocac_boca.ocac_dataset import OCACDataset
+from nsd_data_dashboard.ocac_boca.ocac_dataset import OCACDataset

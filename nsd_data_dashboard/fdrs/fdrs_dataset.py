@@ -3,8 +3,8 @@ Module to handle FDRS data, including loading it from the API, cleaning, and pro
 """
 import requests
 import pandas as pd
-from src.common import Dataset
-from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
+from nsd_data_dashboard.common import Dataset
+from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
 
 
 class FDRSDataset(Dataset):

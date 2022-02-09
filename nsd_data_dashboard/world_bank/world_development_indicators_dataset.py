@@ -3,8 +3,8 @@ Module to handle World Bank data, including pulling it from the World Bank API, 
 """
 import requests
 import pandas as pd
-from src.common import Dataset
-from src.common.cleaners import DictColumnExpander, CountryNSMapper
+from nsd_data_dashboard.common import Dataset
+from nsd_data_dashboard.common.cleaners import DictColumnExpander, CountryNSMapper
 
 
 class WorldDevelopmentIndicatorsDataset(Dataset):

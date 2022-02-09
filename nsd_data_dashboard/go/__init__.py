@@ -1,2 +1,2 @@
-from src.go.operations_dataset import OperationsDataset
-from src.go.projects_dataset import ProjectsDataset
+from nsd_data_dashboard.go.operations_dataset import OperationsDataset
+from nsd_data_dashboard.go.projects_dataset import ProjectsDataset

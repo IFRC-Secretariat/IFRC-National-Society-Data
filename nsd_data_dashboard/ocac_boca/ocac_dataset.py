@@ -3,8 +3,8 @@ Module to handle OCAC data, including loading it from the downloaded data file, 
 """
 import requests
 import pandas as pd
-from src.common import Dataset
-from src.common.cleaners import NSNamesCleaner
+from nsd_data_dashboard.common import Dataset
+from nsd_data_dashboard.common.cleaners import NSNamesCleaner
 
 
 class OCACDataset(Dataset):

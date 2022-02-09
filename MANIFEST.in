@@ -1,1 +1,1 @@
-include src/common/ns_names.yml
+include nsd_data_dashboard/common/national_societies_info.yml

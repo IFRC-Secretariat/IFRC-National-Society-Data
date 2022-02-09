@@ -5,8 +5,8 @@ The module can be used to pull this data from the NS Databank API, process, and 
 """
 import requests
 import pandas as pd
-from src.common import Dataset
-from src.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
+from nsd_data_dashboard.common import Dataset
+from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
 
 
 class NSContactsDataset(Dataset):
