@@ -12,6 +12,7 @@ from nsd_data_dashboard.ns_contacts import NSContactsDataset
 from nsd_data_dashboard.go import OperationsDataset, ProjectsDataset
 from nsd_data_dashboard.world_bank import WorldDevelopmentIndicatorsDataset
 from nsd_data_dashboard.undp import HumanDevelopmentDataset
+from nsd_data_dashboard.inform import INFORMRiskDataset
 
 """
 SETUP
@@ -82,8 +83,13 @@ datasets = {
         filepath=os.path.join(ROOT_DIR, 'data/undp/undp_human_development_api_response.csv'),
         reload=False,
         indicators=dataset_indicators['UNDP Human Development']
-        )
-    }
+        ),
+    'INFORM Risk': INFORMRiskDataset(
+        filepath=os.path.join(ROOT_DIR, 'data/inform/inform_risk_api_response.csv'),
+        reload=False,
+        indicators=dataset_indicators['INFORM Risk']
+    ),
+}
 for dataset_name, dataset in datasets.items():
     dataset.load_data()
     dataset.process()
