@@ -26,8 +26,12 @@ FDRS_PUBLIC_API_KEY = os.environ.get('FDRS_PUBLIC_API_KEY')
 if FDRS_PUBLIC_API_KEY is None:
     raise ValueError('FDRS API key not set.')
 
+# Read in the config file
+config = yaml.safe_load(open(os.path.join(ROOT_DIR, 'scripts/config.yml')))
+reload = config['reload_data'] if 'reload_data' in config else True
+
 # Read in the indicators list, convert to a pandas DataFrame
-dashboard_indicators = yaml.safe_load(open(os.path.join(ROOT_DIR, 'scripts/dashboard_indicators.yml')))
+dashboard_indicators = config['dashboard_indicators']
 dashboard_indicators_list = []
 for category, indicators in dashboard_indicators.items():
     for indicator in indicators:
@@ -52,13 +56,13 @@ datasets = {
     'FDRS': FDRSDataset(
         filepath=os.path.join(ROOT_DIR, 'data/fdrs/fdrs_api_response.csv'),
         api_key=FDRS_PUBLIC_API_KEY,
-        reload=False,
+        reload=reload,
         indicators=dataset_indicators['FDRS']
         ),
     'NS Contacts': NSContactsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/ns_contacts/ns_contacts_api_response.csv'),
         api_key=FDRS_PUBLIC_API_KEY,
-        reload=False,
+        reload=reload,
         indicators=dataset_indicators['NS Contacts']
         ),
     'OCAC': OCACDataset(
@@ -67,27 +71,27 @@ datasets = {
         ),
     'GO Operations': OperationsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/go/go_operations_api_response.csv'),
-        reload=False,
+        reload=reload,
         indicators=dataset_indicators['GO Operations']
         ),
     'GO Projects': ProjectsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/go/go_projects_api_response.csv'),
-        reload=False,
+        reload=reload,
         indicators=dataset_indicators['GO Projects']
         ),
     'World Development Indicators': WorldDevelopmentIndicatorsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/world_bank/world_development_indicators_api_response.csv'),
-        reload=False,
+        reload=reload,
         indicators=dataset_indicators['World Development Indicators']
         ),
     'UNDP Human Development': HumanDevelopmentDataset(
         filepath=os.path.join(ROOT_DIR, 'data/undp/undp_human_development_api_response.csv'),
-        reload=False,
+        reload=reload,
         indicators=dataset_indicators['UNDP Human Development']
         ),
     'INFORM Risk': INFORMRiskDataset(
         filepath=os.path.join(ROOT_DIR, 'data/inform/inform_risk_api_response.csv'),
-        reload=False,
+        reload=reload,
         indicators=dataset_indicators['INFORM Risk']
     ),
 }
@@ -121,6 +125,13 @@ for category in df_indicators['category'].unique():
     df_catetory.index.name = None
     df_catetory.columns.names = ('National Society', None)
     df_catetory = df_catetory[df_category_indicators['name'].to_list()]
+
+    # Filter by NS
+    if 'national_societies' in config:
+        df_catetory = df_catetory[df_catetory.index.isin(config['national_societies'])]
+    missing_ns = [ns for ns in config['national_societies'] if ns not in df_catetory.index]
+    if missing_ns:
+        print(f'The following National Societies missing from the {category} dataset:', missing_ns)
 
     # Write to Excel and add some formatting
     df_catetory.to_excel(writer, sheet_name=category)
