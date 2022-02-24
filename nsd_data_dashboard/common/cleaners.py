@@ -75,6 +75,9 @@ class NSNamesCleaner:
             if 'Alternative names' in ns.keys():
                 for alt_name in ns['Alternative names']:
                     ns_names_map[alt_name] = ns['National Society name']
+            if 'Country names' in ns.keys():
+                for country_name in ns['Country names']:
+                    ns_names_map[country_name] = ns['National Society name']
 
         data = data.replace(ns_names_map)
 
