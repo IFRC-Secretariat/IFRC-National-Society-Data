@@ -1,0 +1,70 @@
+"""
+Module to handle NS documents data from FDRS, including loading it from the API, cleaning, and processing.
+"""
+import requests
+import os
+import yaml
+import pandas as pd
+from nsd_data_dashboard.common import Dataset
+from nsd_data_dashboard.common.cleaners import DatabankNSIDMap, DatabankNSIDMapper, NSNamesCleaner
+
+
+class NSDocumentsDataset(Dataset):
+    """
+    Load NS documents data from the NS databank API, and clean and process the data.
+
+    Parameters
+    ----------
+    filepath : string (required)
+        Path to save the dataset when loaded, and to read the dataset from.
+    """
+    def __init__(self, filepath, api_key, reload=True):
+        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['NS Documents']
+        super().__init__(filepath=filepath, reload=reload, indicators=indicators)
+        self.api_key = api_key
+        self.reload = reload
+
+
+    def reload_data(self):
+        """
+        Read in data from the NS Databank API and save to file.
+        """
+        # Pull data from FDRS API, looping through NSs
+        ns_ids_names_map = DatabankNSIDMap(api_key=self.api_key).get_map()
+        ns_ids_string = ','.join(ns_ids_names_map.keys())
+        response = requests.get(url=f'https://data-api.ifrc.org/api/documents?ns={ns_ids_string}&apiKey={self.api_key}')
+        response.raise_for_status()
+        data_list = []
+        for ns_response in response.json():
+            ns_documents = pd.DataFrame(ns_response['documents'])
+            ns_documents['National Society ID'] = ns_response['code']
+            data_list.append(ns_documents)
+        data = pd.concat(data_list, axis='rows')
+
+        # Save the data
+        data.to_csv(self.filepath, index=False)
+
+
+    def process(self):
+        """
+        Transform and process the data, including changing the structure and selecting columns.
+        """
+        # Convert NS IDs to NS names, and make sure the NS names agree with the central list
+        self.data['National Society name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['National Society ID'])
+        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
+
+        # Keep only the latest document for each document type and NS
+        self.data = self.data[['National Society name', 'name', 'document_type', 'year', 'url']]
+        self.data = self.data.dropna(subset=['National Society name', 'document_type', 'year'], how='any')\
+                             .sort_values(by=['year', 'name'], ascending=[False, True])\
+                             .drop_duplicates(subset=['National Society name', 'document_type'], keep='first')\
+                             .sort_values(by=['National Society name', 'document_type'], ascending=True)\
+                             .rename(columns={'url': 'link'})
+        self.data['value'] = self.data['document_type'].str.strip().str.replace('^Our', '', regex=True).str.strip()+' - '+self.data['year'].astype(str)
+        self.data = self.data.loc[self.data['document_type']!='Other']
+
+        # Pivot the dataframe to have NSs as rows and indicators as columns
+        self.data = self.data.pivot(index=['National Society name'],
+                                    columns='document_type',
+                                    values=['value', 'year', 'link'])\
+                             .swaplevel(axis='columns')

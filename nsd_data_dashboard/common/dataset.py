@@ -83,8 +83,8 @@ class Dataset:
         """
         # Rename and select indicators
         if 'indicators' in self.indicators:
-            rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators['indicators']}
             indicator_names = [indicator['name'] for indicator in self.indicators['indicators']]
+            rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators['indicators']}
             self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[indicator_names]
 
             # Add in extra information
@@ -94,7 +94,7 @@ class Dataset:
                         self.data[indicator, column] = value
 
         # Order the column hierarchies
-        subcolumns_order = ['value', 'year']
+        subcolumns_order = ['value', 'year', 'link']
         if 'extra_info' in self.indicators:
             subcolumns_order += self.indicators['extra_info'].keys()
         def order_columns(x):

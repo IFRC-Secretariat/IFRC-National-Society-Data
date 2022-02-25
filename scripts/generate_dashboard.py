@@ -7,7 +7,7 @@ import pandas as pd
 from collections import Counter
 
 sys.path.append('.')
-from nsd_data_dashboard.fdrs import FDRSDataset
+from nsd_data_dashboard.fdrs import FDRSDataset, NSDocumentsDataset
 from nsd_data_dashboard.ocac_boca import OCACDataset
 from nsd_data_dashboard.ns_statutes_laws import NSStatutesDataset, NSRecognitionLawsDataset
 from nsd_data_dashboard.ns_contacts import NSContactsDataset
@@ -63,6 +63,11 @@ datasets = {
     'OCAC': OCACDataset(
         filepath=os.path.join(ROOT_DIR, 'data/ocac/ocac_website_download.xlsx'),
         ),
+    'NS Documents': NSDocumentsDataset(
+        filepath=os.path.join(ROOT_DIR, 'data/fdrs/ns_documents_api_response.csv'),
+        api_key=FDRS_PUBLIC_API_KEY,
+        reload=reload,
+    ),
     'NS Statutes': NSStatutesDataset(
         filepath=os.path.join(ROOT_DIR, 'data/ns_statutes_laws/ns_statutes.xls'),
     ),
@@ -124,9 +129,9 @@ for category in df_indicators['category'].unique():
     df_catetory = pd.concat(category_datasets, axis='columns')
     df_catetory.index.name = None
     df_catetory.columns.names = ('National Society', None)
-    df_catetory = df_catetory[df_category_indicators['name'].to_list()]
+    df_catetory = df_catetory[df_category_indicators['name'].to_list()].sort_index()
 
-    # Filter by NS
+    # Filter by NS or country
     if category not in ['Logistics projects']:
         if 'national_societies' in config:
             df_catetory = df_catetory[df_catetory.index.isin(config['national_societies'])]
@@ -147,6 +152,8 @@ for category in df_indicators['category'].unique():
     all_category_datasets[category] = df_catetory
 
 writer.save()
+
+exit()
 
 
 """

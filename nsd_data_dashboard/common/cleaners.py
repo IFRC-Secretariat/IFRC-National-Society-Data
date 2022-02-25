@@ -9,6 +9,42 @@ import pandas as pd
 import yaml
 
 
+class DatabankNSIDMap:
+    """
+    Get a map of National Society IDs for data in the NS Databank, to National Society names.
+
+    Parameters
+    ----------
+    api_key : string (required)
+        API key for the NS databank.
+    """
+    api_response = None
+
+    def __init__(self, api_key):
+        self.api_key = api_key
+
+
+    def get_map(self, reverse=False):
+        """
+        Get a map of National Society IDs from the NS Databank, to National Society names.
+
+        Parameters
+        ----------
+        reverse : boolean (default=False)
+            If True, map NS names to NS IDs.
+        """
+        # Pull the data from the databank API
+        if DatabankNSIDMapper.api_response is None:
+            DatabankNSIDMapper.api_response = requests.get(url=f'https://data-api.ifrc.org/api/entities/ns?apiKey={self.api_key}')
+            DatabankNSIDMapper.api_response.raise_for_status()
+
+        # Get a map of NS IDs to NS names
+        ns_ids_names_map = pd.DataFrame(DatabankNSIDMapper.api_response.json()).set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
+        if reverse: ns_ids_names_map = {v: k for k, v in ns_ids_names_map.items()}
+
+        return ns_ids_names_map
+
+
 class DatabankNSIDMapper:
     """
     Convert National Society IDs for data in the NS Databank, to names.
@@ -24,7 +60,7 @@ class DatabankNSIDMapper:
         self.api_key = api_key
 
 
-    def map(self, data):
+    def map(self, data, reverse=False):
         """
         Convert National Society IDs from the NS Databank, to National Society names.
 
@@ -32,6 +68,9 @@ class DatabankNSIDMapper:
         ----------
         data : pandas Series or list (required)
             Series or list of NS IDs from the NS Databank to be mapped to NS names.
+
+        reverse : boolean (default=False)
+            If True, map NS names to NS IDs.
         """
         # Pull the data from the databank API
         if DatabankNSIDMapper.api_response is None:
@@ -40,17 +79,20 @@ class DatabankNSIDMapper:
 
         # Get a map of NS IDs to NS names
         ns_ids_names_map = pd.DataFrame(DatabankNSIDMapper.api_response.json()).set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
+        if reverse: ns_ids_names_map = {v: k for k, v in ns_ids_names_map.items()}
 
         # Check if there are any unkown IDs
         unknown_ids = set(data).difference(ns_ids_names_map.keys())
         if unknown_ids:
-            warnings.warn(f'Unknown NSs IDs in data will not be converted to NS names: {unknown_ids}')
+            warnings.warn(f'Unknown NSs in data will not be converted: {unknown_ids}')
 
         # Map the names depending on the data type, and return
         if isinstance(data, pd.Series):
             results = data.map(ns_ids_names_map)
         elif isinstance(data, list):
             results = [ns_ids_names_map[ns_id] if (ns_id in ns_ids_names_map) else ns_id for ns_id in data]
+        else:
+            raise TypeError('Unrecognised type', type(data))
 
         return results
 
