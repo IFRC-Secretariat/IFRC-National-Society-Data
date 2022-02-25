@@ -82,7 +82,7 @@ class FDRSDataset(Dataset):
         def split_convert_ns_ids(x):
             ns_ids = x.split(',')
             ns_names = DatabankNSIDMapper(api_key=self.api_key).map(ns_ids)
-            return ns_names
+            return ', '.join(ns_names)
         for column in ['supported1', 'received_support1']:
             self.data[column, 'value'] = self.data[column, 'value'].apply(lambda x: x if x!=x else split_convert_ns_ids(x))
 

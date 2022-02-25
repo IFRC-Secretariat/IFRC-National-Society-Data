@@ -30,8 +30,8 @@ class DatabankNSIDMapper:
 
         Parameters
         ----------
-        data : pandas Series (required)
-            Series of NS IDs from the NS Databank to be mapped to NS names.
+        data : pandas Series or list (required)
+            Series or list of NS IDs from the NS Databank to be mapped to NS names.
         """
         # Pull the data from the databank API
         if DatabankNSIDMapper.api_response is None:
