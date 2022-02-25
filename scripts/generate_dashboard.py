@@ -11,6 +11,7 @@ from nsd_data_dashboard.fdrs import FDRSDataset, NSDocumentsDataset
 from nsd_data_dashboard.ocac_boca import OCACDataset
 from nsd_data_dashboard.ns_statutes_laws import NSStatutesDataset, NSRecognitionLawsDataset
 from nsd_data_dashboard.ns_contacts import NSContactsDataset
+from nsd_data_dashboard.youth import YABCDataset
 from nsd_data_dashboard.logistics import LogisticsProjectsDataset
 from nsd_data_dashboard.go import OperationsDataset, ProjectsDataset
 from nsd_data_dashboard.world_bank import WorldDevelopmentIndicatorsDataset
@@ -70,6 +71,9 @@ datasets = {
     ),
     'NS Statutes': NSStatutesDataset(
         filepath=os.path.join(ROOT_DIR, 'data/ns_statutes_laws/ns_statutes.xls'),
+    ),
+    'YABC': YABCDataset(
+        filepath=os.path.join(ROOT_DIR, 'data/youth/yabc_data.xlsx'),
     ),
     'NS Recognition Laws': NSRecognitionLawsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/ns_statutes_laws/ns_recognition_laws.xls'),

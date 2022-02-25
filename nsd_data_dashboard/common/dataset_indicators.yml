@@ -122,6 +122,20 @@ NS Recognition Laws:
     - name: NS recognition laws/ other regulations in force
       source_name: Law/other regulations in force
 
+YABC:
+  extra_info:
+    source: IFRC Youth
+    focal_point: Amjad Saleem
+  indicators:
+    - name: Number of YABC trainings to date
+      source_name: number of YABC trainings to date
+    - name: Number of peer educators
+      source_name: peer educators
+    - name: Number of trainers
+      source_name: trainers
+    - name: Comment
+      source_name: Comment
+
 Logistics Projects:
   extra_info:
     source: IFRC Logistics
