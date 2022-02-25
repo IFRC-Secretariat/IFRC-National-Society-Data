@@ -103,6 +103,48 @@ NS Recognition Laws:
     - name: NS recognition laws/ other regulations in force
       source_name: Law/other regulations in force
 
+Logistics Projects:
+  extra_info:
+    source: IFRC Logistics
+    focal_point: Juan Galvez
+  indicators:
+    - name: Type
+      source_name: Type
+    - name: Log Development phase
+      source_name: Log Development phase
+    - name: Status
+      source_name: Status
+    - name: Supply chain strategys
+      source_name: Supply chain strategy
+    - name: Import/export
+      source_name: Import/export
+    - name: Logistics Planning
+      source_name: Logistics Planning
+    - name: Order Mgmt
+      source_name: Order Mgmt
+    - name: Procurement
+      source_name: Procurement
+    - name: Warehousing
+      source_name: Warehousing
+    - name: Fleet
+      source_name: Fleet
+    - name: Transport
+      source_name: Transport
+    - name: Start date
+      source_name: Start date
+    - name: End date
+      source_name: End date
+    - name: Lead partner
+      source_name: Lead partner
+    - name: Other Partners
+      source_name: Other Partners
+    - name: Financial supporters
+      source_name: Financial supporters
+    - name: Comments
+      source_name: Comments
+    - name: Regional focal point
+      source_name: Regional focal point
+
 GO Operations:
   extra_info:
     source: IFRC GO

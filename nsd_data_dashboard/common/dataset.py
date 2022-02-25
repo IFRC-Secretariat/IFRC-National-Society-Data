@@ -21,8 +21,9 @@ class Dataset:
     indicators : dict (default=None)
         Dict of indicators mapping the source name to a new name. This can be used to filter and rename the indicator columns in the dataset.
     """
-    def __init__(self, filepath, reload=True, indicators=None):
+    def __init__(self, filepath, sheet_name=0, reload=True, indicators=None):
         self.filepath = filepath
+        self.sheet_name = sheet_name
         self.data = pd.DataFrame()
         self.reload = reload
         self.indicators = indicators
@@ -56,7 +57,7 @@ class Dataset:
         if extension=='csv':
             self.data = pd.read_csv(self.filepath)
         elif extension in ['xlsx', 'xls']:
-            self.data = pd.read_excel(self.filepath)
+            self.data = pd.read_excel(self.filepath, sheet_name=self.sheet_name)
         else:
             raise ValueError(f'Unknown file extension {extension}')
 
@@ -81,19 +82,24 @@ class Dataset:
         Merge in indicator information if set.
         """
         # Rename and select indicators
-        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators['indicators']}
-        indicator_names = [indicator['name'] for indicator in self.indicators['indicators']]
-        self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[indicator_names]
+        if 'indicators' in self.indicators:
+            rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators['indicators']}
+            indicator_names = [indicator['name'] for indicator in self.indicators['indicators']]
+            self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[indicator_names]
 
-        # Add in extra information
-        if 'extra_info' in self.indicators:
-            for column, value in self.indicators['extra_info'].items():
-                for indicator in indicator_names:
-                    self.data[indicator, column] = value
+            # Add in extra information
+            if 'extra_info' in self.indicators:
+                for column, value in self.indicators['extra_info'].items():
+                    for indicator in indicator_names:
+                        self.data[indicator, column] = value
 
         # Order the column hierarchies
         subcolumns_order = ['value', 'year']
         if 'extra_info' in self.indicators:
             subcolumns_order += self.indicators['extra_info'].keys()
-        self.data = self.data.sort_index(axis='columns', level=1, key=lambda x: x.map({item: subcolumns_order.index(item) for item in subcolumns_order}))\
+        def order_columns(x):
+            order_map = {item: subcolumns_order.index(item) for item in subcolumns_order}
+            order = x.map(order_map)
+            return order
+        self.data = self.data.sort_index(axis='columns', level=1, key=lambda x: order_columns(x), sort_remaining=False)\
                              .sort_index(axis='columns', level=0, sort_remaining=False)
