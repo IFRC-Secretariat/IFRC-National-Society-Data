@@ -53,13 +53,12 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
 
         # Map ISO3 codes to NS names
         self.data['National Society name'] = CountryNSMapper().map(self.data['countryiso3code'])
-        self.data['source'] = 'World Bank'
 
         # Get the latest values of each indicator for each NS
         self.data = self.data.dropna(subset=['National Society name', 'indicator.value', 'value', 'date'], how='any')\
                              .sort_values(by=['National Society name', 'indicator.value', 'date'], ascending=[True, True, False])\
                              .drop_duplicates(subset=['National Society name', 'indicator.value'], keep='first')\
                              .rename(columns={'date': 'year'})\
-                             .pivot(index=['National Society name'], columns='indicator.id', values=['value', 'year', 'source'])\
+                             .pivot(index=['National Society name'], columns='indicator.id', values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

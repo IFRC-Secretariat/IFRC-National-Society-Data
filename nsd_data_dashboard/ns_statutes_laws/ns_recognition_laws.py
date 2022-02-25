@@ -42,4 +42,4 @@ class NSRecognitionLawsDataset(Dataset):
 
         # Add another column level
         self.data = self.data.set_index(['National Society name'])
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['']])
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])

@@ -67,10 +67,9 @@ class INFORMRiskDataset(Dataset):
         """
         # Map ISO3 codes to NS names
         self.data['National Society name'] = CountryNSMapper().map(self.data['Iso3'])
-        self.data['source'] = 'EC DRMKC INFORM'
 
         # Get the latest values of each indicator for each NS
         self.data = self.data.dropna(subset=['National Society name', 'indicator', 'value', 'year'], how='any')\
-                             .pivot(index=['National Society name'], columns='indicator', values=['value', 'year', 'source'])\
+                             .pivot(index=['National Society name'], columns='indicator', values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

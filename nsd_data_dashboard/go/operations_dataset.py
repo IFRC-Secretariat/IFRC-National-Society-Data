@@ -75,4 +75,4 @@ class OperationsDataset(Dataset):
                               .groupby('National Society name').agg(lambda x: '\n'.join([str(item) for item in x]))
 
         # Add another column level
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['']])
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])

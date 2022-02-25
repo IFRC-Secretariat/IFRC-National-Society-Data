@@ -62,7 +62,6 @@ class HumanDevelopmentDataset(Dataset):
                              .dropna(how='any')\
                              .sort_values(by=['National Society name', 'indicator', 'year'], ascending=[True, True, False])\
                              .drop_duplicates(subset=['National Society name', 'indicator'], keep='first')
-        self.data['source'] = 'UNDP'
-        self.data = self.data.pivot(index=['National Society name'], columns='indicator', values=['value', 'year', 'source'])\
+        self.data = self.data.pivot(index=['National Society name'], columns='indicator', values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

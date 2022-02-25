@@ -81,20 +81,19 @@ class Dataset:
         Merge in indicator information if set.
         """
         # Rename and select indicators
-        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators}
-        self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[rename_indicators.values()]
+        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators['indicators']}
+        indicator_names = [indicator['name'] for indicator in self.indicators['indicators']]
+        self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[indicator_names]
 
-        # Add in extra information for each indicator
-        for indicator in self.indicators:
-            if 'extra_info' in indicator:
-                for column, value in indicator['extra_info'].items():
-                    self.data[indicator['name'], column] = value
+        # Add in extra information
+        if 'extra_info' in self.indicators:
+            for column, value in self.indicators['extra_info'].items():
+                for indicator in indicator_names:
+                    self.data[indicator, column] = value
 
-        # Order the columns
-        def order_columns(x):
-            order = ['value', 'year', 'source']
-            order_map = {item: order.index(item) for item in order}
-            return x.map(order_map)
-
-        self.data = self.data.sort_index(axis='columns', level=1, key=lambda x: order_columns(x))\
+        # Order the column hierarchies
+        subcolumns_order = ['value', 'year']
+        if 'extra_info' in self.indicators:
+            subcolumns_order += self.indicators['extra_info'].keys()
+        self.data = self.data.sort_index(axis='columns', level=1, key=lambda x: x.map({item: subcolumns_order.index(item) for item in subcolumns_order}))\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

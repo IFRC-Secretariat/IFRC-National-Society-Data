@@ -70,12 +70,11 @@ class FDRSDataset(Dataset):
                              .sort_values(by=['year', 'value'], ascending=[False, True])\
                              .drop_duplicates(subset=['National Society name', 'indicator'], keep='first')\
                              .sort_values(by=['National Society name', 'indicator'], ascending=True)
-        self.data['source'] = 'FDRS'
 
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data = self.data.pivot(index=['National Society name'],
                                     columns='indicator',
-                                    values=['value', 'year', 'source'])\
+                                    values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)
 
@@ -97,7 +96,6 @@ class FDRSDataset(Dataset):
             if not income_amounts.empty:
                 for i in range(0, n):
                     row[f'income_source_{i+1}', 'value'] = f'{income_source_columns[income_amounts.index[i][0]]} ({round(100*income_amounts[i]/total_income)}%)'
-                    row[f'income_source_{i+1}', 'source'] = 'FDRS'
                     row[f'income_source_{i+1}', 'year'] = source_year
             return row
 
