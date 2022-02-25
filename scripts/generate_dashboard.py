@@ -5,12 +5,13 @@ import os, sys
 import yaml
 import pandas as pd
 from collections import Counter
+import warnings
 
 sys.path.append('.')
+from nsd_data_dashboard.common import NationalSocietiesInfo
 from nsd_data_dashboard.fdrs import FDRSDataset, NSDocumentsDataset
 from nsd_data_dashboard.ocac_boca import OCACDataset
 from nsd_data_dashboard.ns_statutes_laws import NSStatutesDataset, NSRecognitionLawsDataset
-from nsd_data_dashboard.ns_contacts import NSContactsDataset
 from nsd_data_dashboard.youth import YABCDataset
 from nsd_data_dashboard.logistics import LogisticsProjectsDataset
 from nsd_data_dashboard.go import OperationsDataset, ProjectsDataset
@@ -42,6 +43,11 @@ for category, indicators in dashboard_indicators.items():
         dashboard_indicators_list.append(indicator)
 df_indicators = pd.DataFrame(dashboard_indicators_list)
 
+# Get the general NS information
+ns_general_info = NationalSocietiesInfo()
+df_ns_general_info = ns_general_info.df.set_index('National Society name')[config['national_society_indicators']]
+df_ns_general_info.columns = pd.MultiIndex.from_product([df_ns_general_info.columns, ['']])
+
 
 """
 PULL AND PROCESS DATA
@@ -53,11 +59,6 @@ PULL AND PROCESS DATA
 datasets = {
     'FDRS': FDRSDataset(
         filepath=os.path.join(ROOT_DIR, 'data/fdrs/fdrs_api_response.csv'),
-        api_key=FDRS_PUBLIC_API_KEY,
-        reload=reload,
-        ),
-    'NS Contacts': NSContactsDataset(
-        filepath=os.path.join(ROOT_DIR, 'data/ns_contacts/ns_contacts_api_response.csv'),
         api_key=FDRS_PUBLIC_API_KEY,
         reload=reload,
         ),
@@ -107,7 +108,6 @@ for dataset_name, dataset in datasets.items():
     dataset.process()
     dataset.add_indicator_info()
 
-
 """
 EXCEL DASHBOARD GENERATION
 - Merge datasets and categorise
@@ -127,33 +127,35 @@ for category in df_indicators['category'].unique():
         if dataset in datasets:
             category_datasets.append(datasets[dataset].data[indicators])
     if not category_datasets: continue
-    df_catetory = pd.concat(category_datasets, axis='columns')
+    df_category = pd.concat(category_datasets, axis='columns')
 
     # Remove index names, order columns, and write to the Excel document
-    df_catetory = pd.concat(category_datasets, axis='columns')
-    df_catetory.index.name = None
-    df_catetory.columns.names = ('National Society', None)
-    df_catetory = df_catetory[df_category_indicators['name'].to_list()].sort_index()
+    df_category = pd.concat(category_datasets, axis='columns')
+    df_category.index.name = None
+    df_category.columns.names = ('National Society', None)
+    df_category = df_category[df_category_indicators['name'].to_list()].sort_index()
 
     # Filter by NS or country
     if category not in ['Logistics projects']:
         if 'national_societies' in config:
-            df_catetory = df_catetory[df_catetory.index.isin(config['national_societies'])]
-        missing_ns = [ns for ns in config['national_societies'] if ns not in df_catetory.index]
-        if missing_ns:
-            print(f'The following National Societies missing from the {category} dataset:', missing_ns)
+            missing_ns = [ns for ns in config['national_societies'] if ns not in df_category.index]
+            if missing_ns:
+                warnings.warn(f'The following National Societies missing from the {category} dataset: {missing_ns}')
+            df_category = df_category.reindex(ns_general_info.ns_names)
+            df_category = df_category[df_category.index.isin(config['national_societies'])].sort_index()
     else:
         if 'countries' in config:
-            df_catetory = df_catetory[df_catetory.index.isin(config['countries'])]
-        missing_countries = [country for country in config['countries'] if country not in df_catetory.index]
-        if missing_countries:
-            print(f'The following countries are missing from the {category} dataset:', missing_countries)
+            missing_countries = [country for country in config['countries'] if country not in df_category.index]
+            if missing_countries:
+                warnings.warn(f'The following countries are missing from the {category} dataset: {missing_countries}')
+            df_category = df_category[df_category.index.isin(config['countries'])]
 
-    # Write to Excel
-    df_catetory.to_excel(writer, sheet_name=category)
+    # Merge in the general country info and write to Excel
+    df_category = pd.merge(df_ns_general_info, df_category, left_index=True, right_index=True)
+    df_category.to_excel(writer, sheet_name=category)
 
     # Merge to all data
-    all_category_datasets[category] = df_catetory
+    all_category_datasets[category] = df_category
 
 writer.save()
 
@@ -168,10 +170,10 @@ all_data = pd.DataFrame()
 for category in df_indicators['category'].unique():
     if category not in all_category_datasets: continue
     if category in ['Active operations', '3W - Ongoing projects', 'Logistics projects']: continue
-    df_catetory = all_category_datasets[category]
+    df_category = all_category_datasets[category]
 
     # Melt the dataset into a log format
-    df_melt = df_catetory.unstack()\
+    df_melt = df_category.unstack()\
                          .unstack(level=1)\
                          .reset_index()\
                          .rename(columns={'National Society': 'Indicator', 'level_1': 'National Society'})

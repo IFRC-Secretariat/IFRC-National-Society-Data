@@ -1,1 +1,2 @@
 from nsd_data_dashboard.common.dataset import Dataset
+from nsd_data_dashboard.common.national_societies_info import NationalSocietiesInfo
