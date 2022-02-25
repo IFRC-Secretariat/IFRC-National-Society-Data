@@ -8,7 +8,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
+from nsd_data_dashboard.common.cleaners import NSNamesCleaner
 
 
 class NSContactsDataset(Dataset):

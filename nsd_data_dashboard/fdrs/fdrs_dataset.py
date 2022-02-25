@@ -78,6 +78,14 @@ class FDRSDataset(Dataset):
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)
 
+        # Convert NS supported and receiving support lists from NS IDs to NS names
+        def split_convert_ns_ids(x):
+            ns_ids = x.split(',')
+            ns_names = DatabankNSIDMapper(api_key=self.api_key).map(ns_ids)
+            return ns_names
+        for column in ['supported1', 'received_support1']:
+            self.data[column, 'value'] = self.data[column, 'value'].apply(lambda x: x if x!=x else split_convert_ns_ids(x))
+
         # Calculate the top income sources
         def get_top_n_income_sources(row, n=3):
             total_income_column = 'KPI_IncomeLC'

@@ -3,6 +3,7 @@ Module to define data cleaners.
 """
 import os
 from ast import literal_eval
+import warnings
 import requests
 import pandas as pd
 import yaml
@@ -14,8 +15,8 @@ class DatabankNSIDMapper:
 
     Parameters
     ----------
-    ns_ids : pandas series (required)
-        Pandas serise of
+    api_key : string (required)
+        API key for the NS databank.
     """
     api_response = None
 
@@ -40,11 +41,18 @@ class DatabankNSIDMapper:
         # Get a map of NS IDs to NS names
         ns_ids_names_map = pd.DataFrame(DatabankNSIDMapper.api_response.json()).set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
 
-        # Map the NS names to the NS IDs in the provided data
+        # Check if there are any unkown IDs
         unknown_ids = set(data).difference(ns_ids_names_map.keys())
         if unknown_ids:
-            raise ValueError('Unknown NSs IDs in data', unknown_ids)
-        return data.map(ns_ids_names_map)
+            warnings.warn(f'Unknown NSs IDs in data will not be converted to NS names: {unknown_ids}')
+
+        # Map the names depending on the data type, and return
+        if isinstance(data, pd.Series):
+            results = data.map(ns_ids_names_map)
+        elif isinstance(data, list):
+            results = [ns_ids_names_map[ns_id] if (ns_id in ns_ids_names_map) else ns_id for ns_id in data]
+
+        return results
 
 
 class NSNamesCleaner:
