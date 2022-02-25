@@ -4,6 +4,8 @@ This is used as the central list of NS info including names, IDs, countries, and
 The module can be used to pull this data from the NS Databank API, process, and clean the data.
 """
 import requests
+import os
+import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
 from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
@@ -18,7 +20,8 @@ class NSContactsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, reload=True, indicators=None):
+    def __init__(self, filepath, api_key, reload=True):
+        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['NS Contacts']
         super().__init__(filepath=filepath, reload=reload, indicators=indicators)
         self.api_key = api_key
         self.reload = reload

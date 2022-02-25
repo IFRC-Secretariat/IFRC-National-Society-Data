@@ -2,6 +2,8 @@
 Module to handle NS Recognition Laws data, including loading it from the data file, cleaning, and processing.
 """
 import re
+import os
+import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
 from nsd_data_dashboard.common.cleaners import NSNamesCleaner
@@ -18,6 +20,7 @@ class NSRecognitionLawsDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, filepath, indicators=None):
+        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['NS Recognition Laws']
         super().__init__(filepath=filepath, reload=False, indicators=indicators)
         pass
 
@@ -32,7 +35,7 @@ class NSRecognitionLawsDataset(Dataset):
 
         # Clean up the column names
         self.data.rename(columns={column: column.strip() for column in self.data.columns}, inplace=True)
-        self.data.rename(columns={'National Society (NS)': 'National Society name', 'Law/other regulations in force': 'Laws/ other regulations in force'}, inplace=True, errors='raise')
+        self.data.rename(columns={'National Society (NS)': 'National Society name'}, inplace=True, errors='raise')
 
         # Check that the NS names are consistent with the centralised names list
         self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'].str.strip())

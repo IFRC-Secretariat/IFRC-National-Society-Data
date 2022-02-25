@@ -2,6 +2,8 @@
 Module to handle INFORM Risk data, including pulling it from the INFORM API, cleaning, and processing.
 """
 import requests
+import os
+import yaml
 from datetime import date
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
@@ -17,7 +19,8 @@ class INFORMRiskDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when pulled, and to read the dataset from.
     """
-    def __init__(self, filepath, reload=True, indicators=None):
+    def __init__(self, filepath, reload=True):
+        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['INFORM Risk']
         super().__init__(filepath=filepath, reload=reload, indicators=indicators)
         self.reload = reload
 

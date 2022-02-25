@@ -76,11 +76,25 @@ class Dataset:
         raise NotImplementedError
 
 
-    def select_indicators(self):
+    def add_indicator_info(self):
         """
-        Select only some columns from the dataset, and rename them.
+        Merge in indicator information if set.
         """
-        # Select indicators
-        if self.indicators is not None:
-            self.data = self.data[self.indicators.keys()]\
-                                 .rename(columns=self.indicators, errors='raise', level=0)
+        # Rename and select indicators
+        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators}
+        self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[rename_indicators.values()]
+
+        # Add in extra information for each indicator
+        for indicator in self.indicators:
+            if 'extra_info' in indicator:
+                for column, value in indicator['extra_info'].items():
+                    self.data[indicator['name'], column] = value
+
+        # Order the columns
+        def order_columns(x):
+            order = ['value', 'year', 'source']
+            order_map = {item: order.index(item) for item in order}
+            return x.map(order_map)
+
+        self.data = self.data.sort_index(axis='columns', level=1, key=lambda x: order_columns(x))\
+                             .sort_index(axis='columns', level=0, sort_remaining=False)

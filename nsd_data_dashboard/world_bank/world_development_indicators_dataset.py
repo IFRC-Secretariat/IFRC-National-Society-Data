@@ -2,6 +2,8 @@
 Module to handle World Bank data, including pulling it from the World Bank API, cleaning, and processing.
 """
 import requests
+import os
+import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
 from nsd_data_dashboard.common.cleaners import DictColumnExpander, CountryNSMapper
@@ -16,7 +18,8 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when pulled, and to read the dataset from.
     """
-    def __init__(self, filepath, reload=True, indicators=None):
+    def __init__(self, filepath, reload=True):
+        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['World Development Indicators']
         super().__init__(filepath=filepath, reload=reload, indicators=indicators)
         self.reload = reload
 

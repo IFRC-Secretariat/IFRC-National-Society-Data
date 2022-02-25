@@ -2,6 +2,8 @@
 Module to handle FDRS data, including loading it from the API, cleaning, and processing.
 """
 import requests
+import os
+import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
 from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
@@ -16,7 +18,8 @@ class FDRSDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, reload=True, indicators=None):
+    def __init__(self, filepath, api_key, reload=True):
+        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['FDRS']
         super().__init__(filepath=filepath, reload=reload, indicators=indicators)
         self.api_key = api_key
         self.reload = reload
@@ -99,12 +102,3 @@ class FDRSDataset(Dataset):
             return row
 
         self.data = self.data.apply(lambda row: get_top_n_income_sources(row), axis=1)
-
-        # Order the data columns
-        def order_columns(x):
-            order = ['value', 'year', 'source']
-            order_map = {item: order.index(item) for item in order}
-            return x.map(order_map)
-
-        self.data = self.data.sort_index(axis='columns', level=1, key=lambda x: order_columns(x))\
-                             .sort_index(axis='columns', level=0, sort_remaining=False)

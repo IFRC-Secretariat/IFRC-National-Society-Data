@@ -1,1 +1,2 @@
 include nsd_data_dashboard/common/national_societies_info.yml
+include nsd_data_dashboard/common/dataset_indicators.yml

@@ -2,6 +2,8 @@
 Module to handle OCAC data, including loading it from the downloaded data file, cleaning, and processing.
 """
 import requests
+import os
+import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
 from nsd_data_dashboard.common.cleaners import NSNamesCleaner
@@ -17,7 +19,8 @@ class OCACDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, indicators=None):
+    def __init__(self, filepath):
+        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['OCAC']
         super().__init__(filepath=filepath, reload=False, indicators=indicators)
         pass
 

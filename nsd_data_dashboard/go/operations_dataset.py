@@ -3,6 +3,8 @@ Module to handle operations data from the IFRC GO platform..
 The module can be used to pull this data from the IFRC GO API, process, and clean the data.
 """
 import requests
+import os
+import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
 from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSNamesCleaner, DictColumnExpander
@@ -17,7 +19,8 @@ class OperationsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, reload=True, indicators=None):
+    def __init__(self, filepath, reload=True):
+        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['GO Operations']
         super().__init__(filepath=filepath, reload=reload, indicators=indicators)
         self.reload = reload
 

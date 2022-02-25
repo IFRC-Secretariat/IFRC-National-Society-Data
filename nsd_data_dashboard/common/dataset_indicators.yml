@@ -1,0 +1,151 @@
+NS Contacts:
+  - name: Country
+    source_name: country
+  - name: ISO3
+    source_name: iso_3
+  - name: Region name
+    source_name: NSO_ZON_name
+
+FDRS:
+  - name: Number of local units
+    source_name: KPI_noLocalUnits
+  - name: Financial statement
+    source_name: KPI_hasFinancialStatement
+  - name: The financial statement is audited
+    source_name: audited
+  - name: Total income in local currency
+    source_name: KPI_IncomeLC
+  - name: Total income (Swiss Franc)
+    source_name: KPI_IncomeLC_CHF
+  - name: Top income source
+    source_name: income_source_1
+  - name: Second top income source
+    source_name: income_source_2
+  - name: Third top income source
+    source_name: income_source_3
+  - name: Total number of people volunteering
+    source_name: KPI_PeopleVol_Tot
+  - name: Total number of volunteers covered by accident insurance
+    source_name: KPI_noVolCoveredAI_Tot
+  - name: Total number of paid staff
+    source_name: KPI_PStaff_Tot
+  - name: Total number of paid staff covered by accident insurance
+    source_name: KPI_PStaffCoveredAI_Tot
+  - name: Annual report
+    source_name: ar
+  - name: Strategic plan
+    source_name: sp
+  - name: Supported NSs
+    source_name: supported1
+  - name: Received support from NSs
+    source_name: received_support1
+  - name: Total number of people reached by disaster response and early recovery programmes
+    source_name: KPI_ReachDRER_CPD
+  - name: Total number of people reached by long term services and development programmes
+    source_name: KPI_ReachLTSPD_CPD
+  - name: Total number of people reached by disaster risk reduction
+    source_name: KPI_ReachDRR_CPD
+  - name: Total number of people reached by shelter
+    source_name: KPI_ReachS_CPD
+  - name: Total number of people reached by livelihoods
+    source_name: KPI_ReachL_CPD
+  - name: Total number of people reached by health
+    source_name: KPI_ReachH_CPD
+  - name: Total number of people reached by water, sanitation and hygiene
+    source_name: KPI_ReachWASH_CPD
+  - name: Total number of people reached by migration
+    source_name: KPI_ReachM_CPD
+  - name: Total number of people reached by cash transfer programming
+    source_name: KPI_ReachCTP_CPD
+  - name: Total number of people reached by social inclusion and building a culture of non-violence and peace
+    source_name: KPI_ReachSI_CPD
+
+OCAC:
+  - name: OCAC year of last assessment
+    source_name: Year
+
+NS Statutes:
+  - name: "NS Statutes: Statutes in force (Date of adoption)"
+    source_name: Statutes in force (Date of adoption)
+  - name: "NS Statutes: Complementary frameworks (Internal regulations, Policies, CoC) (Titles, dates of adoption)"
+    source_name: Complementary frameworks (Internal regulations, Policies, CoC) (Titles, dates of adoption)
+  - name: "NS Statutes: Recognition Act (Law or Decree) (Title, date of entry into force)"
+    source_name: Recognition Act (Law or Decree) (Title, date of entry into force)
+  - name: "NS Statutes: Draft/revised Statutes received by the JSC"
+    source_name: Draft/revised Statutes received by the JSC
+  - name: "NS Statutes: NS progress towards compliance with the GD"
+    source_name: NS progress towards compliance with the GD
+  - name: "NS Statutes: Past exchanges with the JSC"
+    source_name: Past exchanges with the JSC
+  - name: "NS Statutes: Action/Follow-up required"
+    source_name: Action/Follow-up required
+
+NS Recognition Laws:
+  - name: NS recognition laws/ other regulations in force
+    source_name: Law/other regulations in force
+
+GO Operations:
+  - name: Operation name
+    source_name: name
+  - name: Type
+    source_name: atype_display
+  - name: Number of beneficiaries
+    source_name: num_beneficiaries
+  - name: Requested amount
+    source_name: amount_requested
+  - name: Funded amount
+    source_name: amount_funded
+  - name: Disaster type
+    source_name: dtype.name
+  - name: Funding
+    source_name: funding
+
+GO Projects:
+  - name: Project name
+    source_name: name
+  - name: Disaster type
+    source_name: dtype_detail.name
+  - name: Event description
+    source_name: event_detail.name
+  - name: Sector
+    source_name: primary_sector_display
+  - name: Programme type
+    source_name: programme_type_display
+  - name: Operation type
+    source_name: operation_type_display
+  - name: Start date
+    source_name: start_date
+  - name: End date
+    source_name: end_date
+  - name: Budget amount
+    source_name: budget_amount
+  - name: Actual expenditure
+    source_name: actual_expenditure
+  - name: Target total
+    source_name: target_total
+  - name: Reached total
+    source_name: reached_total
+
+World Development Indicators:
+  - name: Population, total
+    source_name: SP.POP.TOTL
+  - name: GDP (US dollars)
+    source_name: NY.GDP.MKTP.CD
+  - name: Poverty headcount ratio at national poverty lines (% of population)
+    source_name: SI.POV.NAHC
+  - name: GNI per capita, Atlas method (current US$)
+    source_name: NY.GNP.PCAP.CD
+  - name: Life expectancy at birth, total years
+    source_name: SP.DYN.LE00.IN
+  - name: Literacy rate, adult total (% of people ages 15 and above)
+    source_name: SE.ADT.LITR.ZS
+  - name: Urban population (% of total)
+    source_name: SP.URB.TOTL.IN.ZS
+
+UNDP Human Development:
+  - name: Human Development Index (HDI)
+    source_name: 137506
+
+INFORM Risk:
+  - name: INFORM Risk Index
+    source_name: INFORM
