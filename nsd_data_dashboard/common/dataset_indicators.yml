@@ -8,7 +8,7 @@ NS Contacts:
       source_name: NSO_ZON_name
 
 FDRS:
-  extra_info:
+  meta:
     source: FDRS
     link: https://data.ifrc.org/fdrs
     focal_point: Rania Alerksoussi
@@ -67,7 +67,7 @@ FDRS:
       source_name: KPI_ReachSI_CPD
 
 NS Documents:
-  extra_info:
+  meta:
     source: FDRS
   indicators:
   - name: Annual report
@@ -86,7 +86,7 @@ NS Documents:
     source_name: Our Emblem Law
 
 OCAC:
-  extra_info:
+  meta:
     source: OCAC
     link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
     focal_point: Roger Fischli
@@ -95,7 +95,7 @@ OCAC:
       source_name: Year
 
 NS Statutes:
-  extra_info:
+  meta:
     source: NS Statutes
     focal_point: Drina Karahasanovic
   indicators:
@@ -115,7 +115,7 @@ NS Statutes:
       source_name: Action/Follow-up required
 
 NS Recognition Laws:
-  extra_info:
+  meta:
     source: NS Recognition Laws
     focal_point: Drina Karahasanovic
   indicators:
@@ -123,7 +123,7 @@ NS Recognition Laws:
       source_name: Law/other regulations in force
 
 YABC:
-  extra_info:
+  meta:
     source: IFRC Youth
     focal_point: Amjad Saleem
   indicators:
@@ -137,7 +137,7 @@ YABC:
       source_name: Comment
 
 Logistics Projects:
-  extra_info:
+  meta:
     source: IFRC Logistics
     focal_point: Juan Galvez
   indicators:
@@ -179,7 +179,7 @@ Logistics Projects:
       source_name: Regional focal point
 
 GO Operations:
-  extra_info:
+  meta:
     source: IFRC GO
     link: https://go.ifrc.org/
     focal_point: Luke Caley
@@ -200,7 +200,7 @@ GO Operations:
       source_name: funding
 
 GO Projects:
-  extra_info:
+  meta:
     source: IFRC GO
     link: https://go.ifrc.org/three-w/
     focal_point: Luke Caley
@@ -231,7 +231,7 @@ GO Projects:
       source_name: reached_total
 
 World Development Indicators:
-  extra_info:
+  meta:
     source: WorldBank World Development Indicators
     link: https://databank.worldbank.org/source/world-development-indicators
   indicators:
@@ -251,7 +251,7 @@ World Development Indicators:
       source_name: SP.URB.TOTL.IN.ZS
 
 UNDP Human Development:
-  extra_info:
+  meta:
     source: UNDP
     link: https://hdr.undp.org/en/content/human-development-index-hdi
   indicators:
@@ -259,7 +259,7 @@ UNDP Human Development:
       source_name: 137506
 
 INFORM Risk:
-  extra_info:
+  meta:
     source: EC DRMKC INFORM
     link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
   indicators:

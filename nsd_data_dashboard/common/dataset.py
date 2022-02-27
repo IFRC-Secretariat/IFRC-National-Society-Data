@@ -4,6 +4,7 @@ Module to define a Dataset Class with methods to load, clean, and process datase
 import os
 import warnings
 import pandas as pd
+import yaml
 
 
 class Dataset:
@@ -17,17 +18,14 @@ class Dataset:
 
     reload : boolean (default=True)
         If True, the data will be reloaded from source, e.g. pulled from an API, and saved to filepath.
-
-    indicators : dict (default=None)
-        Dict of indicators mapping the source name to a new name. This can be used to filter and rename the indicator columns in the dataset.
     """
-    def __init__(self, filepath, sheet_name=0, reload=True, indicators=None):
+    def __init__(self, filepath, sheet_name=0, reload=True):
         self.filepath = filepath
         self.sheet_name = sheet_name
         self.data = pd.DataFrame()
         self.reload = reload
-        self.indicators = indicators
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
+        self.dataset_info = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))[self.name]
 
 
     def __str__(self):
@@ -35,6 +33,25 @@ class Dataset:
         Redefine the str representation to print out the dataset as a pandas DataFrame.
         """
         return repr(self.data)
+
+
+    @property
+    def meta(self):
+        """
+        Get meta information about the dataset.
+        """
+        dataset_info = self.dataset_info
+        dataset_meta = dataset_info['meta'] if 'meta' in dataset_info.keys() else None
+        return dataset_meta
+
+
+    @property
+    def indicators(self):
+        """
+        Get the list of dataset indicators.
+        """
+        dataset_info = self.dataset_info
+        return dataset_info['indicators']
 
 
     @property
@@ -83,24 +100,31 @@ class Dataset:
         Merge in indicator information if set.
         """
         # Rename and select indicators
-        if 'indicators' in self.indicators:
-            indicator_names = [indicator['name'] for indicator in self.indicators['indicators']]
-            rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators['indicators']}
-            self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[indicator_names]
+        indicator_names = [indicator['name'] for indicator in self.indicators]
+        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators}
+        self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[indicator_names]
 
-            # Add in extra information
-            if 'extra_info' in self.indicators:
-                for column, value in self.indicators['extra_info'].items():
-                    for indicator in indicator_names:
-                        self.data[indicator, column] = value
+        # Add in extra information
+        if self.meta:
+            for column, value in self.meta.items():
+                for indicator in indicator_names:
+                    self.data[indicator, column] = value
 
         # Order the column hierarchies
         subcolumns_order = ['value', 'year', 'link']
-        if 'extra_info' in self.indicators:
-            subcolumns_order += self.indicators['extra_info'].keys()
+        if 'meta' in self.indicators:
+            subcolumns_order += self.indicators['meta'].keys()
         def order_columns(x):
             order_map = {item: subcolumns_order.index(item) for item in subcolumns_order}
             order = x.map(order_map)
             return order
         self.data = self.data.sort_index(axis='columns', level=1, key=lambda x: order_columns(x), sort_remaining=False)\
                              .sort_index(axis='columns', level=0, sort_remaining=False)
+
+        # Verify that the index names and level names are correct
+        if self.data.index.names != ['National Society name', 'Country', 'ISO3', 'Region']:
+            print(self.data)
+            raise ValueError(f'Index names of dataset {self.name} does not match expected: {self.data.index.names}')
+        if self.data.columns.names != ['indicator', None]:
+            print(self.data)
+            raise ValueError(f'Column names of dataset {self.name} does not match expected: {self.data.columns.names}')

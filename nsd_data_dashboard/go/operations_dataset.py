@@ -20,8 +20,8 @@ class OperationsDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, filepath, reload=True):
-        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['GO Operations']
-        super().__init__(filepath=filepath, reload=reload, indicators=indicators)
+        self.name = 'GO Operations'
+        super().__init__(filepath=filepath, reload=reload)
         self.reload = reload
 
 
@@ -81,4 +81,4 @@ class OperationsDataset(Dataset):
                               .groupby(self.index_columns).agg(lambda x: '\n'.join([str(item) for item in x]))
 
         # Add another column level
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']], names=['indicator', None])

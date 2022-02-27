@@ -20,8 +20,8 @@ class LogisticsProjectsDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, filepath):
-        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['Logistics Projects']
-        super().__init__(filepath=filepath, reload=False, sheet_name='Append', indicators=indicators)
+        self.name = 'Logistics Projects'
+        super().__init__(filepath=filepath, reload=False, sheet_name='Append')
         pass
 
 
@@ -41,4 +41,4 @@ class LogisticsProjectsDataset(Dataset):
 
         # Add another column level
         self.data.set_index(self.index_columns, inplace=True)
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']], names=['indicator', None])

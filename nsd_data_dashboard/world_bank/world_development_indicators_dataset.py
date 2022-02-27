@@ -19,8 +19,8 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         Path to save the dataset when pulled, and to read the dataset from.
     """
     def __init__(self, filepath, reload=True):
-        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['World Development Indicators']
-        super().__init__(filepath=filepath, reload=reload, indicators=indicators)
+        self.name = 'World Development Indicators'
+        super().__init__(filepath=filepath, reload=reload)
         self.reload = reload
 
 
@@ -62,7 +62,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         self.data = self.data.dropna(subset=['National Society name', 'indicator.value', 'value', 'date'], how='any')\
                              .sort_values(by=['National Society name', 'indicator.value', 'date'], ascending=[True, True, False])\
                              .drop_duplicates(subset=['National Society name', 'indicator.value'], keep='first')\
-                             .rename(columns={'date': 'year'})\
-                             .pivot(index=self.index_columns, columns='indicator.id', values=['value', 'year'])\
+                             .rename(columns={'date': 'year', 'indicator.id': 'indicator'})\
+                             .pivot(index=self.index_columns, columns='indicator', values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

@@ -19,8 +19,8 @@ class NSDocumentsDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, filepath, api_key, reload=True):
-        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['NS Documents']
-        super().__init__(filepath=filepath, reload=reload, indicators=indicators)
+        self.name = 'NS Documents'
+        super().__init__(filepath=filepath, reload=reload)
         self.api_key = api_key
         self.reload = reload
 
@@ -60,12 +60,12 @@ class NSDocumentsDataset(Dataset):
                              .sort_values(by=['year', 'name'], ascending=[False, True])\
                              .drop_duplicates(subset=['National Society name', 'document_type'], keep='first')\
                              .sort_values(by=['National Society name', 'document_type'], ascending=True)\
-                             .rename(columns={'url': 'link'})
-        self.data['value'] = self.data['document_type'].str.strip().str.replace('^Our', '', regex=True).str.strip()+' - '+self.data['year'].astype(str)
-        self.data = self.data.loc[self.data['document_type']!='Other']
+                             .rename(columns={'url': 'link', 'document_type': 'indicator'})
+        self.data['value'] = self.data['indicator'].str.strip().str.replace('^Our', '', regex=True).str.strip()+' - '+self.data['year'].astype(str)
+        self.data = self.data.loc[self.data['indicator']!='Other']
 
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data = self.data.pivot(index=self.index_columns,
-                                    columns='document_type',
+                                    columns='indicator',
                                     values=['value', 'year', 'link'])\
                              .swaplevel(axis='columns')

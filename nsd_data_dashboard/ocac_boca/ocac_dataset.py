@@ -20,8 +20,8 @@ class OCACDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, filepath):
-        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['OCAC']
-        super().__init__(filepath=filepath, reload=False, indicators=indicators)
+        self.name = 'OCAC'
+        super().__init__(filepath=filepath, reload=False)
         pass
 
 
@@ -30,10 +30,11 @@ class OCACDataset(Dataset):
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Process the data into a log format, with a row for each assessment
-        self.data.loc[self.data['Name'].isnull(), 'Name'] = self.data['Code']
-        self.data['Name'] = self.data['Name'].str.strip()
+        self.data = self.data.rename(columns={'Name': 'indicator'})
+        self.data.loc[self.data['indicator'].isnull(), 'indicator'] = self.data['Code']
+        self.data['indicator'] = self.data['indicator'].str.strip()
         self.data = self.data.drop(columns=['Code'])\
-                             .set_index(['Name'])\
+                             .set_index(['indicator'])\
                              .dropna(how='all')\
                              .transpose()\
                              .drop(columns=['iso', 'Region', 'SubRegion', 'Month', 'Version', 'Principal facilitator', 'Second facilitator', 'NS Focal point', 'OCAC data public', 'OCAC report public'], errors='raise')\

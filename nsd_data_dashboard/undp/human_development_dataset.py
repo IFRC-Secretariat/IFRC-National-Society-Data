@@ -19,8 +19,8 @@ class HumanDevelopmentDataset(Dataset):
         Path to save the dataset when pulled, and to read the dataset from.
     """
     def __init__(self, filepath, reload=True):
-        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['UNDP Human Development']
-        super().__init__(filepath=filepath, reload=reload, indicators=indicators)
+        self.name = 'UNDP Human Development'
+        super().__init__(filepath=filepath, reload=reload)
         self.reload = reload
 
 

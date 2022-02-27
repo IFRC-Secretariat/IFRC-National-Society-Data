@@ -20,8 +20,8 @@ class NSRecognitionLawsDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, filepath, indicators=None):
-        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['NS Recognition Laws']
-        super().__init__(filepath=filepath, reload=False, indicators=indicators)
+        self.name = 'NS Recognition Laws'
+        super().__init__(filepath=filepath, reload=False)
         pass
 
 
@@ -46,4 +46,4 @@ class NSRecognitionLawsDataset(Dataset):
 
         # Add another column level
         self.data = self.data.set_index(self.index_columns)
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']], names=['indicator', None])

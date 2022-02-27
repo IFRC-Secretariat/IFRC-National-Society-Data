@@ -19,8 +19,8 @@ class FDRSDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, filepath, api_key, reload=True):
-        indicators = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))['FDRS']
-        super().__init__(filepath=filepath, reload=reload, indicators=indicators)
+        self.name = 'FDRS'
+        super().__init__(filepath=filepath, reload=reload)
         self.api_key = api_key
         self.reload = reload
 
