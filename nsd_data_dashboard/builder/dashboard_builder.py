@@ -43,15 +43,17 @@ class NSDDashboardBuilder(ExcelHandler):
         super().__init__(file_path=self.excel_file_path)
 
 
-    def generate_dashboard(self, indicator_datasets, protect_sheets=False, excel_password=None):
+    def generate_dashboard(self, indicator_datasets, documents=None, protect_sheets=False, excel_password=None):
         """
         Generate the Excel document containing information on IFRC National Societies.
 
         Parameters
         ----------
-        indicator_datasets : list (required)
-            List of datasets to write to the Excel document.
-            Requires the following keys: 'name' (dataset name, as a string), 'meta' (dict of dataset meta such as source, link, and focal point), and 'data' (pandas DataFrame containing the data).
+        indicator_datasets : list of Dataset objects (required)
+            List of Dataset objects, containing information on datasets to write to the Excel document.
+
+        documents : pandas DataFrame (default=None)
+            Pandas DataFrame containing information on documents, to write to the Excel dashboard.
 
         protect_sheets : boolean (default=False)
             If True, all of the sheets in the Excel document will be protected.
@@ -59,14 +61,22 @@ class NSDDashboardBuilder(ExcelHandler):
         excel_password : string (default=None)
             If protect_sheets is set to True, this password will be used to protect the sheets.
         """
-        # Process the data into a "log" type dataset and write to the Excel document
+        # Set attributes
         self.indicator_datasets = indicator_datasets
+        self.documents = documents
+
+        # Process the data into a "log" type dataset and write to the Excel document
         self.df_log = self.process_log_data()
-        self.write_log(df_log=self.df_log)
+        self.write_log(data=self.df_log)
 
         # Process a list of indicators and write to the Excel document
         df_indicators = self.process_indicators_list()
-        self.write_indicators_list(df_indicators=df_indicators)
+        self.write_indicators_list(data=df_indicators)
+
+        # Process and write the documents list to the Excel document
+        if documents is not None:
+            df_documents = self.process_documents_data()
+            self.write_documents(data=df_documents)
 
         # Set the sheet order
         #sheets = ['All data', 'Indicators List']
@@ -87,11 +97,9 @@ class NSDDashboardBuilder(ExcelHandler):
         # Convert the datasets into a log format and append them together
         log_datasets = []
         for dataset in self.indicator_datasets:
-            df_unstack = dataset['data'].stack(level=0)
+            df_unstack = dataset.data.stack(level=0)
             if df_unstack.index.names != ['National Society name', 'Country', 'ISO3', 'Region', 'indicator']:
-                print(dataset['data'])
-                print(df_unstack)
-                raise ValueError(f'Columns missing from dataset {dataset["name"]}')
+                raise ValueError(f'Columns missing from dataset {dataset.name}')
             log_datasets.append(df_unstack)
         df_log = pd.concat(log_datasets, axis='rows')
 
@@ -114,8 +122,8 @@ class NSDDashboardBuilder(ExcelHandler):
         # Get the list of indicators from the log data
         indicator_data = []
         for dataset in self.indicator_datasets:
-            dataset_indicators = dataset['data'].stack(level=0).reset_index().drop_duplicates(subset=['indicator'])[['indicator']]
-            for column, value in dataset['meta'].items():
+            dataset_indicators = dataset.data.stack(level=0).reset_index().drop_duplicates(subset=['indicator'])[['indicator']]
+            for column, value in dataset.meta.items():
                 dataset_indicators[column] = value
             indicator_data.append(dataset_indicators)
         df_indicators = pd.concat(indicator_data, axis='rows')
@@ -131,23 +139,34 @@ class NSDDashboardBuilder(ExcelHandler):
         return df_indicators
 
 
-    def write_log(self, df_log, sheet_name="All data"):
+    def process_documents_data(self):
+        """
+        Process the data on documents.
+        """
+        # Rename columns for readability, and sort
+        df_documents = self.documents.data.rename(columns={'value': 'Document', 'year': 'Year', 'link': 'Document link', 'source': 'Source', 'type': 'Type'}, errors='raise', level=1)\
+                                           .reset_index()\
+                                           .sort_values(by=['Country'])
+
+        # Rename column list names
+        df_documents.columns = df_documents.columns.rename({'indicator': None})
+
+        return df_documents
+
+
+    def write_log(self, data, sheet_name="All data"):
         """
         Write all of the data to a "log" sheet in the Excel document.
 
         Parameters
         ----------
-        df_log : pandas DataFrame (required)
+        data : pandas DataFrame (required)
             Dataset of processed data to write to the data sheet.
 
         sheet_name : string (default='All data')
             Name of the Excel sheet.
         """
-        # Write the data to a sheet in the Excel document
-        self.write_data_sheet(data=df_log, sheet_name=sheet_name, overwrite=True)
-        worksheet = self.writer.sheets[sheet_name]
-
-        # Format the worksheet
+        # Set the formatting
         side = Side(border_style='thin', color='FFFFFF')
         header_styles = {'font': Font(name='Calibri', bold=True, color='ffffff', size=11),
                          'alignment': Alignment(horizontal="left", vertical="center"),
@@ -156,31 +175,31 @@ class NSDDashboardBuilder(ExcelHandler):
         body_styles = {'border': Border(left=side, right=side, top=side, bottom=side),
                        'alignment': Alignment(horizontal="left", vertical="top")}
         column_widths = {'National Society name': 40, 'Country': 25, 'ISO3': 10, 'Region': 30, 'Indicator': 50, 'Value': 25, 'Year': 15, 'Source': 30, 'Type': 25, 'Link': 40, 'Focal point': 30}
-        worksheet = self.format_sheet(worksheet=worksheet,
-                                      header_styles=header_styles,
-                                      body_styles=body_styles,
-                                      alternate_row_background=['BBCBE3', 'DCE4F1'],
-                                      column_widths={list(df_log.columns).index(column): column_widths[column] for column in column_widths},
-                                      sorting=True)
+
+        # Write the data to a sheet in the Excel document
+        self.write_data_sheet(data=data,
+                              sheet_name=sheet_name,
+                              index=False, overwrite=True,
+                              header_styles=header_styles,
+                              body_styles=body_styles,
+                              alternate_row_background=['BBCBE3', 'DCE4F1'],
+                              column_widths=column_widths,
+                              sorting=True)
 
 
-    def write_indicators_list(self, df_indicators, sheet_name="List of indicators"):
+    def write_indicators_list(self, data, sheet_name="List of indicators"):
         """
         Write a dataset containing the list of indicators a sheet in the Excel document.
 
         Parameters
         ----------
-        df_indicators : pandas DataFrame (required)
+        data : pandas DataFrame (required)
             Dataset of processed data to write to the data sheet.
 
         sheet_name : string (default='Indicators')
             Name of the Excel sheet.
         """
-        # Write the data to a sheet in the Excel document
-        self.write_data_sheet(data=df_indicators, sheet_name=sheet_name, overwrite=True)
-        worksheet = self.writer.sheets[sheet_name]
-
-        # Format the worksheet
+        # Set the formatting
         side = Side(border_style='thin', color='D9D9D9')
         header_styles = {'font': Font(name='Calibri', bold=True, color='ffffff', size=11),
                          'alignment': Alignment(horizontal="left", vertical="center"),
@@ -189,12 +208,59 @@ class NSDDashboardBuilder(ExcelHandler):
         body_styles = {'border': Border(left=side, right=side, top=side, bottom=side),
                        'alignment': Alignment(horizontal="left", vertical="top"),}
         column_widths = {'Indicator': 50, 'Source': 30, 'Type': 25, 'Link': 40, 'Focal point': 30}
-        worksheet = self.format_sheet(worksheet=worksheet,
-                                      header_styles=header_styles,
-                                      body_styles=body_styles,
-                                      alternate_row_background=['F2F2F2', 'FFFFFF'],
-                                      column_widths={list(df_indicators.columns).index(column): column_widths[column] for column in column_widths},
-                                      sorting=True)
+
+        # Write the data to a sheet in the Excel document
+        self.write_data_sheet(data=data,
+                              sheet_name=sheet_name,
+                              index=False, overwrite=True,
+                              header_styles=header_styles,
+                              body_styles=body_styles,
+                              alternate_row_background=['F2F2F2', 'FFFFFF'],
+                              column_widths=column_widths,
+                              sorting=True)
+
+
+    def write_documents(self, data, sheet_name='Documents'):
+        """
+        Write a dataset containing the list of documents to the Excel document.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Dataset containing the data to be written.
+
+        sheet_name : string (required)
+            Name of the Excel sheet.
+        """
+        # Set the formatting
+        side = Side(border_style='thin', color='D9D9D9')
+        header_styles = {'font': Font(name='Calibri', bold=True, color='ffffff', size=11),
+                         'alignment': Alignment(horizontal="center", vertical="center"),
+                         'fill': PatternFill(start_color="007F81", end_color="007F81", fill_type = "solid"),
+                         'border': Border(left=side, right=side, top=side, bottom=side)}
+        body_styles = {'border': Border(left=side, right=side, top=side, bottom=side),
+                       'alignment': Alignment(horizontal="left", vertical="top"),}
+
+        # Get column widths
+        data = data.set_index(['National Society name', 'Country', 'ISO3', 'Region'])
+        index_column_widths = {'National Society name': 40, 'Country': 25, 'ISO3': 10, 'Region': 30}
+        level_column_widths = {1: {'Document': 25, 'Year': 10, 'Document link': 20, 'Source': 10, 'Type': 12}}
+        #column_widths = {list(data.index.names).index(name): column_widths_index[name] for name in column_widths_index}
+        #for column in column_widths_level_1:
+        #    column_widths.update({(i+len(data.index.names)): column_widths_level_1[column] for i, x in enumerate(list(data.columns.get_level_values(1))) if x==column})
+
+        # Write the data to a sheet in the Excel document
+        self.write_data_sheet(data=data,
+                              sheet_name=sheet_name,
+                              index=True,
+                              overwrite=True,
+                              header_styles=header_styles,
+                              body_styles=body_styles,
+                              alternate_row_background=['F2F2F2', 'FFFFFF'],
+                              index_column_widths=index_column_widths,
+                              level_column_widths=level_column_widths,
+                              sorting=True,
+                              hidden=None)
 
 
     def write_build_date(self):

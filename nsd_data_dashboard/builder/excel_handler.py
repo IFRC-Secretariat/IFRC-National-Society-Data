@@ -37,7 +37,7 @@ class ExcelHandler:
         self.writer.book = self.book
 
 
-    def write_data_sheet(self, data, sheet_name, header=True, overwrite=False):
+    def write_data_sheet(self, data, sheet_name, index=True, header=True, header_height=1, overwrite=False, header_styles=None, body_styles=None, alternate_row_background=None, column_widths=None, index_column_widths=None, level_column_widths=None, sorting=False, hidden=None):
         """
         Write data to a sheet in an Excel document, preserving the other sheets.
 
@@ -49,25 +49,14 @@ class ExcelHandler:
         sheet_name : string (required)
             Name of the sheet to insert.
 
+        index : bool (default=True)
+            Whether or not to write the index to the sheet.
+
         header : bool (default=True)
             Whether or not to write the dataset column names to the sheet.
 
         overwrite : bool (default=False)
             If True, an existing sheet with the sheet_name will be deleted before insertion. If False, the sheet will be inserted and the name will be appended with a '1'.
-        """
-        # Check if the sheet exists; if it does, delete it and then write the data
-        if sheet_name in self.book.get_sheet_names():
-            worksheet = self.book.get_sheet_by_name(sheet_name)
-            self.book.remove_sheet(worksheet)
-        data.to_excel(excel_writer=self.writer, index=False, sheet_name=sheet_name, header=header)
-
-
-    def format_sheet(self, worksheet, header_styles=None, body_styles=None, alternate_row_background=None, column_widths=None, sorting=False, hidden=None):
-        """
-        Format an Excel sheet.
-
-        worksheet : openpyxl worksheet object (required)
-            Openpyxl Worksheet object to apply the formatting to.
 
         header_styles : dict (default=None)
             Styles to set to the headers, e.g. {'font': Font(name='Calibri', color='FFFFFF', size=11)}.
@@ -79,34 +68,105 @@ class ExcelHandler:
             Set alternating row background colours for readability.
 
         column_widths : dict (default=None)
-            Widths of the columns, mapping column indexes (starting at 0) to widths. If None, widths are left as default. E.g. {2: 20, 0: 50, 4:10} will set width of the 3rd column to 20, the first column to 50, and the 5th column to 10.
+            Dict mapping column names to widths.
+
+        index_column_widths : dict (default=None)
+            Dict mapping index names to widths.
+
+        level_column_widths : dict of dicts (default=None)
+            Dict in the format {column_level: {column_name: width}}. E.g. {1: {'col1': 10, 'col2': 20}} will set the widths of 'col1' in level 1 and 'col2' in level 1 to 10 and 20 respectively.
 
         sorting : bool (default=False)
-            If True, auto-sorting will be applied to all columns to enable sorting in Excel.
+            If True, auto-sorting will be applied to the whole sheet.
+
+        hidden : list (default=None)
+            List of indexes of columns to hide (first column is indexed at 0).
+        """
+        # Check if the sheet exists; if it does, delete it and then write the data
+        if sheet_name in self.book.get_sheet_names():
+            worksheet = self.book.get_sheet_by_name(sheet_name)
+            self.book.remove_sheet(worksheet)
+        data.to_excel(excel_writer=self.writer, index=index, sheet_name=sheet_name, header=header)
+
+        # Calculate the height of the header and index
+        worksheet=self.book.get_sheet_by_name(sheet_name)
+        header_height = len(data.columns.names) if not index else len(data.columns.names)+1
+        index_size = 0 if not index else len(data.index.names)
+
+        # Set sorting dimensions
+        if sorting:
+            if index:
+                sorting = f'A{header_height}:{get_column_letter(worksheet.max_column)}{worksheet.max_row}'
+            else:
+                sorting = worksheet.dimensions
+
+        # Set the column widths
+        column_widths_map = {}
+        if column_widths:
+            column_widths_map.update({list(data.columns).index(column)+index_size: column_widths[column] for column in column_widths})
+        if index and index_column_widths:
+            column_widths_map.update({list(data.index.names).index(name): index_column_widths[name] for name in index_column_widths})
+        if level_column_widths:
+            for level, level_x_column_widths in level_column_widths.items():
+                for column in level_x_column_widths:
+                    column_widths_map.update({(i+index_size): level_x_column_widths[column] for i, x in enumerate(list(data.columns.get_level_values(level))) if x==column})
+
+        # Apply styles
+        worksheet = self.format_sheet(worksheet=worksheet,
+                                      header_height=header_height,
+                                      header_styles=header_styles,
+                                      body_styles=body_styles,
+                                      alternate_row_background=alternate_row_background,
+                                      column_widths=column_widths_map,
+                                      sorting=sorting,
+                                      hidden=hidden)
+
+
+    def format_sheet(self, worksheet, header_styles=None, header_height=1, body_styles=None, alternate_row_background=None, column_widths=None, sorting=False, hidden=None):
+        """
+        Format an Excel sheet.
+
+        worksheet : openpyxl worksheet object (required)
+            Openpyxl Worksheet object to apply the formatting to.
+
+        header_styles : dict (default=None)
+            Styles to set to the headers, e.g. {'font': Font(name='Calibri', color='FFFFFF', size=11)}.
+
+        header_height : int (default=1)
+            The number of rows in the header.
+
+        body_styles : dict (default=None)
+            Styles to set to the body, i.e. any content that is not the header.
+
+        alternate_row_background : list (default=None)
+            Set alternating row background colours for readability.
+
+        column_widths : dict (default=None)
+            Widths of the columns, mapping column indexes (starting at 0) to widths. If None, widths are left as default. E.g. {2: 20, 0: 50, 4:10} will set width of the 3rd column to 20, the first column to 50, and the 5th column to 10.
+
+        sorting : bool or string (default=False)
+            Area to apply auto-sorting to. If False, sorting will not be applied.
 
         hidden : list (default=None)
             List of indexes of columns to hide (first column is indexed at 0).
         """
         # Add font and style formatting to the headers
         if header_styles:
-            for cell in worksheet["1:1"]:
-                for style_name in header_styles:
-                    setattr(cell, style_name, header_styles[style_name])
-
-        # Add styles to the body
-        if body_styles:
-            for row in worksheet[worksheet.dimensions][1:]:
+            for row in worksheet[worksheet.dimensions][:header_height]:
                 for cell in row:
-                    for style_name in body_styles:
-                        setattr(cell, style_name, body_styles[style_name])
+                    for style_name in header_styles:
+                        setattr(cell, style_name, header_styles[style_name])
 
-        # Set the background of rows to alternating colours
-        if alternate_row_background:
+        # Add styles to the body: body styles and alternating background if set
+        if body_styles or alternate_row_background:
             i=1
-            for row in worksheet.iter_rows(min_row=2, max_col=worksheet.max_column, max_row=worksheet.max_row):
+            for row in worksheet[worksheet.dimensions][header_height:]:
                 for cell in row:
-                    bg_color = alternate_row_background[i%2]
-                    cell.fill = PatternFill(start_color=bg_color, end_color=bg_color, fill_type = "solid")
+                    if body_styles:
+                        for style_name in body_styles:
+                            setattr(cell, style_name, body_styles[style_name])
+                    if alternate_row_background:
+                        cell.fill = PatternFill(start_color=alternate_row_background[i%2], end_color=alternate_row_background[i%2], fill_type = "solid")
                 i += 1
 
         # Set column width for the data columns
@@ -115,8 +175,8 @@ class ExcelHandler:
                 worksheet.column_dimensions[get_column_letter(i+1)].width = column_widths[i]
 
         # Add worksheet sorting
-        if sorting==True:
-            worksheet.auto_filter.ref = worksheet.dimensions
+        if sorting:
+            worksheet.auto_filter.ref = sorting
 
         # Hide columns
         if hidden:

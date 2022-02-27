@@ -112,8 +112,10 @@ class Dataset:
 
         # Order the column hierarchies
         subcolumns_order = ['value', 'year', 'link']
-        if 'meta' in self.indicators:
-            subcolumns_order += self.indicators['meta'].keys()
+        if self.meta:
+            for item in self.meta:
+                if item not in subcolumns_order:
+                    subcolumns_order.append(item)
         def order_columns(x):
             order_map = {item: subcolumns_order.index(item) for item in subcolumns_order}
             order = x.map(order_map)
