@@ -10,6 +10,7 @@ NS Contacts:
 FDRS:
   meta:
     source: FDRS
+    type: Internal
     link: https://data.ifrc.org/fdrs
     focal_point: Rania Alerksoussi
   indicators:
@@ -69,6 +70,7 @@ FDRS:
 NS Documents:
   meta:
     source: FDRS
+    type: Internal
   indicators:
   - name: Annual report
     source_name: Our Annual Report
@@ -88,6 +90,7 @@ NS Documents:
 OCAC:
   meta:
     source: OCAC
+    type: Internal
     link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
     focal_point: Roger Fischli
   indicators:
@@ -97,6 +100,7 @@ OCAC:
 NS Statutes:
   meta:
     source: NS Statutes
+    type: Internal
     focal_point: Drina Karahasanovic
   indicators:
     - name: "NS Statutes: Statutes in force (Date of adoption)"
@@ -117,6 +121,7 @@ NS Statutes:
 NS Recognition Laws:
   meta:
     source: NS Recognition Laws
+    type: Internal
     focal_point: Drina Karahasanovic
   indicators:
     - name: NS recognition laws/ other regulations in force
@@ -125,6 +130,7 @@ NS Recognition Laws:
 YABC:
   meta:
     source: IFRC Youth
+    type: Internal
     focal_point: Amjad Saleem
   indicators:
     - name: Number of YABC trainings to date
@@ -139,6 +145,7 @@ YABC:
 Logistics Projects:
   meta:
     source: IFRC Logistics
+    type: Internal
     focal_point: Juan Galvez
   indicators:
     - name: Type
@@ -181,6 +188,7 @@ Logistics Projects:
 GO Operations:
   meta:
     source: IFRC GO
+    type: Internal
     link: https://go.ifrc.org/
     focal_point: Luke Caley
   indicators:
@@ -202,6 +210,7 @@ GO Operations:
 GO Projects:
   meta:
     source: IFRC GO
+    type: Internal
     link: https://go.ifrc.org/three-w/
     focal_point: Luke Caley
   indicators:
@@ -233,6 +242,7 @@ GO Projects:
 World Development Indicators:
   meta:
     source: WorldBank World Development Indicators
+    type: External
     link: https://databank.worldbank.org/source/world-development-indicators
   indicators:
     - name: Population, total
@@ -253,6 +263,7 @@ World Development Indicators:
 UNDP Human Development:
   meta:
     source: UNDP
+    type: External
     link: https://hdr.undp.org/en/content/human-development-index-hdi
   indicators:
     - name: Human Development Index (HDI)
@@ -261,6 +272,7 @@ UNDP Human Development:
 INFORM Risk:
   meta:
     source: EC DRMKC INFORM
+    type: External
     link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
   indicators:
     - name: INFORM Risk Index
