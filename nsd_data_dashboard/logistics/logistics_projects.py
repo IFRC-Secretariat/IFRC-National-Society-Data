@@ -6,7 +6,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import NSNamesCleaner
+from nsd_data_dashboard.common.cleaners import NSInfoCleaner, NSInfoMapper
 
 
 class LogisticsProjectsDataset(Dataset):
@@ -32,9 +32,13 @@ class LogisticsProjectsDataset(Dataset):
         # Clean the data
         self.data = self.data.drop(columns=['Region']).dropna(how='all')
 
-        # Clean the country column and check that the NS names are consistent with the centralised list
-        self.data['Country'] = self.data['Country'].str.strip()
+        # Clean the country column and map on extra information
+        self.data['Country'] = NSInfoCleaner().clean_country_names(self.data['Country'])
+        extra_columns = [column for column in self.index_columns if column!='Country']
+        ns_info_mapper = NSInfoMapper()
+        for column in extra_columns:
+            self.data[column] = ns_info_mapper.map(data=self.data['Country'], on='Country', column=column)
 
         # Add another column level
-        self.data.set_index(['Country'], inplace=True)
+        self.data.set_index(self.index_columns, inplace=True)
         self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])

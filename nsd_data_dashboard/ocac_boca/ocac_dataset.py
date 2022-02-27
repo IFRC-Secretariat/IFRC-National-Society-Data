@@ -6,7 +6,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import NSNamesCleaner
+from nsd_data_dashboard.common.cleaners import NSInfoCleaner, NSInfoMapper
 
 
 class OCACDataset(Dataset):
@@ -40,13 +40,17 @@ class OCACDataset(Dataset):
                              .reset_index(drop=True)\
                              .rename(columns={'National Society': 'National Society name'})
 
-        # Check that the NS names are consistent with the centralised names list
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
+        # Check that the NS names are consistent with the centralised names list, and add extra information
+        self.data['National Society name'] = NSInfoCleaner().clean_ns_names(self.data['National Society name'])
+        extra_columns = [column for column in self.index_columns if column!='National Society name']
+        ns_info_mapper = NSInfoMapper()
+        for column in extra_columns:
+            self.data[column] = ns_info_mapper.map(data=self.data['National Society name'], on='National Society name', column=column)
 
         # Keep only the latest assessment for each NS
         self.data = self.data.sort_values(by=['National Society name', 'Year'], ascending=[True, False])\
                              .drop_duplicates(subset=['National Society name'], keep='first')\
-                             .set_index('National Society name')
+                             .set_index(self.index_columns)
 
         # Add another column level
         self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])

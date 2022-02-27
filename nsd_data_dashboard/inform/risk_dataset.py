@@ -7,7 +7,7 @@ import yaml
 from datetime import date
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import DictColumnExpander, CountryNSMapper
+from nsd_data_dashboard.common.cleaners import DictColumnExpander, NSInfoMapper
 
 
 class INFORMRiskDataset(Dataset):
@@ -65,11 +65,15 @@ class INFORMRiskDataset(Dataset):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
-        # Map ISO3 codes to NS names
-        self.data['National Society name'] = CountryNSMapper().map(self.data['Iso3'])
+        # Map ISO3 codes to NS names and add extra columns
+        self.data['National Society name'] = NSInfoMapper().map_iso_to_ns(self.data['Iso3'])
+        extra_columns = [column for column in self.index_columns if column!='National Society name']
+        ns_info_mapper = NSInfoMapper()
+        for column in extra_columns:
+            self.data[column] = ns_info_mapper.map(data=self.data['National Society name'], on='National Society name', column=column)
 
         # Get the latest values of each indicator for each NS
         self.data = self.data.dropna(subset=['National Society name', 'indicator', 'value', 'year'], how='any')\
-                             .pivot(index=['National Society name'], columns='indicator', values=['value', 'year'])\
+                             .pivot(index=self.index_columns, columns='indicator', values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

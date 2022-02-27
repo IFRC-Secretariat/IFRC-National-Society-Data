@@ -6,7 +6,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import NSNamesCleaner
+from nsd_data_dashboard.common.cleaners import NSInfoCleaner, NSInfoMapper
 
 
 class YABCDataset(Dataset):
@@ -39,9 +39,12 @@ class YABCDataset(Dataset):
         self.data = self.data.loc[self.data['Country']!='TOTAL']
 
         # Check that the NS names are consistent with the centralised names list
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['Country'].str.strip())
-        self.data = self.data.drop(columns=['Country'])
+        self.data['Country'] = NSInfoCleaner().clean_country_names(self.data['Country'].str.strip())
+        extra_columns = [column for column in self.index_columns if column!='Country']
+        ns_info_mapper = NSInfoMapper()
+        for column in extra_columns:
+            self.data[column] = ns_info_mapper.map(data=self.data['Country'], on='Country', column=column)
 
         # Add another column level
-        self.data = self.data.set_index(['National Society name'])
+        self.data = self.data.set_index(self.index_columns)
         self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])

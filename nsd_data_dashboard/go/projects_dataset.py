@@ -7,7 +7,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import NSNamesCleaner, DictColumnExpander
+from nsd_data_dashboard.common.cleaners import NSInfoCleaner, DictColumnExpander, NSInfoMapper
 
 
 class ProjectsDataset(Dataset):
@@ -58,10 +58,15 @@ class ProjectsDataset(Dataset):
         for column in ['start_date', 'end_date']:
             self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%d')
 
-        # Keep only data with a NS specified, and clean NS names
+        # Keep only data with a NS specified
         self.data = self.data.rename(columns={'project_country_detail.society_name': 'National Society name'})\
                              .dropna(subset=['National Society name'])
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
+
+        # Clean NS names and add additional NS information
+        self.data['National Society name'] = NSInfoCleaner().clean_ns_names(self.data['National Society name'])
+        new_columns = [column for column in self.index_columns if column!='National Society name']
+        for column in new_columns:
+            self.data[column] = NSInfoMapper().map(self.data['National Society name'], on='National Society name', column=column)
 
         # Check all data is public, and select only ongoing projects
         if self.data['visibility'].unique() != ['public']:
@@ -71,7 +76,7 @@ class ProjectsDataset(Dataset):
         # Concatenate the columns to list multiple emergencies in each cell
         self.data = self.data.sort_values(by='modified_at', ascending=False)\
                               .drop_duplicates(subset=['National Society name', 'name'], keep='first')\
-                              .groupby('National Society name').agg(lambda x: '\n'.join([str(item) for item in x]))
+                              .groupby(self.index_columns).agg(lambda x: '\n'.join([str(item) for item in x]))
 
         # Add another column level
         self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])

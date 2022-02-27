@@ -1,5 +1,5 @@
 - National Society name: Afghan Red Crescent
-  Country name: Afghanistan
+  Country: Afghanistan
   ISO3: AFG
   ISO2: AF
   Region: Asia Pacific
@@ -8,7 +8,7 @@
   - Afghan Red Crescent Society
   Alternative country names: []
 - National Society name: Albanian Red Cross
-  Country name: Albania
+  Country: Albania
   ISO3: ALB
   ISO2: AL
   Region: Europe and Central Asia
@@ -16,7 +16,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Algerian Red Crescent
-  Country name: Algeria
+  Country: Algeria
   ISO3: DZA
   ISO2: DZ
   Region: Middle East and North Africa
@@ -24,7 +24,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: American Red Cross
-  Country name: United States
+  Country: United States
   ISO3: USA
   ISO2: US
   Region: Americas
@@ -33,7 +33,7 @@
   Alternative country names:
   - United States of America
 - National Society name: Andorran Red Cross
-  Country name: Andorra
+  Country: Andorra
   ISO3: AND
   ISO2: AD
   Region: Europe and Central Asia
@@ -41,7 +41,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Angola Red Cross
-  Country name: Angola
+  Country: Angola
   ISO3: AGO
   ISO2: AO
   Region: Africa
@@ -49,7 +49,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Antigua and Barbuda Red Cross
-  Country name: Antigua and Barbuda
+  Country: Antigua and Barbuda
   ISO3: ATG
   ISO2: AG
   Region: Americas
@@ -58,7 +58,7 @@
   Alternative country names:
   - Antigua & Barbuda
 - National Society name: Argentine Red Cross
-  Country name: Argentina
+  Country: Argentina
   ISO3: ARG
   ISO2: AR
   Region: Americas
@@ -66,7 +66,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Armenian Red Cross Society
-  Country name: Armenia
+  Country: Armenia
   ISO3: ARM
   ISO2: AM
   Region: Europe and Central Asia
@@ -74,7 +74,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Australian Red Cross
-  Country name: Australia
+  Country: Australia
   ISO3: AUS
   ISO2: AU
   Region: Asia Pacific
@@ -82,7 +82,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Austrian Red Cross
-  Country name: Austria
+  Country: Austria
   ISO3: AUT
   ISO2: AT
   Region: Europe and Central Asia
@@ -90,7 +90,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Bahrain Red Crescent Society
-  Country name: Bahrain
+  Country: Bahrain
   ISO3: BHR
   ISO2: BH
   Region: Middle East and North Africa
@@ -98,7 +98,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Bangladesh Red Crescent Society
-  Country name: Bangladesh
+  Country: Bangladesh
   ISO3: BGD
   ISO2: BD
   Region: Asia Pacific
@@ -106,7 +106,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Baphalali Eswatini Red Cross Society
-  Country name: Eswatini, the Kingdom of
+  Country: Eswatini, the Kingdom of
   ISO3: SWZ
   ISO2: SZ
   Region: Africa
@@ -116,7 +116,7 @@
   - Baphalali Eswatini
   - Swaziland
 - National Society name: Belarus Red Cross
-  Country name: Belarus
+  Country: Belarus
   ISO3: BLR
   ISO2: BY
   Region: Europe and Central Asia
@@ -124,7 +124,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Belgian Red Cross
-  Country name: Belgium
+  Country: Belgium
   ISO3: BEL
   ISO2: BE
   Region: Europe and Central Asia
@@ -132,7 +132,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Belize Red Cross Society
-  Country name: Belize
+  Country: Belize
   ISO3: BLZ
   ISO2: BZ
   Region: Americas
@@ -140,7 +140,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Bhutan Red Cross
-  Country name: Bhutan
+  Country: Bhutan
   ISO3: BTN
   ISO2: BT
   Region: Asia Pacific
@@ -149,7 +149,7 @@
   - Bhutan Red Cross Society
   Alternative country names: []
 - National Society name: Bolivian Red Cross
-  Country name: Bolivia, Plurinational State of
+  Country: Bolivia, Plurinational State of
   ISO3: BOL
   ISO2: BO
   Region: Americas
@@ -158,7 +158,7 @@
   Alternative country names:
   - Bolivia
 - National Society name: Botswana Red Cross Society
-  Country name: Botswana
+  Country: Botswana
   ISO3: BWA
   ISO2: BW
   Region: Africa
@@ -166,7 +166,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Brazilian Red Cross
-  Country name: Brazil
+  Country: Brazil
   ISO3: BRA
   ISO2: BR
   Region: Americas
@@ -174,7 +174,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: British Red Cross
-  Country name: United Kingdom
+  Country: United Kingdom
   ISO3: GBR
   ISO2: GB
   Region: Europe and Central Asia
@@ -182,7 +182,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Brunei Darussalam Red Crescent Society
-  Country name: Brunei Darussalam
+  Country: Brunei Darussalam
   ISO3: BRN
   ISO2: BN
   Region: Asia Pacific
@@ -190,7 +190,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Bulgarian Red Cross
-  Country name: Bulgaria
+  Country: Bulgaria
   ISO3: BGR
   ISO2: BG
   Region: Europe and Central Asia
@@ -198,7 +198,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Burkinabe Red Cross Society
-  Country name: Burkina Faso
+  Country: Burkina Faso
   ISO3: BFA
   ISO2: BF
   Region: Africa
@@ -206,7 +206,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Burundi Red Cross
-  Country name: Burundi
+  Country: Burundi
   ISO3: BDI
   ISO2: BI
   Region: Africa
@@ -214,7 +214,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Cambodian Red Cross Society
-  Country name: Cambodia
+  Country: Cambodia
   ISO3: KHM
   ISO2: KH
   Region: Asia Pacific
@@ -223,7 +223,7 @@
   - Cambodian Red Cross
   Alternative country names: []
 - National Society name: Cameroon Red Cross Society
-  Country name: Cameroon
+  Country: Cameroon
   ISO3: CMR
   ISO2: CM
   Region: Africa
@@ -231,7 +231,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Central African Red Cross Society
-  Country name: Central African Republic
+  Country: Central African Republic
   ISO3: CAF
   ISO2: CF
   Region: Africa
@@ -239,7 +239,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Chilean Red Cross
-  Country name: Chile
+  Country: Chile
   ISO3: CHL
   ISO2: CL
   Region: Americas
@@ -247,7 +247,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Colombian Red Cross Society
-  Country name: Colombia
+  Country: Colombia
   ISO3: COL
   ISO2: CO
   Region: Americas
@@ -255,7 +255,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Congolese Red Cross
-  Country name: Congo
+  Country: Congo
   ISO3: COG
   ISO2: CG
   Region: Africa
@@ -264,7 +264,7 @@
   Alternative country names:
   - Congo (Republic of the)
 - National Society name: Cook Islands Red Cross Society
-  Country name: Cook Islands
+  Country: Cook Islands
   ISO3: COK
   ISO2: CK
   Region: Asia Pacific
@@ -272,7 +272,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Costa Rican Red Cross
-  Country name: Costa Rica
+  Country: Costa Rica
   ISO3: CRI
   ISO2: CR
   Region: Americas
@@ -280,7 +280,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Croatian Red Cross
-  Country name: Croatia
+  Country: Croatia
   ISO3: HRV
   ISO2: HR
   Region: Europe and Central Asia
@@ -288,7 +288,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Cuban Red Cross
-  Country name: Cuba
+  Country: Cuba
   ISO3: CUB
   ISO2: CU
   Region: Americas
@@ -296,7 +296,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Cyprus Red Cross Society
-  Country name: Cyprus
+  Country: Cyprus
   ISO3: CYP
   ISO2: CY
   Region: Europe and Central Asia
@@ -304,7 +304,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Czech Red Cross
-  Country name: Czech Republic
+  Country: Czech Republic
   ISO3: CZE
   ISO2: CZ
   Region: Europe and Central Asia
@@ -312,7 +312,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Danish Red Cross
-  Country name: Denmark
+  Country: Denmark
   ISO3: DNK
   ISO2: DK
   Region: Europe and Central Asia
@@ -320,7 +320,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Dominica Red Cross Society
-  Country name: Dominica
+  Country: Dominica
   ISO3: DMA
   ISO2: DM
   Region: Americas
@@ -328,7 +328,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Dominican Red Cross
-  Country name: Dominican Republic
+  Country: Dominican Republic
   ISO3: DOM
   ISO2: DO
   Region: Americas
@@ -336,7 +336,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Ecuadorian Red Cross
-  Country name: Ecuador
+  Country: Ecuador
   ISO3: ECU
   ISO2: EC
   Region: Americas
@@ -344,7 +344,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Egyptian Red Crescent Society
-  Country name: Egypt
+  Country: Egypt
   ISO3: EGY
   ISO2: EG
   Region: Middle East and North Africa
@@ -352,7 +352,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Estonia Red Cross
-  Country name: Estonia
+  Country: Estonia
   ISO3: EST
   ISO2: EE
   Region: Europe and Central Asia
@@ -361,7 +361,7 @@
   - Estonian Red Cross
   Alternative country names: []
 - National Society name: Ethiopian Red Cross Society
-  Country name: Ethiopia
+  Country: Ethiopia
   ISO3: ETH
   ISO2: ET
   Region: Africa
@@ -370,7 +370,7 @@
   - Ethiopia Red Cross
   Alternative country names: []
 - National Society name: Fiji Red Cross Society
-  Country name: Fiji
+  Country: Fiji
   ISO3: FJI
   ISO2: FJ
   Region: Asia Pacific
@@ -379,7 +379,7 @@
   - The Fiji Red Cross Society
   Alternative country names: []
 - National Society name: Finnish Red Cross
-  Country name: Finland
+  Country: Finland
   ISO3: FIN
   ISO2: FI
   Region: Europe and Central Asia
@@ -387,7 +387,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: French Red Cross
-  Country name: France
+  Country: France
   ISO3: FRA
   ISO2: FR
   Region: Europe and Central Asia
@@ -395,7 +395,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Gabonese Red Cross Society
-  Country name: Gabon
+  Country: Gabon
   ISO3: GAB
   ISO2: GA
   Region: Africa
@@ -403,7 +403,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: German Red Cross
-  Country name: Germany
+  Country: Germany
   ISO3: DEU
   ISO2: DE
   Region: Europe and Central Asia
@@ -411,7 +411,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Ghana Red Cross Society
-  Country name: Ghana
+  Country: Ghana
   ISO3: GHA
   ISO2: GH
   Region: Africa
@@ -419,7 +419,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Grenada Red Cross Society
-  Country name: Grenada
+  Country: Grenada
   ISO3: GRD
   ISO2: GD
   Region: Americas
@@ -427,7 +427,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Guatemalan Red Cross
-  Country name: Guatemala
+  Country: Guatemala
   ISO3: GTM
   ISO2: GT
   Region: Americas
@@ -435,7 +435,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Haiti Red Cross Society
-  Country name: Haiti
+  Country: Haiti
   ISO3: HTI
   ISO2: HT
   Region: Americas
@@ -444,7 +444,7 @@
   - Haitian Red Cross
   Alternative country names: []
 - National Society name: Hellenic Red Cross
-  Country name: Greece
+  Country: Greece
   ISO3: GRC
   ISO2: GR
   Region: Europe and Central Asia
@@ -452,7 +452,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Honduran Red Cross
-  Country name: Honduras
+  Country: Honduras
   ISO3: HND
   ISO2: HN
   Region: Americas
@@ -460,7 +460,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Hungarian Red Cross
-  Country name: Hungary
+  Country: Hungary
   ISO3: HUN
   ISO2: HU
   Region: Europe and Central Asia
@@ -468,7 +468,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Icelandic Red Cross
-  Country name: Iceland
+  Country: Iceland
   ISO3: ISL
   ISO2: IS
   Region: Europe and Central Asia
@@ -476,7 +476,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Indian Red Cross Society
-  Country name: India
+  Country: India
   ISO3: IND
   ISO2: IN
   Region: Asia Pacific
@@ -484,7 +484,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Indonesian Red Cross Society
-  Country name: Indonesia
+  Country: Indonesia
   ISO3: IDN
   ISO2: ID
   Region: Asia Pacific
@@ -492,7 +492,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Iraqi Red Crescent Society
-  Country name: Iraq
+  Country: Iraq
   ISO3: IRQ
   ISO2: IQ
   Region: Middle East and North Africa
@@ -500,7 +500,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Irish Red Cross Society
-  Country name: Ireland
+  Country: Ireland
   ISO3: IRL
   ISO2: IE
   Region: Europe and Central Asia
@@ -508,7 +508,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Israel - Magen David Adom in Israel
-  Country name: Israel
+  Country: Israel
   ISO3: ISR
   ISO2: IL
   Region: Europe and Central Asia
@@ -517,7 +517,7 @@
   - Magen David Adom in Israel
   Alternative country names: []
 - National Society name: Italian Red Cross
-  Country name: Italy
+  Country: Italy
   ISO3: ITA
   ISO2: IT
   Region: Europe and Central Asia
@@ -525,7 +525,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Jamaica Red Cross
-  Country name: Jamaica
+  Country: Jamaica
   ISO3: JAM
   ISO2: JM
   Region: Americas
@@ -534,7 +534,7 @@
   - Jamaican Red Cross
   Alternative country names: []
 - National Society name: Japanese Red Cross Society
-  Country name: Japan
+  Country: Japan
   ISO3: JPN
   ISO2: JP
   Region: Asia Pacific
@@ -542,7 +542,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Jordan National Red Crescent Society
-  Country name: Jordan
+  Country: Jordan
   ISO3: JOR
   ISO2: JO
   Region: Middle East and North Africa
@@ -550,7 +550,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Kazakh Red Crescent
-  Country name: Kazakhstan
+  Country: Kazakhstan
   ISO3: KAZ
   ISO2: KZ
   Region: Europe and Central Asia
@@ -558,7 +558,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Kenya Red Cross Society
-  Country name: Kenya
+  Country: Kenya
   ISO3: KEN
   ISO2: KE
   Region: Africa
@@ -566,7 +566,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Kiribati Red Cross Society
-  Country name: Kiribati
+  Country: Kiribati
   ISO3: KIR
   ISO2: KI
   Region: Asia Pacific
@@ -574,7 +574,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Kuwait Red Crescent Society
-  Country name: Kuwait
+  Country: Kuwait
   ISO3: KWT
   ISO2: KW
   Region: Middle East and North Africa
@@ -582,7 +582,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Lao Red Cross
-  Country name: Lao People's Democratic Republic
+  Country: Lao People's Democratic Republic
   ISO3: LAO
   ISO2: LA
   Region: Asia Pacific
@@ -591,7 +591,7 @@
   Alternative country names:
   - Laos
 - National Society name: Latvian Red Cross
-  Country name: Latvia
+  Country: Latvia
   ISO3: LVA
   ISO2: LV
   Region: Europe and Central Asia
@@ -599,7 +599,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Lebanese Red Cross
-  Country name: Lebanon
+  Country: Lebanon
   ISO3: LBN
   ISO2: LB
   Region: Middle East and North Africa
@@ -607,7 +607,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Lesotho Red Cross Society
-  Country name: Lesotho
+  Country: Lesotho
   ISO3: LSO
   ISO2: LS
   Region: Africa
@@ -615,7 +615,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Liberian Red Cross Society
-  Country name: Liberia
+  Country: Liberia
   ISO3: LBR
   ISO2: LR
   Region: Africa
@@ -623,7 +623,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Libyan Red Crescent
-  Country name: Libya
+  Country: Libya
   ISO3: LBY
   ISO2: LY
   Region: Middle East and North Africa
@@ -631,7 +631,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Liechtenstein Red Cross
-  Country name: Liechtenstein
+  Country: Liechtenstein
   ISO3: LIE
   ISO2: LI
   Region: Europe and Central Asia
@@ -639,7 +639,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Lithuanian Red Cross Society
-  Country name: Lithuania
+  Country: Lithuania
   ISO3: LTU
   ISO2: LT
   Region: Europe and Central Asia
@@ -647,7 +647,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Luxembourg Red Cross
-  Country name: Luxembourg
+  Country: Luxembourg
   ISO3: LUX
   ISO2: LU
   Region: Europe and Central Asia
@@ -655,7 +655,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Malagasy Red Cross Society
-  Country name: Madagascar
+  Country: Madagascar
   ISO3: MDG
   ISO2: MG
   Region: Africa
@@ -663,7 +663,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Malawi Red Cross Society
-  Country name: Malawi
+  Country: Malawi
   ISO3: MWI
   ISO2: MW
   Region: Africa
@@ -671,7 +671,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Malaysian Red Crescent Society
-  Country name: Malaysia
+  Country: Malaysia
   ISO3: MYS
   ISO2: MY
   Region: Asia Pacific
@@ -679,7 +679,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Maldivian Red Crescent
-  Country name: Maldives
+  Country: Maldives
   ISO3: MDV
   ISO2: MV
   Region: Asia Pacific
@@ -687,7 +687,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Mali Red Cross
-  Country name: Mali
+  Country: Mali
   ISO3: MLI
   ISO2: ML
   Region: Africa
@@ -695,7 +695,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Malta Red Cross Society
-  Country name: Malta
+  Country: Malta
   ISO3: MLT
   ISO2: MT
   Region: Europe and Central Asia
@@ -703,7 +703,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Marshall Islands Red Cross Society
-  Country name: Marshall Islands
+  Country: Marshall Islands
   ISO3: MHL
   ISO2: MH
   Region: Asia Pacific
@@ -711,7 +711,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Mauritanian Red Crescent
-  Country name: Mauritania
+  Country: Mauritania
   ISO3: MRT
   ISO2: MR
   Region: Africa
@@ -719,7 +719,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Mauritius Red Cross Society
-  Country name: Mauritius
+  Country: Mauritius
   ISO3: MUS
   ISO2: MU
   Region: Africa
@@ -727,7 +727,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Mexican Red Cross
-  Country name: Mexico
+  Country: Mexico
   ISO3: MEX
   ISO2: MX
   Region: Americas
@@ -735,7 +735,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Micronesia Red Cross
-  Country name: Micronesia, Federated States of
+  Country: Micronesia, Federated States of
   ISO3: FSM
   ISO2: FM
   Region: Asia Pacific
@@ -744,7 +744,7 @@
   Alternative country names:
   - Micronesia
 - National Society name: Mongolian Red Cross Society
-  Country name: Mongolia
+  Country: Mongolia
   ISO3: MNG
   ISO2: MN
   Region: Asia Pacific
@@ -752,7 +752,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Moroccan Red Crescent
-  Country name: Morocco
+  Country: Morocco
   ISO3: MAR
   ISO2: MA
   Region: Middle East and North Africa
@@ -760,7 +760,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Mozambique Red Cross Society
-  Country name: Mozambique
+  Country: Mozambique
   ISO3: MOZ
   ISO2: MZ
   Region: Africa
@@ -768,7 +768,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Myanmar Red Cross Society
-  Country name: Myanmar
+  Country: Myanmar
   ISO3: MMR
   ISO2: MM
   Region: Asia Pacific
@@ -776,7 +776,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Namibia Red Cross
-  Country name: Namibia
+  Country: Namibia
   ISO3: NAM
   ISO2: []
   Region: Africa
@@ -784,7 +784,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Nepal Red Cross Society
-  Country name: Nepal
+  Country: Nepal
   ISO3: NPL
   ISO2: NP
   Region: Asia Pacific
@@ -792,7 +792,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: New Zealand Red Cross
-  Country name: New Zealand
+  Country: New Zealand
   ISO3: NZL
   ISO2: NZ
   Region: Asia Pacific
@@ -800,7 +800,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Nicaraguan Red Cross
-  Country name: Nicaragua
+  Country: Nicaragua
   ISO3: NIC
   ISO2: NI
   Region: Americas
@@ -808,7 +808,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Nigerian Red Cross Society
-  Country name: Nigeria
+  Country: Nigeria
   ISO3: NGA
   ISO2: NG
   Region: Africa
@@ -816,7 +816,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Norwegian Red Cross
-  Country name: Norway
+  Country: Norway
   ISO3: NOR
   ISO2: 'NO'
   Region: Europe and Central Asia
@@ -824,7 +824,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Pakistan Red Crescent
-  Country name: Pakistan
+  Country: Pakistan
   ISO3: PAK
   ISO2: PK
   Region: Asia Pacific
@@ -832,7 +832,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Palau Red Cross Society
-  Country name: Palau
+  Country: Palau
   ISO3: PLW
   ISO2: PW
   Region: Asia Pacific
@@ -840,7 +840,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Papua New Guinea Red Cross Society
-  Country name: Papua New Guinea
+  Country: Papua New Guinea
   ISO3: PNG
   ISO2: PG
   Region: Asia Pacific
@@ -848,7 +848,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Paraguayan Red Cross
-  Country name: Paraguay
+  Country: Paraguay
   ISO3: PRY
   ISO2: PY
   Region: Americas
@@ -856,7 +856,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Peruvian Red Cross
-  Country name: Peru
+  Country: Peru
   ISO3: PER
   ISO2: PE
   Region: Americas
@@ -864,7 +864,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Philippine Red Cross
-  Country name: Philippines
+  Country: Philippines
   ISO3: PHL
   ISO2: PH
   Region: Asia Pacific
@@ -872,7 +872,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Polish Red Cross
-  Country name: Poland
+  Country: Poland
   ISO3: POL
   ISO2: PL
   Region: Europe and Central Asia
@@ -880,7 +880,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Portuguese Red Cross
-  Country name: Portugal
+  Country: Portugal
   ISO3: PRT
   ISO2: PT
   Region: Europe and Central Asia
@@ -888,7 +888,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Qatar Red Crescent Society
-  Country name: Qatar
+  Country: Qatar
   ISO3: QAT
   ISO2: QA
   Region: Middle East and North Africa
@@ -896,7 +896,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Crescent Society of Azerbaijan
-  Country name: Azerbaijan
+  Country: Azerbaijan
   ISO3: AZE
   ISO2: AZ
   Region: Europe and Central Asia
@@ -904,7 +904,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Crescent Society of Djibouti
-  Country name: Djibouti
+  Country: Djibouti
   ISO3: DJI
   ISO2: DJ
   Region: Africa
@@ -913,7 +913,7 @@
   - Djibouti Red Crescent Society
   Alternative country names: []
 - National Society name: Red Crescent Society of Kyrgyzstan
-  Country name: Kyrgyzstan
+  Country: Kyrgyzstan
   ISO3: KGZ
   ISO2: KG
   Region: Europe and Central Asia
@@ -921,7 +921,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Crescent Society of Tajikistan
-  Country name: Tajikistan
+  Country: Tajikistan
   ISO3: TJK
   ISO2: TJ
   Region: Europe and Central Asia
@@ -929,7 +929,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Crescent Society of the Islamic Republic of Iran
-  Country name: Iran, Islamic Republic of
+  Country: Iran, Islamic Republic of
   ISO3: IRN
   ISO2: IR
   Region: Middle East and North Africa
@@ -938,7 +938,7 @@
   Alternative country names:
   - Iran
 - National Society name: Red Crescent Society of the United Arab Emirates
-  Country name: United Arab Emirates
+  Country: United Arab Emirates
   ISO3: ARE
   ISO2: AE
   Region: Middle East and North Africa
@@ -946,7 +946,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Crescent Society of Turkmenistan
-  Country name: Turkmenistan
+  Country: Turkmenistan
   ISO3: TKM
   ISO2: TM
   Region: Europe and Central Asia
@@ -954,7 +954,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Crescent Society of Uzbekistan
-  Country name: Uzbekistan
+  Country: Uzbekistan
   ISO3: UZB
   ISO2: UZ
   Region: Europe and Central Asia
@@ -962,7 +962,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross of Benin
-  Country name: Benin
+  Country: Benin
   ISO3: BEN
   ISO2: BJ
   Region: Africa
@@ -970,7 +970,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross of Cape Verde
-  Country name: Cape Verde
+  Country: Cape Verde
   ISO3: CPV
   ISO2: CV
   Region: Africa
@@ -978,7 +978,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross of Chad
-  Country name: Chad
+  Country: Chad
   ISO3: TCD
   ISO2: TD
   Region: Africa
@@ -986,7 +986,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross of Equatorial Guinea
-  Country name: Equatorial Guinea
+  Country: Equatorial Guinea
   ISO3: GNQ
   ISO2: GQ
   Region: Africa
@@ -994,7 +994,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross of Monaco
-  Country name: Monaco
+  Country: Monaco
   ISO3: MCO
   ISO2: MC
   Region: Europe and Central Asia
@@ -1002,7 +1002,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross of Montenegro
-  Country name: Montenegro
+  Country: Montenegro
   ISO3: MNE
   ISO2: ME
   Region: Europe and Central Asia
@@ -1010,7 +1010,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross of the Democratic Republic of the Congo
-  Country name: Congo, the Democratic Republic of the
+  Country: Congo, the Democratic Republic of the
   ISO3: COD
   ISO2: CD
   Region: Africa
@@ -1019,7 +1019,7 @@
   Alternative country names:
   - Congo (Democratic Republic of the)
 - National Society name: Red Cross of the Republic of San Marino
-  Country name: San Marino
+  Country: San Marino
   ISO3: SMR
   ISO2: SM
   Region: Europe and Central Asia
@@ -1027,7 +1027,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross Society of China
-  Country name: China
+  Country: China
   ISO3: CHN
   ISO2: CN
   Region: Asia Pacific
@@ -1035,7 +1035,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: "Red Cross Society of C\xF4te d'Ivoire"
-  Country name: "C\xF4te d'Ivoire"
+  Country: "C\xF4te d'Ivoire"
   ISO3: CIV
   ISO2: CI
   Region: Africa
@@ -1043,7 +1043,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross Society of Georgia
-  Country name: Georgia
+  Country: Georgia
   ISO3: GEO
   ISO2: GE
   Region: Europe and Central Asia
@@ -1052,7 +1052,7 @@
   - Georgia Red Cross Society
   Alternative country names: []
 - National Society name: Red Cross Society of Guinea
-  Country name: Guinea
+  Country: Guinea
   ISO3: GIN
   ISO2: GN
   Region: Africa
@@ -1060,7 +1060,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross Society of Guinea-Bissau
-  Country name: Guinea-Bissau
+  Country: Guinea-Bissau
   ISO3: GNB
   ISO2: GW
   Region: Africa
@@ -1068,7 +1068,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross Society of Niger
-  Country name: Niger
+  Country: Niger
   ISO3: NER
   ISO2: NE
   Region: Africa
@@ -1076,7 +1076,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross Society of Panama
-  Country name: Panama
+  Country: Panama
   ISO3: PAN
   ISO2: PA
   Region: Americas
@@ -1085,7 +1085,7 @@
   Alternative country names: []
 - National Society name: Red Cross Society of the Democratic People's Republic of
     Korea
-  Country name: Korea, Democratic People's Republic of
+  Country: Korea, Democratic People's Republic of
   ISO3: PRK
   ISO2: KP
   Region: Asia Pacific
@@ -1095,7 +1095,7 @@
   - Korea (Democratic People's Republic of)
   - DPR Korea
 - National Society name: Red Cross Society of the Republic of Moldova
-  Country name: Moldova, Republic of
+  Country: Moldova, Republic of
   ISO3: MDA
   ISO2: MD
   Region: Europe and Central Asia
@@ -1104,7 +1104,7 @@
   Alternative country names:
   - Moldova
 - National Society name: Romanian Red Cross
-  Country name: Romania
+  Country: Romania
   ISO3: ROU
   ISO2: RO
   Region: Europe and Central Asia
@@ -1112,7 +1112,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Rwandan Red Cross
-  Country name: Rwanda
+  Country: Rwanda
   ISO3: RWA
   ISO2: RW
   Region: Africa
@@ -1120,7 +1120,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Saint Kitts and Nevis Red Cross Society
-  Country name: Saint Kitts and Nevis
+  Country: Saint Kitts and Nevis
   ISO3: KNA
   ISO2: KN
   Region: Americas
@@ -1129,7 +1129,7 @@
   Alternative country names:
   - St Kitts and Nevis
 - National Society name: Saint Lucia Red Cross
-  Country name: Saint Lucia
+  Country: Saint Lucia
   ISO3: LCA
   ISO2: LC
   Region: Americas
@@ -1137,7 +1137,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Saint Vincent and the Grenadines Red Cross
-  Country name: Saint Vincent and the Grenadines
+  Country: Saint Vincent and the Grenadines
   ISO3: VCT
   ISO2: VC
   Region: Americas
@@ -1146,7 +1146,7 @@
   Alternative country names:
   - St Vincent & the Grenadines
 - National Society name: Salvadorean Red Cross Society
-  Country name: El Salvador
+  Country: El Salvador
   ISO3: SLV
   ISO2: SV
   Region: Americas
@@ -1154,7 +1154,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Samoa Red Cross Society
-  Country name: Samoa
+  Country: Samoa
   ISO3: WSM
   ISO2: WS
   Region: Asia Pacific
@@ -1163,7 +1163,7 @@
   Alternative country names:
   - Western Samoa
 - National Society name: Sao Tome and Principe Red Cross
-  Country name: Sao Tome and Principe
+  Country: Sao Tome and Principe
   ISO3: STP
   ISO2: ST
   Region: Africa
@@ -1171,7 +1171,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Saudi Red Crescent Authority
-  Country name: Saudi Arabia
+  Country: Saudi Arabia
   ISO3: SAU
   ISO2: SA
   Region: Middle East and North Africa
@@ -1179,7 +1179,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Senegalese Red Cross Society
-  Country name: Senegal
+  Country: Senegal
   ISO3: SEN
   ISO2: SN
   Region: Africa
@@ -1187,7 +1187,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Seychelles Red Cross Society
-  Country name: Seychelles
+  Country: Seychelles
   ISO3: SYC
   ISO2: SC
   Region: Africa
@@ -1195,7 +1195,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Sierra Leone Red Cross Society
-  Country name: Sierra Leone
+  Country: Sierra Leone
   ISO3: SLE
   ISO2: SL
   Region: Africa
@@ -1203,7 +1203,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Singapore Red Cross Society
-  Country name: Singapore
+  Country: Singapore
   ISO3: SGP
   ISO2: SG
   Region: Asia Pacific
@@ -1211,7 +1211,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Slovak Red Cross
-  Country name: Slovakia
+  Country: Slovakia
   ISO3: SVK
   ISO2: SK
   Region: Europe and Central Asia
@@ -1219,7 +1219,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Slovenian Red Cross
-  Country name: Slovenia
+  Country: Slovenia
   ISO3: SVN
   ISO2: SI
   Region: Europe and Central Asia
@@ -1227,7 +1227,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Somali Red Crescent Society
-  Country name: Somalia
+  Country: Somalia
   ISO3: SOM
   ISO2: SO
   Region: Africa
@@ -1235,7 +1235,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: South Sudan Red Cross
-  Country name: South Sudan
+  Country: South Sudan
   ISO3: SSD
   ISO2: SS
   Region: Africa
@@ -1243,7 +1243,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Spanish Red Cross
-  Country name: Spain
+  Country: Spain
   ISO3: ESP
   ISO2: ES
   Region: Europe and Central Asia
@@ -1251,7 +1251,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Sri Lanka Red Cross Society
-  Country name: Sri Lanka
+  Country: Sri Lanka
   ISO3: LKA
   ISO2: LK
   Region: Asia Pacific
@@ -1260,7 +1260,7 @@
   - The Sri Lanka Red Cross Society
   Alternative country names: []
 - National Society name: Suriname Red Cross
-  Country name: Suriname
+  Country: Suriname
   ISO3: SUR
   ISO2: SR
   Region: Americas
@@ -1268,7 +1268,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Swedish Red Cross
-  Country name: Sweden
+  Country: Sweden
   ISO3: SWE
   ISO2: SE
   Region: Europe and Central Asia
@@ -1276,7 +1276,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Swiss Red Cross
-  Country name: Switzerland
+  Country: Switzerland
   ISO3: CHE
   ISO2: CH
   Region: Europe and Central Asia
@@ -1284,7 +1284,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Syrian Arab Red Crescent
-  Country name: Syrian Arab Republic
+  Country: Syrian Arab Republic
   ISO3: SYR
   ISO2: SY
   Region: Middle East and North Africa
@@ -1293,7 +1293,7 @@
   Alternative country names:
   - Syria
 - National Society name: Tanzania Red Cross National Society
-  Country name: Tanzania, United Republic of
+  Country: Tanzania, United Republic of
   ISO3: TZA
   ISO2: TZ
   Region: Africa
@@ -1302,7 +1302,7 @@
   Alternative country names:
   - Tanzania
 - National Society name: The Bahamas Red Cross Society
-  Country name: Bahamas
+  Country: Bahamas
   ISO3: BHS
   ISO2: BS
   Region: Americas
@@ -1310,7 +1310,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Barbados Red Cross Society
-  Country name: Barbados
+  Country: Barbados
   ISO3: BRB
   ISO2: BB
   Region: Americas
@@ -1318,7 +1318,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Canadian Red Cross Society
-  Country name: Canada
+  Country: Canada
   ISO3: CAN
   ISO2: CA
   Region: Americas
@@ -1326,7 +1326,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Comoros Red Crescent
-  Country name: Comoros
+  Country: Comoros
   ISO3: COM
   ISO2: KM
   Region: Africa
@@ -1334,7 +1334,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Gambia Red Cross Society
-  Country name: Gambia
+  Country: Gambia
   ISO3: GMB
   ISO2: GM
   Region: Africa
@@ -1342,7 +1342,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Guyana Red Cross Society
-  Country name: Guyana
+  Country: Guyana
   ISO3: GUY
   ISO2: GY
   Region: Americas
@@ -1350,7 +1350,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Netherlands Red Cross
-  Country name: Netherlands
+  Country: Netherlands
   ISO3: NLD
   ISO2: NL
   Region: Europe and Central Asia
@@ -1358,7 +1358,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Palestine Red Crescent Society
-  Country name: Palestine, State of
+  Country: Palestine, State of
   ISO3: PSE
   ISO2: PS
   Region: Middle East and North Africa
@@ -1367,7 +1367,7 @@
   Alternative country names:
   - Palestine
 - National Society name: Red Cross of North Macedonia
-  Country name: North Macedonia
+  Country: North Macedonia
   ISO3: MKD
   ISO2: MK
   Region: Europe and Central Asia
@@ -1378,7 +1378,7 @@
   - Macedonia (The Republic of North Macedonia)
   - Macedonia
 - National Society name: The Red Cross of Serbia
-  Country name: Serbia
+  Country: Serbia
   ISO3: SRB
   ISO2: RS
   Region: Europe and Central Asia
@@ -1386,7 +1386,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Red Cross Society of Bosnia and Herzegovina
-  Country name: Bosnia and Herzegovina
+  Country: Bosnia and Herzegovina
   ISO3: BIH
   ISO2: BA
   Region: Europe and Central Asia
@@ -1395,7 +1395,7 @@
   Alternative country names:
   - Bosnia & Herzegovina
 - National Society name: The Republic of Korea National Red Cross
-  Country name: Korea, Republic of
+  Country: Korea, Republic of
   ISO3: KOR
   ISO2: KR
   Region: Asia Pacific
@@ -1404,7 +1404,7 @@
   Alternative country names:
   - Korea (Republic of)
 - National Society name: The Russian Red Cross Society
-  Country name: Russian Federation
+  Country: Russian Federation
   ISO3: RUS
   ISO2: RU
   Region: Europe and Central Asia
@@ -1413,7 +1413,7 @@
   Alternative country names:
   - Russia
 - National Society name: The Solomon Islands Red Cross
-  Country name: Solomon Islands
+  Country: Solomon Islands
   ISO3: SLB
   ISO2: SB
   Region: Asia Pacific
@@ -1421,7 +1421,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The South African Red Cross Society
-  Country name: South Africa
+  Country: South Africa
   ISO3: ZAF
   ISO2: ZA
   Region: Africa
@@ -1429,7 +1429,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Sudanese Red Crescent
-  Country name: Sudan
+  Country: Sudan
   ISO3: SDN
   ISO2: SD
   Region: Africa
@@ -1437,7 +1437,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Thai Red Cross Society
-  Country name: Thailand
+  Country: Thailand
   ISO3: THA
   ISO2: TH
   Region: Asia Pacific
@@ -1445,7 +1445,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Trinidad and Tobago Red Cross Society
-  Country name: Trinidad and Tobago
+  Country: Trinidad and Tobago
   ISO3: TTO
   ISO2: TT
   Region: Americas
@@ -1453,7 +1453,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: The Uganda Red Cross Society
-  Country name: Uganda
+  Country: Uganda
   ISO3: UGA
   ISO2: UG
   Region: Africa
@@ -1461,7 +1461,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Timor-Leste Red Cross Society
-  Country name: Timor-Leste
+  Country: Timor-Leste
   ISO3: TLS
   ISO2: TL
   Region: Asia Pacific
@@ -1469,7 +1469,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Togolese Red Cross
-  Country name: Togo
+  Country: Togo
   ISO3: TGO
   ISO2: TG
   Region: Africa
@@ -1477,7 +1477,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Tonga Red Cross Society
-  Country name: Tonga
+  Country: Tonga
   ISO3: TON
   ISO2: TO
   Region: Asia Pacific
@@ -1485,7 +1485,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Tunisian Red Crescent
-  Country name: Tunisia
+  Country: Tunisia
   ISO3: TUN
   ISO2: TN
   Region: Middle East and North Africa
@@ -1493,7 +1493,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Turkish Red Crescent Society
-  Country name: Turkey
+  Country: Turkey
   ISO3: TUR
   ISO2: TR
   Region: Europe and Central Asia
@@ -1501,7 +1501,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Tuvalu Red Cross Society
-  Country name: Tuvalu
+  Country: Tuvalu
   ISO3: TUV
   ISO2: TV
   Region: Asia Pacific
@@ -1509,7 +1509,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Ukrainian Red Cross Society
-  Country name: Ukraine
+  Country: Ukraine
   ISO3: UKR
   ISO2: UA
   Region: Europe and Central Asia
@@ -1517,7 +1517,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Uruguayan Red Cross
-  Country name: Uruguay
+  Country: Uruguay
   ISO3: URY
   ISO2: UY
   Region: Americas
@@ -1525,7 +1525,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Vanuatu Red Cross Society
-  Country name: Vanuatu
+  Country: Vanuatu
   ISO3: VUT
   ISO2: VU
   Region: Asia Pacific
@@ -1533,7 +1533,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Venezuelan Red Cross
-  Country name: Venezuela, Bolivarian Republic of
+  Country: Venezuela, Bolivarian Republic of
   ISO3: VEN
   ISO2: VE
   Region: Americas
@@ -1542,7 +1542,7 @@
   Alternative country names:
   - Venezuela
 - National Society name: Vietnam Red Cross Society
-  Country name: Viet Nam
+  Country: Viet Nam
   ISO3: VNM
   ISO2: VN
   Region: Asia Pacific
@@ -1551,7 +1551,7 @@
   Alternative country names:
   - Vietnam
 - National Society name: Yemen Red Crescent Society
-  Country name: Yemen
+  Country: Yemen
   ISO3: YEM
   ISO2: YE
   Region: Middle East and North Africa
@@ -1559,7 +1559,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Zambia Red Cross Society
-  Country name: Zambia
+  Country: Zambia
   ISO3: ZMB
   ISO2: ZM
   Region: Africa
@@ -1567,7 +1567,7 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Zimbabwe Red Cross Society
-  Country name: Zimbabwe
+  Country: Zimbabwe
   ISO3: ZWE
   ISO2: ZW
   Region: Africa
@@ -1575,10 +1575,18 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Red Cross Society of Eritrea
-  Country name: Eritrea
+  Country: Eritrea
   ISO3: ERI
   ISO2: ER
   Region: Africa
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Puerto Rico
+  ISO3: PRI
+  ISO2: PR
+  Region: Americas
   National Society ID: null
   Alternative National Society names: []
   Alternative country names: []

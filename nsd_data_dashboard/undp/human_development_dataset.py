@@ -6,7 +6,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import DictColumnExpander, CountryNSMapper
+from nsd_data_dashboard.common.cleaners import DictColumnExpander, NSInfoMapper
 
 
 class HumanDevelopmentDataset(Dataset):
@@ -53,15 +53,21 @@ class HumanDevelopmentDataset(Dataset):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
-        # Map ISO3 codes to NS names
-        self.data['National Society name'] = CountryNSMapper().map(self.data['iso3'])
+        # Map ISO3 codes to NS names, and add extra columns
+        self.data['National Society name'] = NSInfoMapper().map_iso_to_ns(data=self.data['iso3'])
+        extra_columns = [column for column in self.index_columns if column!='National Society name']
+        ns_info_mapper = NSInfoMapper()
+        for column in extra_columns:
+            self.data[column] = ns_info_mapper.map(data=self.data['National Society name'], on='National Society name', column=column)
 
-        # Get the latest value of each indicator for each NS
+        # Melt the data into a log format and get the latest data for each NS/ indicator
         self.data = self.data.drop(columns=['iso3'])\
-                             .melt(id_vars=['National Society name', 'indicator'], var_name='year')\
+                             .melt(id_vars=self.index_columns+['indicator'], var_name='year')\
                              .dropna(how='any')\
                              .sort_values(by=['National Society name', 'indicator', 'year'], ascending=[True, True, False])\
                              .drop_duplicates(subset=['National Society name', 'indicator'], keep='first')
-        self.data = self.data.pivot(index=['National Society name'], columns='indicator', values=['value', 'year'])\
+
+        # Pivot the data into a format with columns as indicators
+        self.data = self.data.pivot(index=self.index_columns, columns='indicator', values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

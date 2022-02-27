@@ -27,6 +27,7 @@ class Dataset:
         self.data = pd.DataFrame()
         self.reload = reload
         self.indicators = indicators
+        self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
 
 
     def __str__(self):

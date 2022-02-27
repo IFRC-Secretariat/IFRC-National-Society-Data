@@ -8,7 +8,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import NSNamesCleaner
+from nsd_data_dashboard.common.cleaners import NSInfoCleaner
 
 
 class NSContactsDataset(Dataset):
@@ -46,7 +46,7 @@ class NSContactsDataset(Dataset):
         """
         # Make sure the NS names agree with the central list
         self.data.rename(columns={'NSO_DON_name': 'National Society name'}, errors='raise', inplace=True)
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
+        self.data['National Society name'] = NSInfoCleaner().clean_ns_names(self.data['National Society name'])
         self.data.set_index('National Society name', inplace=True)
 
         # Add another column level

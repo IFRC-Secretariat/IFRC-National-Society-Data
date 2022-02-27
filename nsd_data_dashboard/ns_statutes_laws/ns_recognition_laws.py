@@ -6,7 +6,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import NSNamesCleaner
+from nsd_data_dashboard.common.cleaners import NSInfoCleaner, NSInfoMapper
 
 
 class NSRecognitionLawsDataset(Dataset):
@@ -35,11 +35,15 @@ class NSRecognitionLawsDataset(Dataset):
 
         # Clean up the column names
         self.data.rename(columns={column: column.strip() for column in self.data.columns}, inplace=True)
-        self.data.rename(columns={'National Society (NS)': 'National Society name'}, inplace=True, errors='raise')
+        self.data.rename(columns={'National Society (NS)': 'Country'}, inplace=True, errors='raise')
 
         # Check that the NS names are consistent with the centralised names list
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'].str.strip())
+        self.data['Country'] = NSInfoCleaner().clean_country_names(self.data['Country'].str.strip())
+        extra_columns = [column for column in self.index_columns if column!='Country']
+        ns_info_mapper = NSInfoMapper()
+        for column in extra_columns:
+            self.data[column] = ns_info_mapper.map(data=self.data['Country'], on='Country', column=column)
 
         # Add another column level
-        self.data = self.data.set_index(['National Society name'])
+        self.data = self.data.set_index(self.index_columns)
         self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])

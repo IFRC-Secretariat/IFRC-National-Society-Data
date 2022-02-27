@@ -6,7 +6,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import DictColumnExpander, CountryNSMapper
+from nsd_data_dashboard.common.cleaners import DictColumnExpander, NSInfoMapper
 
 
 class WorldDevelopmentIndicatorsDataset(Dataset):
@@ -51,14 +51,18 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
                                                columns=expand_columns,
                                                drop=True)
 
-        # Map ISO3 codes to NS names
-        self.data['National Society name'] = CountryNSMapper().map(self.data['countryiso3code'])
+        # Map ISO3 codes to NS names and add extra columns
+        self.data['National Society name'] = NSInfoMapper().map_iso_to_ns(data=self.data['countryiso3code'])
+        extra_columns = [column for column in self.index_columns if column!='National Society name']
+        ns_info_mapper = NSInfoMapper()
+        for column in extra_columns:
+            self.data[column] = ns_info_mapper.map(data=self.data['National Society name'], on='National Society name', column=column)
 
         # Get the latest values of each indicator for each NS
         self.data = self.data.dropna(subset=['National Society name', 'indicator.value', 'value', 'date'], how='any')\
                              .sort_values(by=['National Society name', 'indicator.value', 'date'], ascending=[True, True, False])\
                              .drop_duplicates(subset=['National Society name', 'indicator.value'], keep='first')\
                              .rename(columns={'date': 'year'})\
-                             .pivot(index=['National Society name'], columns='indicator.id', values=['value', 'year'])\
+                             .pivot(index=self.index_columns, columns='indicator.id', values=['value', 'year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

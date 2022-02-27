@@ -6,7 +6,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSNamesCleaner
+from nsd_data_dashboard.common.cleaners import DatabankNSIDMapper, NSInfoMapper
 
 
 class FDRSDataset(Dataset):
@@ -54,11 +54,9 @@ class FDRSDataset(Dataset):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
-        # Convert NS IDs to NS names
-        self.data['National Society name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['National Society ID'])
-
-        # Make sure the NS names agree with the central list
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
+        # Map in country and region information
+        for column in self.index_columns:
+            self.data[column] = NSInfoMapper().map(self.data['National Society ID'], on='National Society ID', column=column)
 
         # Replace False for nan for boolean indicators, so that they are dropped in the next step
         get_latest_columns = ['KPI_hasFinancialStatement', 'audited', 'ar', 'sp']
@@ -72,7 +70,7 @@ class FDRSDataset(Dataset):
                              .sort_values(by=['National Society name', 'indicator'], ascending=True)
 
         # Pivot the dataframe to have NSs as rows and indicators as columns
-        self.data = self.data.pivot(index=['National Society name'],
+        self.data = self.data.pivot(index=self.index_columns,
                                     columns='indicator',
                                     values=['value', 'year'])\
                              .swaplevel(axis='columns')\

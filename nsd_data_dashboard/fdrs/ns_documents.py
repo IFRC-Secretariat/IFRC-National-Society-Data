@@ -6,7 +6,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import DatabankNSIDMap, DatabankNSIDMapper, NSNamesCleaner
+from nsd_data_dashboard.common.cleaners import DatabankNSIDMap, NSInfoMapper
 
 
 class NSDocumentsDataset(Dataset):
@@ -49,12 +49,13 @@ class NSDocumentsDataset(Dataset):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
-        # Convert NS IDs to NS names, and make sure the NS names agree with the central list
-        self.data['National Society name'] = DatabankNSIDMapper(api_key=self.api_key).map(self.data['National Society ID'])
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
+        # Add extra NS and country information based on the NS ID
+        self.data = self.data[['National Society ID', 'name', 'document_type', 'year', 'url']]
+        ns_info_mapper = NSInfoMapper()
+        for column in self.index_columns:
+            self.data[column] = ns_info_mapper.map(data=self.data['National Society ID'], on='National Society ID', column=column, errors='raise')
 
         # Keep only the latest document for each document type and NS
-        self.data = self.data[['National Society name', 'name', 'document_type', 'year', 'url']]
         self.data = self.data.dropna(subset=['National Society name', 'document_type', 'year'], how='any')\
                              .sort_values(by=['year', 'name'], ascending=[False, True])\
                              .drop_duplicates(subset=['National Society name', 'document_type'], keep='first')\
@@ -64,7 +65,7 @@ class NSDocumentsDataset(Dataset):
         self.data = self.data.loc[self.data['document_type']!='Other']
 
         # Pivot the dataframe to have NSs as rows and indicators as columns
-        self.data = self.data.pivot(index=['National Society name'],
+        self.data = self.data.pivot(index=self.index_columns,
                                     columns='document_type',
                                     values=['value', 'year', 'link'])\
                              .swaplevel(axis='columns')

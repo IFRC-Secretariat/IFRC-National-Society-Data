@@ -7,7 +7,7 @@ import os
 import yaml
 import pandas as pd
 from nsd_data_dashboard.common import Dataset
-from nsd_data_dashboard.common.cleaners import NSNamesCleaner, DictColumnExpander
+from nsd_data_dashboard.common.cleaners import NSInfoCleaner, DictColumnExpander, NSInfoMapper
 
 
 class OperationsDataset(Dataset):
@@ -61,18 +61,24 @@ class OperationsDataset(Dataset):
 
         # Drop columns that aren't needed
         self.data = self.data.rename(columns={'country.society_name': 'National Society name'})\
-                             .dropna(subset=['National Society name'])
+                             .dropna(subset=['National Society name'])\
+                             .drop(columns=['country.name'])
 
-        # Check the names of NSs, and select only active operations
+        # Check the NS names, and merge in other information
         self.data = self.data.loc[self.data['National Society name']!='']
-        self.data['National Society name'] = NSNamesCleaner().clean(self.data['National Society name'])
+        self.data['National Society name'] = NSInfoCleaner().clean_ns_names(self.data['National Society name'])
+        new_columns = [column for column in self.index_columns if column!='National Society name']
+        for column in new_columns:
+            self.data[column] = NSInfoMapper().map(self.data['National Society name'], on='National Society name', column=column)
+
+        # Select only active operations
         self.data = self.data.loc[self.data['status_display']=='Active']
         self.data['funding'] = 100*(self.data['amount_funded']/self.data['amount_requested']).round(0)
 
         # Concatenate the columns to list multiple emergencies in each cell
         self.data = self.data.sort_values(by='created_at', ascending=False)\
                               .drop_duplicates(subset=['National Society name', 'name'], keep='first')\
-                              .groupby('National Society name').agg(lambda x: '\n'.join([str(item) for item in x]))
+                              .groupby(self.index_columns).agg(lambda x: '\n'.join([str(item) for item in x]))
 
         # Add another column level
         self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])
