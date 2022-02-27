@@ -9,6 +9,7 @@ import ast
 from datetime import date
 import os
 import sys
+from openpyxl.workbook.protection import WorkbookProtection
 from openpyxl.styles import Font, PatternFill, Alignment, Side, Border, borders
 from openpyxl.utils import get_column_letter
 from openpyxl.formatting.rule import CellIsRule
@@ -43,7 +44,7 @@ class NSDDashboardBuilder(ExcelHandler):
         super().__init__(file_path=self.excel_file_path)
 
 
-    def generate_dashboard(self, indicator_datasets, documents=None, protect_sheets=False, excel_password=None):
+    def generate_dashboard(self, indicator_datasets, documents=None, protect_sheets=False, protect_workbook=False, excel_password=None):
         """
         Generate the Excel document containing information on IFRC National Societies.
 
@@ -55,8 +56,11 @@ class NSDDashboardBuilder(ExcelHandler):
         documents : pandas DataFrame (default=None)
             Pandas DataFrame containing information on documents, to write to the Excel dashboard.
 
-        protect_sheets : boolean (default=False)
-            If True, all of the sheets in the Excel document will be protected.
+        protect_sheets : boolean or list of strings (default=False)
+            List of sheets to protect. If True, all of the sheets in the Excel document will be protected.
+
+        protect_workbook : boolean (default=False)
+            If True, the workbook will be protected and the structure will be locked.
 
         excel_password : string (default=None)
             If protect_sheets is set to True, this password will be used to protect the sheets.
@@ -78,12 +82,26 @@ class NSDDashboardBuilder(ExcelHandler):
             df_documents = self.process_documents_data()
             self.write_documents(data=df_documents)
 
+        # Write the update date to the About sheet and add the header image
+        self.write_update_date()
+        self.add_image(image_path=os.path.join(self.static_folder, 'header.png'),
+                       sheets='About',
+                       loc='A1',
+                       atts={'height': 195, 'width': 810})
+
         # Set the sheet order
-        #sheets = ['All data', 'Indicators List']
-        #self.order_sheets(order=sheets, hidden=[])
+        sheets = ['About', 'Documents', 'All data', 'List of indicators']
+        self.order_sheets(order=sheets, hidden=[])
 
         # Protect the sheets
-        if protect_sheets: self.lock_worksheets(sheets=sheets, password=self.excel_password)
+        if protect_sheets is True:
+            protect_sheets = self.book.sheetnames
+        if protect_sheets:
+            self.lock_worksheets(sheets=protect_sheets, password=excel_password)
+
+        # Protect the workbook and structure
+        if protect_workbook:
+            self.book.security = WorkbookProtection(workbookPassword=excel_password, revisionsPassword=excel_password, lockWindows=True, lockStructure=True, lockRevision=True)
 
         # Print out a final message
         self.save()
@@ -263,7 +281,7 @@ class NSDDashboardBuilder(ExcelHandler):
                               hidden=None)
 
 
-    def write_build_date(self):
+    def write_update_date(self):
         """
         Write a sheet with the publication date to the Excel document.
         """
@@ -272,7 +290,4 @@ class NSDDashboardBuilder(ExcelHandler):
 
         # Write the date to the 'About' sheet in the Excel doc
         today = date.today().strftime('%d %B %Y')
-        worksheet['A3'] = self.publication_date.strftime(format='%d/%m/%Y')
-
-        # Write the date as the subtitle in the 'About' sheet in the Excel doc
-        worksheet['A5'] = self.publication_date.strftime(format='%B %Y')
+        worksheet['A3'] = f'Updated: {today}'
