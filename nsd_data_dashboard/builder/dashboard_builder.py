@@ -6,6 +6,7 @@ import pandas as pd
 import shutil
 import yaml
 import ast
+import re
 from datetime import date
 import os
 import sys
@@ -44,7 +45,7 @@ class NSDDashboardBuilder(ExcelHandler):
         super().__init__(file_path=self.excel_file_path)
 
 
-    def generate_dashboard(self, indicator_datasets, categories=None, documents=None, protect_sheets=False, protect_workbook=False, excel_password=None):
+    def generate_dashboard(self, indicator_datasets, categories=None, protect_sheets=False, protect_workbook=False, excel_password=None):
         """
         Generate the Excel document containing information on IFRC National Societies.
 
@@ -57,9 +58,6 @@ class NSDDashboardBuilder(ExcelHandler):
             Dict specifying data categories. Each category will be written as a sheet in the Excel document.
             Dict keys are category names which are used as sheet names, and the values are a list of indicators belonging to that category. Each indicator should include the indicator name and dataset name.
 
-        documents : pandas DataFrame (default=None)
-            Pandas DataFrame containing information on documents, to write to the Excel dashboard.
-
         protect_sheets : boolean or list of strings (default=False)
             List of sheets to protect. If True, all of the sheets in the Excel document will be protected.
 
@@ -71,7 +69,6 @@ class NSDDashboardBuilder(ExcelHandler):
         """
         # Set attributes
         self.indicator_datasets = indicator_datasets
-        self.documents = documents
 
         # Set column order
         self.info_columns_order = ['Value', 'Year', 'Source', 'Type', 'Link', 'Focal point']
@@ -87,19 +84,17 @@ class NSDDashboardBuilder(ExcelHandler):
         df_indicators = self.process_indicators_list()
         #self.write_indicators_list(data=df_indicators)
 
-        # Process and write the documents list to the Excel document
-        #if documents is not None:
-        #    df_documents = self.process_documents_data()
-        #    self.write_documents(data=df_documents)
-
         # Loop through categories and write to the Excel document
+        category_colours = (('#ec1d25', '#f57b6c'), ('#f58225', '#f6a973'), ('#f8a71a', '#fcc777'), ('#fef102', '#f9f683'), ('#70bf42', '#add68a'), ('#01a55e', '#63c296'), ('#00aeac', '#54c5c3'), ('#0367b2', '#5c88c5'), ('#1f419a', '#5566ae'), ('#5a3094', '#7d6dae'), ('#a2238e', '#bd7eb3'), ('#db327f', '#f24baa'))
         if categories:
-            for category in categories:
+            for i, category in enumerate(categories):
                 df_category = self.process_category_data(indicators=category['indicators'])
                 self.write_category_data(data=df_category,
                                          sheet_name=category['name'],
+                                         title=category['name'],
                                          description=category['description'],
-                                         header_colours=category['colours'])
+                                         header_colours=category_colours[i],
+                                         tab_colour=category_colours[i][0].lstrip('#'))
 
         # Write the update date to the About sheet and add the header image
         self.write_update_date()
@@ -112,7 +107,7 @@ class NSDDashboardBuilder(ExcelHandler):
         sheets = ['About']
         if categories:
             sheets += [category['name'] for category in categories]
-        #sheets += ['Documents', 'All data', 'List of indicators']
+        #sheets += ['All data', 'List of indicators']
         self.order_sheets(order=sheets)
 
         # Protect the sheets
@@ -174,21 +169,6 @@ class NSDDashboardBuilder(ExcelHandler):
         df_indicators = df_indicators[['Indicator', 'Source', 'Type', 'Link', 'Focal point']]
 
         return df_indicators
-
-
-    def process_documents_data(self):
-        """
-        Process the data on documents.
-        """
-        # Rename columns for readability, and sort
-        df_documents = self.documents.data.rename(columns={'Value': 'Document', 'Link': 'Document link'}, errors='raise', level=1)\
-                                           .reset_index()\
-                                           .sort_values(by=['Country'])
-
-        # Rename column list names
-        df_documents.columns = df_documents.columns.rename({'Indicator': None})
-
-        return df_documents
 
 
     def process_category_data(self, indicators):
@@ -292,46 +272,7 @@ class NSDDashboardBuilder(ExcelHandler):
                               sorting=True)
 
 
-    def write_documents(self, data, sheet_name='Documents'):
-        """
-        Write a dataset containing the list of documents to the Excel document.
-
-        Parameters
-        ----------
-        data : pandas DataFrame (required)
-            Dataset containing the data to be written.
-
-        sheet_name : string (required)
-            Name of the Excel sheet.
-        """
-        # Set the formatting
-        side = Side(border_style='thin', color='D9D9D9')
-        header_styles = {'font': Font(name='Calibri', bold=True, color='ffffff', size=11),
-                         'alignment': Alignment(horizontal="center", vertical="center"),
-                         'fill': PatternFill(start_color="007F81", end_color="007F81", fill_type = "solid"),
-                         'border': Border(left=side, right=side, top=side, bottom=side)}
-        body_styles = {'border': Border(left=side, right=side, top=side, bottom=side),
-                       'alignment': Alignment(horizontal="left", vertical="top"),}
-
-        # Get column widths
-        data = data.set_index(self.ns_columns)
-        level_column_widths = {1: {'Document': 25, 'Year': 10, 'Document link': 20, 'Source': 10, 'Type': 12}}
-
-        # Write the data to a sheet in the Excel document
-        self.write_data_sheet(data=data,
-                              sheet_name=sheet_name,
-                              index=True,
-                              overwrite=True,
-                              header_styles=header_styles,
-                              body_styles=body_styles,
-                              alternate_row_background=['F2F2F2', 'FFFFFF'],
-                              index_column_widths=self.ns_column_widths,
-                              level_column_widths=level_column_widths,
-                              sorting=True,
-                              hidden=None)
-
-
-    def write_category_data(self, data, sheet_name, description=None, header_colours=None):
+    def write_category_data(self, data, sheet_name, title=None, description=None, header_colours=None, tab_colour=None):
         """
         Write a dataset containing data from multiple datasets grouped by a category to the Excel document.
 
@@ -343,11 +284,17 @@ class NSDDashboardBuilder(ExcelHandler):
         sheet_name : string (required)
             Name of the Excel sheet.
 
-        description : string (required)
+        title : string (default=None)
+            If provided, a title will be written to the Excel sheet.
+
+        description : string (default=None)
             Description of the dataset to be written to the Excel sheet.
 
         header_colours : list or string (default=None)
             Colours of the headers.
+
+        tab_colour : string (default=None)
+            Colour of the Excel tab.
         """
         # Set the formatting
         side = Side(border_style='thin', color='D9D9D9')
@@ -358,11 +305,19 @@ class NSDDashboardBuilder(ExcelHandler):
         body_styles = {'border': Border(left=side, right=side, top=side, bottom=side),
                        'alignment': Alignment(horizontal="left", vertical="top"),}
 
+        # Set the start row based on the title and description
+        startrow = 0
+        if title and description:
+            startrow = 3
+        elif (title or description):
+            startrow = 2
+
         # Write the data to a sheet in the Excel document
         self.write_data_sheet(data=data.set_index(self.ns_columns),
                               sheet_name=sheet_name,
                               index=True,
                               overwrite=True,
+                              startrow=startrow,
                               header_styles=header_styles,
                               body_styles=body_styles,
                               alternate_row_background=['F2F2F2', 'FFFFFF'],
@@ -370,6 +325,46 @@ class NSDDashboardBuilder(ExcelHandler):
                               level_column_widths={1: self.info_column_widths},
                               sorting=True,
                               hidden=None)
+
+        # Add the title and description
+        worksheet = self.book.get_sheet_by_name(sheet_name)
+        if title:
+            self.write_sheet_title(worksheet=worksheet, title=title)
+            if description:
+                self.write_sheet_description(worksheet=worksheet, description=description, pos='A2')
+        elif description:
+            self.write_sheet_description(worksheet=worksheet, description=description, pos='A2')
+
+        # Add the worksheet tab colour
+        if tab_colour:
+            worksheet.sheet_properties.tabColor = tab_colour
+
+
+    def write_sheet_title(self, worksheet, title, pos='A1'):
+        """
+        Write a title to the sheet.
+        """
+        # Write the text and add styles
+        worksheet[pos] = title
+        title_styles = {'font': Font(name='Calibri', bold=True, color='000000', size=18)}
+        for style_name in title_styles:
+            setattr(worksheet[pos], style_name, title_styles[style_name])
+
+
+    def write_sheet_description(self, worksheet, description, pos='A2', merge_cells=None):
+        """
+        Write a description to the sheet.
+        """
+        # Merge cells if required
+        if merge_cells:
+            row_number = re.findall('\d+$', pos)[0]
+            worksheet.merge_cells(f'{pos}:{get_column_letter(merge_cells)}{row_number}')
+
+        # Write the text and add styles
+        worksheet[pos] = description
+        description_styles = {'font': Font(name='Calibri', bold=False, color='000000', size=14)}
+        for style_name in description_styles:
+            setattr(worksheet[pos], style_name, description_styles[style_name])
 
 
     def write_update_date(self):

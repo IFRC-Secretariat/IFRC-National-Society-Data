@@ -37,7 +37,7 @@ class ExcelHandler:
         self.writer.book = self.book
 
 
-    def write_data_sheet(self, data, sheet_name, index=True, header=True, header_height=1, overwrite=False, header_styles=None, body_styles=None, alternate_row_background=None, column_widths=None, index_column_widths=None, level_column_widths=None, sorting=False, hidden=None):
+    def write_data_sheet(self, data, sheet_name, index=True, startrow=0, header=True, header_height=1, overwrite=False, header_styles=None, body_styles=None, alternate_row_background=None, column_widths=None, index_column_widths=None, level_column_widths=None, sorting=False, hidden=None):
         """
         Write data to a sheet in an Excel document, preserving the other sheets.
 
@@ -51,6 +51,9 @@ class ExcelHandler:
 
         index : bool (default=True)
             Whether or not to write the index to the sheet.
+
+        startrow : integer (default=0)
+            Index of the row at which to start applying formatting. E.g. if startrow=2, 2 blank rows will be left above.
 
         header : bool (default=True)
             Whether or not to write the dataset column names to the sheet.
@@ -85,8 +88,8 @@ class ExcelHandler:
         # Check if the sheet exists; if it does, delete it and then write the data
         if sheet_name in self.book.get_sheet_names():
             worksheet = self.book.get_sheet_by_name(sheet_name)
-            #self.book.remove_sheet(worksheet)
-        data.to_excel(excel_writer=self.writer, index=index, sheet_name=sheet_name, header=header)
+            self.book.remove_sheet(worksheet)
+        data.to_excel(excel_writer=self.writer, index=index, sheet_name=sheet_name, header=header, startrow=startrow)
 
         # Calculate the height of the header and index
         worksheet=self.book.get_sheet_by_name(sheet_name)
@@ -96,9 +99,9 @@ class ExcelHandler:
         # Set sorting dimensions
         if sorting:
             if index:
-                sorting = f'A{header_height}:{get_column_letter(worksheet.max_column)}{worksheet.max_row}'
+                sorting = f'A{startrow+header_height}:{get_column_letter(worksheet.max_column)}{worksheet.max_row}'
             else:
-                sorting = worksheet.dimensions
+                sorting = f'A{startrow+1}:{get_column_letter(worksheet.max_column)}{worksheet.max_row}'
 
         # Set the column widths
         column_widths_map = {}
@@ -122,12 +125,15 @@ class ExcelHandler:
                                       hidden=hidden)
 
 
-    def format_sheet(self, worksheet, header_styles=None, header_height=1, body_styles=None, alternate_row_background=None, column_widths=None, sorting=False, hidden=None):
+    def format_sheet(self, worksheet, startrow=0, header_styles=None, header_height=1, body_styles=None, alternate_row_background=None, column_widths=None, sorting=False, hidden=None):
         """
         Format an Excel sheet.
 
         worksheet : openpyxl worksheet object (required)
             Openpyxl Worksheet object to apply the formatting to.
+
+        startrow : integer (default=0)
+            Index of the row at which to start applying formatting. E.g. if startrow=2, 2 blank rows will be left above.
 
         header_styles : dict (default=None)
             Styles to set to the headers, e.g. {'font': Font(name='Calibri', color='FFFFFF', size=11)}.
@@ -152,7 +158,7 @@ class ExcelHandler:
         """
         # Add font and style formatting to the headers
         if header_styles:
-            for row in worksheet[worksheet.dimensions][:header_height]:
+            for row in worksheet[worksheet.dimensions][startrow:startrow+header_height]:
                 for cell in row:
                     for style_name in header_styles:
                         setattr(cell, style_name, header_styles[style_name])
@@ -160,7 +166,7 @@ class ExcelHandler:
         # Add styles to the body: body styles and alternating background if set
         if body_styles or alternate_row_background:
             i=1
-            for row in worksheet[worksheet.dimensions][header_height:]:
+            for row in worksheet[worksheet.dimensions][startrow+header_height:]:
                 for cell in row:
                     if body_styles:
                         for style_name in body_styles:
@@ -320,7 +326,13 @@ class ExcelHandler:
             worksheet = self.book.get_sheet_by_name(sheet)
             worksheet.protection.sheet = True
             worksheet.protection.enable()
-            if password: worksheet.protection.password = password
+            if password:
+                worksheet.protection.password = password
+
+            # Set the following to make sure that the user can still filter the data
+            worksheet.protection.autoFilter = False
+            worksheet.protection.sort = False
+            worksheet.protection.selectUnlockedCells = True
 
 
     def save(self):
