@@ -116,6 +116,7 @@ class ExcelHandler:
 
         # Apply styles
         worksheet = self.format_sheet(worksheet=worksheet,
+                                      startrow=startrow,
                                       header_height=header_height,
                                       header_styles=header_styles,
                                       body_styles=body_styles,
@@ -158,7 +159,7 @@ class ExcelHandler:
         """
         # Add font and style formatting to the headers
         if header_styles:
-            for row in worksheet[worksheet.dimensions][startrow:startrow+header_height]:
+            for row in worksheet.iter_rows(min_row=startrow+1, max_row=startrow+header_height, min_col=1, max_col=worksheet.max_column):
                 for cell in row:
                     for style_name in header_styles:
                         setattr(cell, style_name, header_styles[style_name])
@@ -166,7 +167,7 @@ class ExcelHandler:
         # Add styles to the body: body styles and alternating background if set
         if body_styles or alternate_row_background:
             i=1
-            for row in worksheet[worksheet.dimensions][startrow+header_height:]:
+            for row in worksheet.iter_rows(min_row=startrow+header_height+1, max_row=worksheet.max_row, min_col=1, max_col=worksheet.max_column):
                 for cell in row:
                     if body_styles:
                         for style_name in body_styles:

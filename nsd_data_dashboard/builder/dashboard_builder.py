@@ -85,16 +85,17 @@ class NSDDashboardBuilder(ExcelHandler):
         #self.write_indicators_list(data=df_indicators)
 
         # Loop through categories and write to the Excel document
-        category_colours = (('#ec1d25', '#f57b6c'), ('#f58225', '#f6a973'), ('#f8a71a', '#fcc777'), ('#fef102', '#f9f683'), ('#70bf42', '#add68a'), ('#01a55e', '#63c296'), ('#00aeac', '#54c5c3'), ('#0367b2', '#5c88c5'), ('#1f419a', '#5566ae'), ('#5a3094', '#7d6dae'), ('#a2238e', '#bd7eb3'), ('#db327f', '#f24baa'))
+        category_colours = (('ec1d25', 'f57b6c'), ('f58225', 'f6a973'), ('f8a71a', 'fcc777'), ('D9CF01', 'BDA203'), ('70bf42', 'add68a'), ('01a55e', '63c296'), ('00aeac', '54c5c3'), ('0367b2', '5c88c5'), ('1f419a', '5566ae'), ('5a3094', '7d6dae'), ('a2238e', 'bd7eb3'), ('db327f', 'f24baa'))
         if categories:
             for i, category in enumerate(categories):
                 df_category = self.process_category_data(indicators=category['indicators'])
-                self.write_category_data(data=df_category,
-                                         sheet_name=category['name'],
-                                         title=category['name'],
-                                         description=category['description'],
-                                         header_colours=category_colours[i],
-                                         tab_colour=category_colours[i][0].lstrip('#'))
+                if not df_category is None:
+                    self.write_category_data(data=df_category,
+                                             sheet_name=category['name'],
+                                             title=category['name'],
+                                             description=category['description'],
+                                             header_colours=category_colours[i],
+                                             tab_colour=category_colours[i][0])
 
         # Write the update date to the About sheet and add the header image
         self.write_update_date()
@@ -188,7 +189,10 @@ class NSDDashboardBuilder(ExcelHandler):
         for dataset in self.indicator_datasets:
             if dataset.name in dataset_indicators:
                 category_datasets.append(dataset.data[dataset_indicators[dataset.name]])
-        df_category = pd.concat(category_datasets, axis='columns')
+        if category_datasets:
+            df_category = pd.concat(category_datasets, axis='columns')
+        else:
+            return
 
         # Order both column levels by the indicators list, and order the info columns order
         indicator_names = [indicator['name'] for indicator in indicators]
@@ -290,30 +294,26 @@ class NSDDashboardBuilder(ExcelHandler):
         description : string (default=None)
             Description of the dataset to be written to the Excel sheet.
 
-        header_colours : list or string (default=None)
-            Colours of the headers.
+        header_colours : string or list (default=None)
+            Colours of the headers. If string, that colour will be applied to all headers. If list, colours will be applied alternately.
 
         tab_colour : string (default=None)
             Colour of the Excel tab.
         """
-        # Set the formatting
+        # Set the base formatting
         side = Side(border_style='thin', color='D9D9D9')
-        header_styles = {'font': Font(name='Calibri', bold=True, color='ffffff', size=11),
-                         'alignment': Alignment(horizontal="center", vertical="center"),
-                         'fill': PatternFill(start_color="007F81", end_color="007F81", fill_type = "solid"),
-                         'border': Border(left=side, right=side, top=side, bottom=side)}
         body_styles = {'border': Border(left=side, right=side, top=side, bottom=side),
                        'alignment': Alignment(horizontal="left", vertical="top"),}
+        header_styles = {'font': Font(name='Calibri', bold=True, color='ffffff', size=11),
+                         'alignment': Alignment(horizontal="center", vertical="center"),
+                         'border': Border(left=side, right=side, top=side, bottom=side)}
 
-        # Set the start row based on the title and description
-        startrow = 0
-        if title and description:
-            startrow = 3
-        elif (title or description):
-            startrow = 2
+        # Set the start row based on the title and description, and the data
+        data = data.set_index(self.ns_columns)
+        startrow = 3 if (title and description) else 2 if (title or description) else 0
 
         # Write the data to a sheet in the Excel document
-        self.write_data_sheet(data=data.set_index(self.ns_columns),
+        self.write_data_sheet(data=data,
                               sheet_name=sheet_name,
                               index=True,
                               overwrite=True,
@@ -325,9 +325,33 @@ class NSDDashboardBuilder(ExcelHandler):
                               level_column_widths={1: self.info_column_widths},
                               sorting=True,
                               hidden=None)
+        worksheet = self.book.get_sheet_by_name(sheet_name)
+
+        # Set altnerating backgrounds to the header based on the level 0 columns
+        header_height = len(data.columns.names)+1
+        index_size = len(data.index.names)
+        if header_colours:
+            if isinstance(header_colours, str): header_styles = [header_colours]
+            indicators = data.columns.get_level_values(0)
+            indicator_colour_map = {indicator: header_colours[i%len(header_colours)] for i, indicator in enumerate(indicators.unique())}
+
+            for i, indicator in enumerate(indicators):
+                for row in worksheet.iter_rows(min_row=startrow+1, max_row=startrow+header_height, min_col=i+index_size+1, max_col=i+index_size+1):
+                    for cell in row:
+                        cell.fill = PatternFill(start_color=indicator_colour_map[indicator], end_color=indicator_colour_map[indicator], fill_type = "solid")
+
+        # Set background styles to the index
+        no_border = Side(border_style=None)
+        index_styles = {'font': Font(name='Calibri', bold=True, color='000000', size=11),
+                        'alignment': Alignment(horizontal="center", vertical="center"),
+                        'fill': PatternFill(start_color='E7E4CF', end_color='E7E4CF', fill_type = "solid"),
+                        'border': Border(left=no_border, right=no_border, top=no_border, bottom=no_border)}
+        for row in worksheet.iter_rows(min_row=startrow+header_height, max_row=startrow+header_height, min_col=1, max_col=index_size):
+            for cell in row:
+                cell.fill = PatternFill(start_color='E7E4CF', end_color='E7E4CF', fill_type = "solid")
+                cell.font = Font(name='Calibri', bold=True, color='000000', size=11)
 
         # Add the title and description
-        worksheet = self.book.get_sheet_by_name(sheet_name)
         if title:
             self.write_sheet_title(worksheet=worksheet, title=title)
             if description:
