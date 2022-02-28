@@ -35,17 +35,6 @@ if FDRS_PUBLIC_API_KEY is None:
 config = yaml.safe_load(open(os.path.join(ROOT_DIR, 'scripts/config.yml')))
 reload = config['reload_data'] if 'reload_data' in config else True
 
-# Read in the indicators list, convert to a pandas DataFrame
-"""
-dashboard_indicators = config['dashboard_indicators']
-dashboard_indicators_list = []
-for category, indicators in dashboard_indicators.items():
-    for indicator in indicators:
-        indicator['category'] = category
-        dashboard_indicators_list.append(indicator)
-df_indicators = pd.DataFrame(dashboard_indicators_list)
-"""
-
 # Get the general NS information
 ns_general_info = NationalSocietiesInfo()
 df_ns_general_info = ns_general_info.df.set_index('National Society name')[config['national_society_indicators']]
@@ -59,6 +48,7 @@ PULL AND PROCESS DATA
 - Return the dataset in a consistent format with NS names as the index
 """
 # Load, clean, and process the datasets
+"""
 indicator_datasets = [
     FDRSDataset(
         filepath=os.path.join(ROOT_DIR, 'data/fdrs/fdrs_api_response.csv'),
@@ -105,6 +95,13 @@ indicator_datasets = [
         filepath=os.path.join(ROOT_DIR, 'data/inform/inform_risk_api_response.csv'),
         reload=reload,
     ),
+]"""
+indicator_datasets = [
+    FDRSDataset(
+        filepath=os.path.join(ROOT_DIR, 'data/fdrs/fdrs_api_response.csv'),
+        api_key=FDRS_PUBLIC_API_KEY,
+        reload=reload,
+        ),
 ]
 # Create a list of the datasets including the name, meta information, and the loaded and processed data
 for dataset in indicator_datasets:
@@ -122,6 +119,7 @@ dashboard_generator = NSDDashboardBuilder(save_folder=os.path.join(ROOT_DIR, 'da
                                           file_name='NSD Data Dashboard')
 dashboard_generator.generate_dashboard(indicator_datasets=indicator_datasets,
                                        categories=config['data_categories'],
+                                       ns_info=df_ns_general_info,
                                        #protect_sheets=True, # Currently this makes the cells not clickable
                                        protect_workbook=True,
                                        excel_password=os.environ.get('EXCEL_PASSWORD'))

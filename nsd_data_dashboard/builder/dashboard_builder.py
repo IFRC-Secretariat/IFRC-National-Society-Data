@@ -45,12 +45,15 @@ class NSDDashboardBuilder(ExcelHandler):
         super().__init__(file_path=self.excel_file_path)
 
 
-    def generate_dashboard(self, indicator_datasets, categories=None, protect_sheets=False, protect_workbook=False, excel_password=None):
+    def generate_dashboard(self, ns_info, indicator_datasets, categories=None, protect_sheets=False, protect_workbook=False, excel_password=None):
         """
         Generate the Excel document containing information on IFRC National Societies.
 
         Parameters
         ----------
+        ns_info : list (required)
+            Information with key information about National Societies and countries.
+
         indicator_datasets : list of Dataset objects (required)
             List of Dataset objects, containing information on datasets to write to the Excel document.
 
@@ -68,6 +71,7 @@ class NSDDashboardBuilder(ExcelHandler):
             If protect_sheets is set to True, this password will be used to protect the sheets.
         """
         # Set attributes
+        self.ns_info = ns_info
         self.indicator_datasets = indicator_datasets
 
         # Set column order
@@ -84,8 +88,12 @@ class NSDDashboardBuilder(ExcelHandler):
         df_indicators = self.process_indicators_list()
         #self.write_indicators_list(data=df_indicators)
 
+        # Process a list of country name to NS name, and write to the Excel document
+        df_ns_info = self.process_ns_info()
+        self.write_ns_info(data=df_ns_info)
+
         # Loop through categories and write to the Excel document
-        category_colours = (('ec1d25', 'f57b6c'), ('f58225', 'f6a973'), ('f8a71a', 'fcc777'), ('D9CF01', 'BDA203'), ('70bf42', 'add68a'), ('01a55e', '63c296'), ('00aeac', '54c5c3'), ('0367b2', '5c88c5'), ('1f419a', '5566ae'), ('5a3094', '7d6dae'), ('a2238e', 'bd7eb3'), ('db327f', 'f24baa'))
+        category_colours = (('ec1d25', 'f57b6c'), ('f58225', 'f6a973'), ('f8a71a', 'fcc777'), ('D9CF01', 'BDA203'), ('008E00', '70bf42'), ('01a55e', '63c296'), ('00aeac', '54c5c3'), ('0367b2', '5c88c5'), ('1f419a', '5566ae'), ('5a3094', '7d6dae'), ('a2238e', 'bd7eb3'), ('db327f', 'f24baa'))
         if categories:
             for i, category in enumerate(categories):
                 df_category = self.process_category_data(indicators=category['indicators'])
@@ -170,6 +178,19 @@ class NSDDashboardBuilder(ExcelHandler):
         df_indicators = df_indicators[['Indicator', 'Source', 'Type', 'Link', 'Focal point']]
 
         return df_indicators
+
+
+    def process_ns_info(self):
+        """
+        Process a dataset containing a list of country names to National Society names.
+        This is to be used as a selection in the NS report tab.
+        """
+        # Order the data, add an extra column, and drop the blank column level
+        df_ns_info = self.ns_info.sort_values(by=['Country']).reset_index()
+        df_ns_info['Country - NS'] = df_ns_info['Country']+' - '+df_ns_info['National Society name']
+        df_ns_info.columns = df_ns_info.columns.droplevel(level=1)
+
+        return df_ns_info
 
 
     def process_category_data(self, indicators):
@@ -264,6 +285,39 @@ class NSDDashboardBuilder(ExcelHandler):
         body_styles = {'border': Border(left=side, right=side, top=side, bottom=side),
                        'alignment': Alignment(horizontal="left", vertical="top"),}
         column_widths = {'Indicator': 50, 'Source': 30, 'Type': 25, 'Link': 40, 'Focal point': 30}
+
+        # Write the data to a sheet in the Excel document
+        self.write_data_sheet(data=data,
+                              sheet_name=sheet_name,
+                              index=False, overwrite=True,
+                              header_styles=header_styles,
+                              body_styles=body_styles,
+                              alternate_row_background=['F2F2F2', 'FFFFFF'],
+                              column_widths=column_widths,
+                              sorting=True)
+
+
+    def write_ns_info(self, data, sheet_name="National Society info"):
+        """
+        Write a dataset containing general information on National Societies and countries to the Excel doc.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Dataset of processed data to write to the data sheet.
+
+        sheet_name : string (default='National Society info')
+            Name of the Excel sheet.
+        """
+        # Set the formatting
+        side = Side(border_style='thin', color='D9D9D9')
+        header_styles = {'font': Font(name='Calibri', bold=True, color='ffffff', size=11),
+                         'alignment': Alignment(horizontal="left", vertical="center"),
+                         'fill': PatternFill(start_color="567EBB", end_color="567EBB", fill_type = "solid"),
+                         'border': Border(left=side, right=side, top=side, bottom=side)}
+        body_styles = {'border': Border(left=side, right=side, top=side, bottom=side),
+                       'alignment': Alignment(horizontal="left", vertical="top"),}
+        column_widths = {**self.ns_column_widths, **{'Country - NS': 80}}
 
         # Write the data to a sheet in the Excel document
         self.write_data_sheet(data=data,
