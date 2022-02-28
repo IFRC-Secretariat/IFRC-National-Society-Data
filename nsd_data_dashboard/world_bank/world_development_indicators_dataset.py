@@ -31,7 +31,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         data = pd.DataFrame()
         page = 1; per_page = 1000
         while True:
-            api_indicators = ';'.join(self.indicators.keys())
+            api_indicators = ';'.join([indicator['source_name'] for indicator in self.indicators])
             response = requests.get(url=f'https://api.worldbank.org/v2/country/all/indicator/{api_indicators}?source=2&page={page}&format=json&per_page={per_page}')
             data = pd.concat([data, pd.DataFrame(response.json()[1])])
             if page == response.json()[0]['pages']: break
@@ -62,7 +62,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         self.data = self.data.dropna(subset=['National Society name', 'indicator.value', 'value', 'date'], how='any')\
                              .sort_values(by=['National Society name', 'indicator.value', 'date'], ascending=[True, True, False])\
                              .drop_duplicates(subset=['National Society name', 'indicator.value'], keep='first')\
-                             .rename(columns={'date': 'year', 'indicator.id': 'indicator'})\
-                             .pivot(index=self.index_columns, columns='indicator', values=['value', 'year'])\
+                             .rename(columns={'date': 'Year', 'indicator.id': 'Indicator', 'value': 'Value'})\
+                             .pivot(index=self.index_columns, columns='Indicator', values=['Value', 'Year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

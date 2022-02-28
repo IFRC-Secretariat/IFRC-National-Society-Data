@@ -60,12 +60,12 @@ class NSDocumentsDataset(Dataset):
                              .sort_values(by=['year', 'name'], ascending=[False, True])\
                              .drop_duplicates(subset=['National Society name', 'document_type'], keep='first')\
                              .sort_values(by=['National Society name', 'document_type'], ascending=True)\
-                             .rename(columns={'url': 'link', 'document_type': 'indicator'})
-        self.data['value'] = self.data['indicator'].str.strip().str.replace('^Our', '', regex=True).str.strip()+' - '+self.data['year'].astype(str)
-        self.data = self.data.loc[self.data['indicator']!='Other']
+                             .rename(columns={'url': 'Link', 'document_type': 'Indicator', 'year': 'Year'})
+        self.data['Value'] = self.data['Indicator'].str.strip().str.replace('^Our', '', regex=True).str.strip()+' - '+self.data['Year'].astype(str)
+        self.data = self.data.loc[self.data['Indicator']!='Other']
 
         # Pivot the dataframe to have NSs as rows and indicators as columns
         self.data = self.data.pivot(index=self.index_columns,
-                                    columns='indicator',
-                                    values=['value', 'year', 'link'])\
+                                    columns='Indicator',
+                                    values=['Value', 'Year', 'Link'])\
                              .swaplevel(axis='columns')

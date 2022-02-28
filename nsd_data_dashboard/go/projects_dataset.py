@@ -79,4 +79,4 @@ class ProjectsDataset(Dataset):
                               .groupby(self.index_columns).agg(lambda x: '\n'.join([str(item) for item in x]))
 
         # Add another column level
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']], names=['indicator', None])
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['Value']], names=['Indicator', None])

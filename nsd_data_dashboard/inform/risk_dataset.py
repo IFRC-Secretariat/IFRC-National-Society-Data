@@ -47,14 +47,14 @@ class INFORMRiskDataset(Dataset):
 
         # Pull the data for each indicator and save in a pandas DataFrame
         data = pd.DataFrame()
-        for indicator in self.indicators.keys():
-            response = requests.get(f'https://drmkc.jrc.ec.europa.eu/Inform-Index/API/InformAPI/countries/Scores/?WorkflowId={workflow_id}&IndicatorId={indicator}')
+        for indicator in self.indicators:
+            response = requests.get(f'https://drmkc.jrc.ec.europa.eu/Inform-Index/API/InformAPI/countries/Scores/?WorkflowId={workflow_id}&IndicatorId={indicator["source_name"]}')
             response.raise_for_status()
 
             df_indicator = pd.DataFrame(response.json())
-            df_indicator.rename(columns={'IndicatorId': 'indicator',
-                                         'IndicatorScore': 'value'}, inplace=True)
-            df_indicator['year'] = year
+            df_indicator.rename(columns={'IndicatorId': 'Indicator',
+                                         'IndicatorScore': 'Value'}, inplace=True)
+            df_indicator['Year'] = year
             data = pd.concat([data, df_indicator])
 
         # Save the data
@@ -73,7 +73,7 @@ class INFORMRiskDataset(Dataset):
             self.data[column] = ns_info_mapper.map(data=self.data['National Society name'], on='National Society name', column=column)
 
         # Get the latest values of each indicator for each NS
-        self.data = self.data.dropna(subset=['National Society name', 'indicator', 'value', 'year'], how='any')\
-                             .pivot(index=self.index_columns, columns='indicator', values=['value', 'year'])\
+        self.data = self.data.dropna(subset=['National Society name', 'Indicator', 'Value', 'Year'], how='any')\
+                             .pivot(index=self.index_columns, columns='Indicator', values=['Value', 'Year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)

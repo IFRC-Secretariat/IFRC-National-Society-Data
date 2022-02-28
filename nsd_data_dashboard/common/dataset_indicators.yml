@@ -9,10 +9,10 @@ NS Contacts:
 
 FDRS:
   meta:
-    source: FDRS
-    type: Internal
-    link: https://data.ifrc.org/fdrs
-    focal_point: Rania Alerksoussi
+    Source: FDRS
+    Type: Internal
+    Link: https://data.ifrc.org/fdrs
+    Focal point: Rania Alerksoussi
   indicators:
     - name: Number of local units
       source_name: KPI_noLocalUnits
@@ -69,8 +69,8 @@ FDRS:
 
 NS Documents:
   meta:
-    source: FDRS
-    type: Internal
+    Source: FDRS
+    Type: Internal
   indicators:
   - name: Annual report
     source_name: Our Annual Report
@@ -89,19 +89,19 @@ NS Documents:
 
 OCAC:
   meta:
-    source: OCAC
-    type: Internal
-    link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
-    focal_point: Roger Fischli
+    Source: OCAC
+    Type: Internal
+    Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
+    Focal point: Roger Fischli
   indicators:
     - name: OCAC year of last assessment
       source_name: Year
 
 NS Statutes:
   meta:
-    source: NS Statutes
-    type: Internal
-    focal_point: Drina Karahasanovic
+    Source: NS Statutes
+    Type: Internal
+    Focal point: Drina Karahasanovic
   indicators:
     - name: "NS Statutes: Statutes in force (Date of adoption)"
       source_name: Statutes in force (Date of adoption)
@@ -120,18 +120,18 @@ NS Statutes:
 
 NS Recognition Laws:
   meta:
-    source: NS Recognition Laws
-    type: Internal
-    focal_point: Drina Karahasanovic
+    Source: NS Recognition Laws
+    Type: Internal
+    Focal point: Drina Karahasanovic
   indicators:
     - name: NS recognition laws/ other regulations in force
       source_name: Law/other regulations in force
 
 YABC:
   meta:
-    source: IFRC Youth
-    type: Internal
-    focal_point: Amjad Saleem
+    Source: IFRC Youth
+    Type: Internal
+    Focal point: Amjad Saleem
   indicators:
     - name: Number of YABC trainings to date
       source_name: number of YABC trainings to date
@@ -144,9 +144,9 @@ YABC:
 
 Logistics Projects:
   meta:
-    source: IFRC Logistics
-    type: Internal
-    focal_point: Juan Galvez
+    Source: IFRC Logistics
+    Type: Internal
+    Focal point: Juan Galvez
   indicators:
     - name: Type
       source_name: Type
@@ -187,10 +187,10 @@ Logistics Projects:
 
 GO Operations:
   meta:
-    source: IFRC GO
-    type: Internal
-    link: https://go.ifrc.org/
-    focal_point: Luke Caley
+    Source: IFRC GO
+    Type: Internal
+    Link: https://go.ifrc.org/
+    Focal point: Luke Caley
   indicators:
     - name: Operation name
       source_name: name
@@ -209,10 +209,10 @@ GO Operations:
 
 GO Projects:
   meta:
-    source: IFRC GO
-    type: Internal
-    link: https://go.ifrc.org/three-w/
-    focal_point: Luke Caley
+    Source: IFRC GO
+    Type: Internal
+    Link: https://go.ifrc.org/three-w/
+    Focal point: Luke Caley
   indicators:
     - name: Project name
       source_name: name
@@ -241,9 +241,9 @@ GO Projects:
 
 World Development Indicators:
   meta:
-    source: WorldBank World Development Indicators
-    type: External
-    link: https://databank.worldbank.org/source/world-development-indicators
+    Source: WorldBank World Development Indicators
+    Type: External
+    Link: https://databank.worldbank.org/source/world-development-indicators
   indicators:
     - name: Population, total
       source_name: SP.POP.TOTL
@@ -262,18 +262,18 @@ World Development Indicators:
 
 UNDP Human Development:
   meta:
-    source: UNDP
-    type: External
-    link: https://hdr.undp.org/en/content/human-development-index-hdi
+    Source: UNDP
+    Type: External
+    Link: https://hdr.undp.org/en/content/human-development-index-hdi
   indicators:
     - name: Human Development Index (HDI)
       source_name: 137506
 
 INFORM Risk:
   meta:
-    source: EC DRMKC INFORM
-    type: External
-    link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
+    Source: EC DRMKC INFORM
+    Type: External
+    Link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
   indicators:
     - name: INFORM Risk Index
       source_name: INFORM

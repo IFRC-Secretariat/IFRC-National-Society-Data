@@ -111,7 +111,7 @@ class Dataset:
                     self.data[indicator, column] = value
 
         # Order the column hierarchies
-        subcolumns_order = ['value', 'year', 'link']
+        subcolumns_order = ['Value', 'Year', 'Link']
         if self.meta:
             for item in self.meta:
                 if item not in subcolumns_order:
@@ -127,6 +127,6 @@ class Dataset:
         if self.data.index.names != ['National Society name', 'Country', 'ISO3', 'Region']:
             print(self.data)
             raise ValueError(f'Index names of dataset {self.name} does not match expected: {self.data.index.names}')
-        if self.data.columns.names != ['indicator', None]:
+        if self.data.columns.names != ['Indicator', None]:
             print(self.data)
             raise ValueError(f'Column names of dataset {self.name} does not match expected: {self.data.columns.names}')

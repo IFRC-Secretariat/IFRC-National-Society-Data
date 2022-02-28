@@ -30,11 +30,11 @@ class OCACDataset(Dataset):
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Process the data into a log format, with a row for each assessment
-        self.data = self.data.rename(columns={'Name': 'indicator'})
-        self.data.loc[self.data['indicator'].isnull(), 'indicator'] = self.data['Code']
-        self.data['indicator'] = self.data['indicator'].str.strip()
+        self.data = self.data.rename(columns={'Name': 'Indicator'})
+        self.data.loc[self.data['Indicator'].isnull(), 'Indicator'] = self.data['Code']
+        self.data['Indicator'] = self.data['Indicator'].str.strip()
         self.data = self.data.drop(columns=['Code'])\
-                             .set_index(['indicator'])\
+                             .set_index(['Indicator'])\
                              .dropna(how='all')\
                              .transpose()\
                              .drop(columns=['iso', 'Region', 'SubRegion', 'Month', 'Version', 'Principal facilitator', 'Second facilitator', 'NS Focal point', 'OCAC data public', 'OCAC report public'], errors='raise')\
@@ -54,4 +54,4 @@ class OCACDataset(Dataset):
                              .set_index(self.index_columns)
 
         # Add another column level
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']])
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['Value']])

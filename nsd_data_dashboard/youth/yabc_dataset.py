@@ -47,4 +47,4 @@ class YABCDataset(Dataset):
 
         # Add another column level
         self.data = self.data.set_index(self.index_columns)
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['value']], names=['indicator', None])
+        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['Value']], names=['Indicator', None])

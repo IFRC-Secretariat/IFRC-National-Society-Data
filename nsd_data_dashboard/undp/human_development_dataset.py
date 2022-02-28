@@ -30,15 +30,15 @@ class HumanDevelopmentDataset(Dataset):
         """
         # Pull the data for each indicator
         data = pd.DataFrame()
-        for indicator in self.indicators.keys():
-            response = requests.get(url='http://ec2-54-174-131-205.compute-1.amazonaws.com/API/HDRO_API.php/indicator_id=137506')
+        for indicator in self.indicators:
+            response = requests.get(url=f'http://ec2-54-174-131-205.compute-1.amazonaws.com/API/HDRO_API.php/indicator_id={indicator["source_name"]}')
             response.raise_for_status()
 
             # Unnest the data from the API into a tabular format
             indicator_data = pd.DataFrame(response.json()['indicator_value'])\
                                          .reset_index()\
-                                         .rename(columns={'index': 'indicator'})\
-                                         .melt(id_vars='indicator', var_name='iso3')
+                                         .rename(columns={'index': 'Indicator'})\
+                                         .melt(id_vars='Indicator', var_name='iso3')
             indicator_data = pd.concat([indicator_data.drop(columns=['value']),
                                         pd.json_normalize(indicator_data['value'])], axis=1)
 
@@ -62,12 +62,13 @@ class HumanDevelopmentDataset(Dataset):
 
         # Melt the data into a log format and get the latest data for each NS/ indicator
         self.data = self.data.drop(columns=['iso3'])\
-                             .melt(id_vars=self.index_columns+['indicator'], var_name='year')\
+                             .melt(id_vars=self.index_columns+['Indicator'], var_name='Year')\
                              .dropna(how='any')\
-                             .sort_values(by=['National Society name', 'indicator', 'year'], ascending=[True, True, False])\
-                             .drop_duplicates(subset=['National Society name', 'indicator'], keep='first')
+                             .sort_values(by=['National Society name', 'Indicator', 'Year'], ascending=[True, True, False])\
+                             .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
+                             .rename(columns={'value': 'Value'})
 
         # Pivot the data into a format with columns as indicators
-        self.data = self.data.pivot(index=self.index_columns, columns='indicator', values=['value', 'year'])\
+        self.data = self.data.pivot(index=self.index_columns, columns='Indicator', values=['Value', 'Year'])\
                              .swaplevel(axis='columns')\
                              .sort_index(axis='columns', level=0, sort_remaining=False)
