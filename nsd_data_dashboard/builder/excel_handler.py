@@ -85,7 +85,7 @@ class ExcelHandler:
         # Check if the sheet exists; if it does, delete it and then write the data
         if sheet_name in self.book.get_sheet_names():
             worksheet = self.book.get_sheet_by_name(sheet_name)
-            self.book.remove_sheet(worksheet)
+            #self.book.remove_sheet(worksheet)
         data.to_excel(excel_writer=self.writer, index=index, sheet_name=sheet_name, header=header)
 
         # Calculate the height of the header and index

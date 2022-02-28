@@ -18,6 +18,7 @@ from nsd_data_dashboard.go import OperationsDataset, ProjectsDataset
 from nsd_data_dashboard.world_bank import WorldDevelopmentIndicatorsDataset
 from nsd_data_dashboard.undp import HumanDevelopmentDataset
 from nsd_data_dashboard.inform import INFORMRiskDataset
+from nsd_data_dashboard.builder import NSDDashboardBuilder
 
 """
 SETUP
@@ -35,6 +36,7 @@ config = yaml.safe_load(open(os.path.join(ROOT_DIR, 'scripts/config.yml')))
 reload = config['reload_data'] if 'reload_data' in config else True
 
 # Read in the indicators list, convert to a pandas DataFrame
+"""
 dashboard_indicators = config['dashboard_indicators']
 dashboard_indicators_list = []
 for category, indicators in dashboard_indicators.items():
@@ -42,6 +44,7 @@ for category, indicators in dashboard_indicators.items():
         indicator['category'] = category
         dashboard_indicators_list.append(indicator)
 df_indicators = pd.DataFrame(dashboard_indicators_list)
+"""
 
 # Get the general NS information
 ns_general_info = NationalSocietiesInfo()
@@ -56,62 +59,102 @@ PULL AND PROCESS DATA
 - Return the dataset in a consistent format with NS names as the index
 """
 # Load, clean, and process the datasets
-datasets = {
-    'FDRS': FDRSDataset(
+indicator_datasets = [
+    FDRSDataset(
         filepath=os.path.join(ROOT_DIR, 'data/fdrs/fdrs_api_response.csv'),
         api_key=FDRS_PUBLIC_API_KEY,
         reload=reload,
         ),
-    'OCAC': OCACDataset(
+    OCACDataset(
         filepath=os.path.join(ROOT_DIR, 'data/ocac/ocac_website_download.xlsx'),
         ),
-    'NS Documents': NSDocumentsDataset(
+    NSStatutesDataset(
+        filepath=os.path.join(ROOT_DIR, 'data/ns_statutes_laws/ns_statutes.xls'),
+    ),
+    NSDocumentsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/fdrs/ns_documents_api_response.csv'),
         api_key=FDRS_PUBLIC_API_KEY,
         reload=reload,
     ),
-    'NS Statutes': NSStatutesDataset(
-        filepath=os.path.join(ROOT_DIR, 'data/ns_statutes_laws/ns_statutes.xls'),
-    ),
-    'YABC': YABCDataset(
+    YABCDataset(
         filepath=os.path.join(ROOT_DIR, 'data/youth/yabc_data.xlsx'),
     ),
-    'NS Recognition Laws': NSRecognitionLawsDataset(
+    NSRecognitionLawsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/ns_statutes_laws/ns_recognition_laws.xls'),
     ),
-    'Logistics Projects': LogisticsProjectsDataset(
+    LogisticsProjectsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/logistics/logistics_projects.xlsx'),
     ),
-    'GO Operations': OperationsDataset(
+    OperationsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/go/go_operations_api_response.csv'),
         reload=reload,
         ),
-    'GO Projects': ProjectsDataset(
+    ProjectsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/go/go_projects_api_response.csv'),
         reload=reload,
         ),
-    'World Development Indicators': WorldDevelopmentIndicatorsDataset(
+    WorldDevelopmentIndicatorsDataset(
         filepath=os.path.join(ROOT_DIR, 'data/world_bank/world_development_indicators_api_response.csv'),
         reload=reload,
         ),
-    'UNDP Human Development': HumanDevelopmentDataset(
+    HumanDevelopmentDataset(
         filepath=os.path.join(ROOT_DIR, 'data/undp/undp_human_development_api_response.csv'),
         reload=reload,
         ),
-    'INFORM Risk': INFORMRiskDataset(
+    INFORMRiskDataset(
         filepath=os.path.join(ROOT_DIR, 'data/inform/inform_risk_api_response.csv'),
         reload=reload,
     ),
-}
-for dataset_name, dataset in datasets.items():
+]
+"""
+indicator_datasets = [
+    FDRSDataset(
+        filepath=os.path.join(ROOT_DIR, 'data/fdrs/fdrs_api_response.csv'),
+        api_key=FDRS_PUBLIC_API_KEY,
+        reload=reload,
+        ),
+]"""
+# Create a list of the datasets including the name, meta information, and the loaded and processed data
+for dataset in indicator_datasets:
     dataset.load_data()
     dataset.process()
     dataset.add_indicator_info()
+
+# Get data on documents
+documents = NSDocumentsDataset(
+    filepath=os.path.join(ROOT_DIR, 'data/fdrs/ns_documents_api_response.csv'),
+    api_key=FDRS_PUBLIC_API_KEY,
+    reload=reload,
+)
+documents.load_data()
+documents.process()
+documents.add_indicator_info()
+
 
 """
 EXCEL DASHBOARD GENERATION
 - Merge datasets and categorise
 """
+# Use the NSDDashboardBuilder class to generate the NSD Excel document
+dashboard_generator = NSDDashboardBuilder(save_folder=os.path.join(ROOT_DIR, 'data/'), # Path to a folder where the outputs will be saved
+                                          file_name='NSD Data Dashboard')
+dashboard_generator.generate_dashboard(indicator_datasets=indicator_datasets,
+                                       categories=config['data_categories'],
+                                       documents=documents,
+                                       protect_sheets=True,
+                                       protect_workbook=True,
+                                       excel_password=os.environ.get('EXCEL_PASSWORD'))
+
+exit()
+
+
+
+
+
+
+
+
+
 # Define the writer for the Excel document
 writer = pd.ExcelWriter(path=os.path.join(ROOT_DIR, 'data/NSD Data Dashboard.xlsx'), engine='xlsxwriter')
 all_category_datasets = {}
@@ -160,6 +203,12 @@ for category in df_indicators['category'].unique():
 writer.save()
 
 exit()
+
+
+
+
+
+
 
 
 """
