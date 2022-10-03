@@ -1,2 +1,0 @@
-from nsd_data_dashboard.go.operations_dataset import OperationsDataset
-from nsd_data_dashboard.go.projects_dataset import ProjectsDataset

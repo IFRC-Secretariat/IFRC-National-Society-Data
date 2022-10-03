@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='NSDDataDashboard',
+    name='IFRC_NS_Data',
     version='1.0.0',
-    description='Load, clean, and transform data related to IFRC NSD, and generate a data dashboard.',
+    description='Load, clean, and transform data on IFRC National Societies and countries.',
     packages=find_packages(),
     include_package_data=True,
 )
