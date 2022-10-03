@@ -18,16 +18,15 @@ class FDRSDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, reload=True):
+    def __init__(self, api_key):
         self.name = 'FDRS'
-        super().__init__(filepath=filepath, reload=reload)
+        super().__init__()
         self.api_key = api_key
-        self.reload = reload
 
 
-    def reload_data(self):
+    def pull_data(self):
         """
-        Read in data from the NS Databank API and save to file.
+        Read in raw data from the NS Databank API.
         """
         # Pull data from FDRS API
         response = requests.get(url=f'https://data-api.ifrc.org/api/Data?apiKey={self.api_key}')
@@ -46,64 +45,36 @@ class FDRSDataset(Dataset):
             raise ValueError('Unexpected values in years column', data['years'].astype(str).unique())
         data.drop(columns=['years'], inplace=True)
 
-        # Save the data
-        data.to_csv(self.filepath, index=False)
+        return data
 
 
-    def process(self):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
         """
+        # Rename columns and remove nans
+        data = data.rename(columns={'value': 'Value', 'year': 'Year'})\
+                   .dropna(subset=['Value', 'Year', 'Indicator'], how='any')
+
         # Map in country and region information
         for column in self.index_columns:
-            self.data[column] = NSInfoMapper().map(self.data['National Society ID'], on='National Society ID', column=column)
+            data[column] = NSInfoMapper().map(data['National Society ID'], on='National Society ID', column=column)
 
         # Replace False for nan for boolean indicators, so that they are dropped in the next step
         get_latest_columns = ['KPI_hasFinancialStatement', 'audited', 'ar', 'sp']
-        self.data.loc[(self.data['Indicator'].isin(get_latest_columns)) & (self.data['value'].astype(str)=='False'), 'value'] = float('nan')
-        self.data.loc[(self.data['Indicator'].isin(get_latest_columns)) & (self.data['value'].astype(str)=='True'), 'value'] = 'Yes'
-
-        # Keep only the latest values for each indicator: keep the smallest value if there are duplicates
-        self.data = self.data.dropna(how='any')\
-                             .rename(columns={'value': 'Value', 'year': 'Year'})\
-                             .sort_values(by=['Year', 'Value'], ascending=[False, True])\
-                             .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
-                             .sort_values(by=['National Society name', 'Indicator'], ascending=True)
-
-        # Pivot the dataframe to have NSs as rows and indicators as columns
-        self.data = self.data.pivot(index=self.index_columns,
-                                    columns='Indicator',
-                                    values=['Value', 'Year'])\
-                             .swaplevel(axis='columns')\
-                             .sort_index(axis='columns', level=0, sort_remaining=False)
+        data.loc[(data['Indicator'].isin(get_latest_columns)) & (data['Value'].astype(str)=='False'), 'Value'] = float('nan')
+        data.loc[(data['Indicator'].isin(get_latest_columns)) & (data['Value'].astype(str)=='True'), 'Value'] = 'Yes'
 
         # Convert NS supported and receiving support lists from NS IDs to NS names
         def split_convert_ns_ids(x):
             ns_ids = x.split(',')
             ns_names = DatabankNSIDMapper(api_key=self.api_key).map(ns_ids)
             return ', '.join(ns_names)
-        for column in ['supported1', 'received_support1']:
-            self.data[column, 'Value'] = self.data[column, 'Value'].apply(lambda x: x if x!=x else split_convert_ns_ids(x))
+        data['Value'] = data.apply(lambda row: split_convert_ns_ids(row['Value']) if ((row['Indicator'] in ['supported1', 'received_support1']) and (row['Value']==row['Value'])) else row['Value'], axis=1)
 
-        # Calculate the top income sources
-        def get_top_n_income_sources(row, n=3):
-            total_income_column = 'KPI_IncomeLC'
-            income_source_columns = {'h_gov': 'Home government', 'f_gov': 'Foreign government', 'ind': 'Individuals', 'corp': 'Corporations', 'found': 'Foundations', 'un': 'UN agencies & other multilateral agencies', 'pooled_f': 'Pooled funds', 'ngo': 'Non-governmental organizations', 'si': 'Service income', 'iga': 'Income-generating activity', 'KPI_incomeFromNSsLC': 'Other National Society', 'ifrc': 'IFRC', 'icrc': 'ICRC', 'other': 'Other source'}
-            if row['KPI_IncomeLC', 'Value'] != row['KPI_IncomeLC', 'Value']:
-                if row['KPI_IncomeLC_CHF', 'Value'] != row['KPI_IncomeLC_CHF', 'Value']:
-                    return
-                income_source_columns = {source+'_CHF': alt for source, alt in income_source_columns.items()}
-                total_income_column += '_CHF'
-            source_year = row[total_income_column, 'Year']
-            for column in income_source_columns:
-                if row[column, 'Year']!=source_year:
-                    return row
-            total_income = float(row[total_income_column, 'Value'])
-            income_amounts = row[[[column, 'Value'] for column in income_source_columns]].astype(float).dropna().sort_values(ascending=False)
-            if not income_amounts.empty:
-                for i in range(0, n):
-                    row[f'income_source_{i+1}', 'Value'] = f'{income_source_columns[income_amounts.index[i][0]]} ({round(100*income_amounts[i]/total_income)}%)'
-                    row[f'income_source_{i+1}', 'Year'] = source_year
-            return row
-
-        self.data = self.data.apply(lambda row: get_top_n_income_sources(row), axis=1)
+        return data

@@ -1,2 +1,2 @@
-from ifrc_ns_data.fdrs.fdrs_dataset import FDRSDataset
-from ifrc_ns_data.fdrs.ns_documents import NSDocumentsDataset
+from .fdrs_dataset import FDRSDataset
+from .ns_documents import NSDocumentsDataset

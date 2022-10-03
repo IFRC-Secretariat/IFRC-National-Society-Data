@@ -24,12 +24,6 @@ FDRS:
       source_name: KPI_IncomeLC
     - name: Total income (Swiss Franc)
       source_name: KPI_IncomeLC_CHF
-    - name: Top income source
-      source_name: income_source_1
-    - name: Second top income source
-      source_name: income_source_2
-    - name: Third top income source
-      source_name: income_source_3
     - name: Total number of people volunteering
       source_name: KPI_PeopleVol_Tot
     - name: Total number of volunteers covered by accident insurance

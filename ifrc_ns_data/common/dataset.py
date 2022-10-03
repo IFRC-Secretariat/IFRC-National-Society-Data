@@ -13,26 +13,13 @@ class Dataset:
 
     Parameters
     ----------
-    filepath : string (required)
-        Path to save the dataset when loaded, and to read the dataset from.
-
-    reload : boolean (default=True)
-        If True, the data will be reloaded from source, e.g. pulled from an API, and saved to filepath.
+    filepath : string (default=None)
+        If reading from file, the location of the source file data.
     """
-    def __init__(self, filepath, sheet_name=0, reload=True):
+    def __init__(self, filepath=None, sheet_name=None):
         self.filepath = filepath
-        self.sheet_name = sheet_name
-        self.data = pd.DataFrame()
-        self.reload = reload
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
         self.dataset_info = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))[self.name]
-
-
-    def __str__(self):
-        """
-        Redefine the str representation to print out the dataset as a pandas DataFrame.
-        """
-        return repr(self.data)
 
 
     @property
@@ -40,8 +27,7 @@ class Dataset:
         """
         Get meta information about the dataset.
         """
-        dataset_info = self.dataset_info
-        dataset_meta = dataset_info['meta'] if 'meta' in dataset_info.keys() else None
+        dataset_meta = self.dataset_info['meta'] if 'meta' in self.dataset_info.keys() else None
         return dataset_meta
 
 
@@ -54,79 +40,93 @@ class Dataset:
         return dataset_info['indicators']
 
 
-    @property
-    def columns(self):
+    def get_data(self, latest=False):
         """
-        Return the columns of the pandas DataFrame in the data attribute.
+        Pull the raw data, process it, and return the final dataset.
+
+        Parameters
+        ----------
+        latest : bool (default=False)
+            If True, only the most recent data for each NS and indicator is returned.
         """
-        return self.data.columns
+        raw_data = self.load_data()
+        processed_data = self.process_data(data=raw_data)
+        processed_data = self.process_common_data(data=processed_data)
+        if latest:
+            processed_data = self.filter_latest(data=processed_data)
+
+        return processed_data
 
 
     def load_data(self):
         """
-        Read in the data as a CSV or Excel file from the given file path.
+        Read in the data from the source: either as a CSV or Excel file from a given file path, or pull from an API.
         """
-        # reload the data if required
-        if self.reload:
-            self.reload_data()
-
-        # Check the file extension
-        extension = os.path.splitext(self.filepath)[1][1:]
-        if extension=='csv':
-            self.data = pd.read_csv(self.filepath)
-        elif extension in ['xlsx', 'xls']:
-            self.data = pd.read_excel(self.filepath, sheet_name=self.sheet_name)
+        # Read in the data from a CSV or Excel file
+        if self.filepath is not None:
+            extension = os.path.splitext(self.filepath)[1][1:]
+            if extension=='csv':
+                data = pd.read_csv(self.filepath)
+            elif extension in ['xlsx', 'xls']:
+                data = pd.read_excel(self.filepath, sheet_name=self.sheet_name)
+            else:
+                raise ValueError(f'Unknown file extension {extension}')
+        # Pull data from an API
         else:
-            raise ValueError(f'Unknown file extension {extension}')
+            data = self.pull_data()
+
+        return data
 
 
-    def reload_data(self):
+    def pull_data(self):
         """
-        Reload the data by pulling it from source.
+        Pull the data from an API.
         """
-        warnings.warn("No method implemented to reload data for this dataset.")
-
-
-    def process(self):
-        """
-        Process the data, including transforming it into the required structure.
-        """
-        # Clean the dataset
         raise NotImplementedError
 
 
-    def add_indicator_info(self):
+    def process_data(self, data):
         """
-        Merge in indicator information if set.
+        Process the data, including transforming it into the required structure.
+
+        Parameters
+        ----------
+        data : Pandas DataFrame (required)
+            Raw dataset to be processed.
         """
+        raise NotImplementedError
+
+
+    def process_common_data(self, data):
+        """
+        Process the dataset in a way that is common to all of the datasets.
+        """
+        # Get a map of indicator current names to verbose names
+        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.dataset_info['indicators']}
+
+        # Raise an error if any indicators are missing from the dataset
+        missing_indicators = [indicator for indicator in rename_indicators if indicator not in data['Indicator'].unique()]
+        if missing_indicators:
+            raise KeyError(f"{missing_indicators} not found in columns")
+
         # Rename and select indicators
-        indicator_names = [indicator['name'] for indicator in self.indicators]
-        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators}
-        self.data = self.data.rename(columns=rename_indicators, errors='raise', level=0)[indicator_names]
+        data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
+        data = data.loc[data['Indicator'].isin(rename_indicators.values())]
 
-        # Add in extra information
-        if self.meta:
-            for column, value in self.meta.items():
-                for indicator in indicator_names:
-                    self.data[indicator, column] = value
+        # Add the dataset name and order the columns
+        data['Dataset'] = self.name
+        data = data[['National Society name', 'National Society ID', 'Country', 'ISO3', 'Region', 'Indicator', 'Dataset', 'Value', 'Year']]
 
-        # Order the column hierarchies
-        subcolumns_order = ['Value', 'Year', 'Link']
-        if self.meta:
-            for item in self.meta:
-                if item not in subcolumns_order:
-                    subcolumns_order.append(item)
-        def order_columns(x):
-            order_map = {item: subcolumns_order.index(item) for item in subcolumns_order}
-            order = x.map(order_map)
-            return order
-        self.data = self.data.sort_index(axis='columns', level=1, key=lambda x: order_columns(x), sort_remaining=False)\
-                             .sort_index(axis='columns', level=0, sort_remaining=False)
+        return data
 
-        # Verify that the index names and level names are correct
-        if self.data.index.names != ['National Society name', 'Country', 'ISO3', 'Region']:
-            print(self.data)
-            raise ValueError(f'Index names of dataset {self.name} does not match expected: {self.data.index.names}')
-        if self.data.columns.names != ['Indicator', None]:
-            print(self.data)
-            raise ValueError(f'Column names of dataset {self.name} does not match expected: {self.data.columns.names}')
+
+    def filter_latest(self, data):
+        """
+        Filter the dataset to only return the latest data for each National Society for each indicator.
+        """
+        # Keep only the latest values for each indicator: keep the smallest value if there are duplicates
+        data = data.sort_values(by=['Year', 'Value'], ascending=[False, True])\
+                    .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
+                    .sort_values(by=['National Society name', 'Indicator'], ascending=True)
+
+        return data
