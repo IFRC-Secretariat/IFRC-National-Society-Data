@@ -3,5 +3,4 @@ venv/
 build/
 __pycache__/
 *.egg-info/
-data/
 scripts/config.yml

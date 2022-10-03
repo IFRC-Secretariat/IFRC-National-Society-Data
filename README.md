@@ -1,4 +1,4 @@
-# NSD Data Dashboard Project
+# IFRC National Society Data
 
 Project to pull together and process multiple datasets on IFRC National Societies and countries.
 
