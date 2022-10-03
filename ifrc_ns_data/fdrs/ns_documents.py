@@ -18,14 +18,13 @@ class NSDocumentsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, reload=True):
+    def __init__(self, api_key):
         self.name = 'NS Documents'
-        super().__init__(filepath=filepath, reload=reload)
+        super().__init__()
         self.api_key = api_key
-        self.reload = reload
 
 
-    def reload_data(self):
+    def pull_data(self):
         """
         Read in data from the NS Databank API and save to file.
         """
@@ -41,31 +40,31 @@ class NSDocumentsDataset(Dataset):
             data_list.append(ns_documents)
         data = pd.concat(data_list, axis='rows')
 
-        # Save the data
-        data.to_csv(self.filepath, index=False)
+        return data
 
 
-    def process(self):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
         """
         # Add extra NS and country information based on the NS ID
-        self.data = self.data[['National Society ID', 'name', 'document_type', 'year', 'url']]
+        data = data[['National Society ID', 'name', 'document_type', 'year', 'url']]
         ns_info_mapper = NSInfoMapper()
         for column in self.index_columns:
-            self.data[column] = ns_info_mapper.map(data=self.data['National Society ID'], on='National Society ID', column=column, errors='raise')
+            data[column] = ns_info_mapper.map(data=data['National Society ID'], on='National Society ID', column=column, errors='raise')
 
         # Keep only the latest document for each document type and NS
-        self.data = self.data.dropna(subset=['National Society name', 'document_type', 'year'], how='any')\
-                             .sort_values(by=['year', 'name'], ascending=[False, True])\
-                             .drop_duplicates(subset=['National Society name', 'document_type'], keep='first')\
+        data = data.dropna(subset=['National Society name', 'document_type', 'year'], how='any')\
                              .sort_values(by=['National Society name', 'document_type'], ascending=True)\
-                             .rename(columns={'url': 'Link', 'document_type': 'Indicator', 'year': 'Year'})
-        self.data['Value'] = self.data['Indicator'].str.strip().str.replace('^Our', '', regex=True).str.strip()+' - '+self.data['Year'].astype(str)
-        self.data = self.data.loc[self.data['Indicator']!='Other']
+                             .rename(columns={'url': 'Value', 'document_type': 'Indicator', 'year': 'Year'})
+        data['Indicator'] = data['Indicator'].str.strip()
 
-        # Pivot the dataframe to have NSs as rows and indicators as columns
-        self.data = self.data.pivot(index=self.index_columns,
-                                    columns='Indicator',
-                                    values=['Value', 'Year', 'Link'])\
-                             .swaplevel(axis='columns')
+        # Drop columns which are not needed
+        data = data.drop(columns=['name'])
+
+        return data

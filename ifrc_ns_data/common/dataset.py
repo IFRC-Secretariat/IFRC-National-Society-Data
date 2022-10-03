@@ -113,8 +113,15 @@ class Dataset:
         data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
         data = data.loc[data['Indicator'].isin(rename_indicators.values())]
 
-        # Add the dataset name and order the columns
+        # Add the dataset name
         data['Dataset'] = self.name
+
+        # Order columns
+        columns_order = ['National Society name', 'National Society ID', 'Country', 'ISO3', 'Region', 'Indicator', 'Dataset', 'Value', 'Year']
+        missing_columns = [column for column in data.columns if column not in columns_order]
+        if missing_columns:
+            print(data)
+            raise ValueError(f'{missing_columns} missing from dataset')
         data = data[['National Society name', 'National Society ID', 'Country', 'ISO3', 'Region', 'Indicator', 'Dataset', 'Value', 'Year']]
 
         return data
