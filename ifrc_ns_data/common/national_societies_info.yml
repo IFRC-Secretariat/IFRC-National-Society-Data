@@ -555,7 +555,8 @@
   ISO2: KZ
   Region: Europe and Central Asia
   National Society ID: DKZ001
-  Alternative National Society names: []
+  Alternative National Society names:
+    - Red Crescent Society of the Republic of Kazakhstan
   Alternative country names: []
 - National Society name: Kenya Red Cross Society
   Country: Kenya

@@ -122,7 +122,7 @@ class Dataset:
         if missing_columns:
             print(data)
             raise ValueError(f'{missing_columns} missing from dataset')
-        data = data[['National Society name', 'National Society ID', 'Country', 'ISO3', 'Region', 'Indicator', 'Dataset', 'Value', 'Year']]
+        data = data[['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Dataset', 'Value', 'Year']]
 
         return data
 

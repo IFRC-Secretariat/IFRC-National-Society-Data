@@ -19,13 +19,12 @@ class INFORMRiskDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when pulled, and to read the dataset from.
     """
-    def __init__(self, filepath, reload=True):
+    def __init__(self):
         self.name = 'INFORM Risk'
-        super().__init__(filepath=filepath, reload=reload)
-        self.reload = reload
+        super().__init__()
 
 
-    def reload_data(self):
+    def pull_data(self):
         """
         Pull data from the INFORM API and save to file.
         """
@@ -47,7 +46,7 @@ class INFORMRiskDataset(Dataset):
 
         # Pull the data for each indicator and save in a pandas DataFrame
         data = pd.DataFrame()
-        for indicator in self.indicators:
+        for indicator in self.dataset_info['indicators']:
             response = requests.get(f'https://drmkc.jrc.ec.europa.eu/Inform-Index/API/InformAPI/countries/Scores/?WorkflowId={workflow_id}&IndicatorId={indicator["source_name"]}')
             response.raise_for_status()
 
@@ -57,23 +56,21 @@ class INFORMRiskDataset(Dataset):
             df_indicator['Year'] = year
             data = pd.concat([data, df_indicator])
 
-        # Save the data
-        data.to_csv(self.filepath, index=False)
+        return data
 
 
-    def process(self):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Map ISO3 codes to NS names and add extra columns
-        self.data['National Society name'] = NSInfoMapper().map_iso_to_ns(self.data['Iso3'])
+        data['National Society name'] = NSInfoMapper().map_iso_to_ns(data['Iso3'])
         extra_columns = [column for column in self.index_columns if column!='National Society name']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            self.data[column] = ns_info_mapper.map(data=self.data['National Society name'], on='National Society name', column=column)
+            data[column] = ns_info_mapper.map(data=data['National Society name'], on='National Society name', column=column)
 
-        # Get the latest values of each indicator for each NS
-        self.data = self.data.dropna(subset=['National Society name', 'Indicator', 'Value', 'Year'], how='any')\
-                             .pivot(index=self.index_columns, columns='Indicator', values=['Value', 'Year'])\
-                             .swaplevel(axis='columns')\
-                             .sort_index(axis='columns', level=0, sort_remaining=False)
+        # Set the indicator name and drop columns
+        data = data.drop(columns=['Iso3', 'IndicatorName', 'nodelevel', 'ValidityYear', 'Unit', 'Note'])
+
+        return data
