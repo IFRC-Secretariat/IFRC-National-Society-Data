@@ -127,7 +127,7 @@ YABC:
     Source: IFRC Youth
     Type: Internal
     Focal point: Amjad Saleem
-  indicators:
+  columns:
     - name: Number of YABC trainings to date
       source_name: number of YABC trainings to date
     - name: Number of peer educators
