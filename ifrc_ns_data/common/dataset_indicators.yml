@@ -95,33 +95,33 @@ OCAC:
     - name: OCAC year of last assessment
       source_name: Year
 
-NS Statutes:
+Statutes:
   meta:
-    Source: NS Statutes
+    Source: Statutes
     Type: Internal
     Focal point: Drina Karahasanovic
-  indicators:
-    - name: "NS Statutes: Statutes in force (Date of adoption)"
+  columns:
+    - name: "Statutes in force (Date of adoption)"
       source_name: Statutes in force (Date of adoption)
-    - name: "NS Statutes: Complementary frameworks (Internal regulations, Policies, CoC) (Titles, dates of adoption)"
+    - name: "Complementary frameworks (Internal regulations, Policies, CoC) (Titles, dates of adoption)"
       source_name: Complementary frameworks (Internal regulations, Policies, CoC) (Titles, dates of adoption)
-    - name: "NS Statutes: Recognition Act (Law or Decree) (Title, date of entry into force)"
+    - name: "Recognition Act (Law or Decree) (Title, date of entry into force)"
       source_name: Recognition Act (Law or Decree) (Title, date of entry into force)
-    - name: "NS Statutes: Draft/revised Statutes received by the JSC"
+    - name: "Draft/revised Statutes received by the JSC"
       source_name: Draft/revised Statutes received by the JSC
-    - name: "NS Statutes: NS progress towards compliance with the GD"
+    - name: "NS progress towards compliance with the GD"
       source_name: NS progress towards compliance with the GD
-    - name: "NS Statutes: Past exchanges with the JSC"
+    - name: "Past exchanges with the JSC"
       source_name: Past exchanges with the JSC
-    - name: "NS Statutes: Action/Follow-up required"
+    - name: "Action/Follow-up required"
       source_name: Action/Follow-up required
 
-NS Recognition Laws:
+Recognition Laws:
   meta:
-    Source: NS Recognition Laws
+    Source: Recognition Laws
     Type: Internal
     Focal point: Drina Karahasanovic
-  indicators:
+  columns:
     - name: NS recognition laws/ other regulations in force
       source_name: Law/other regulations in force
 

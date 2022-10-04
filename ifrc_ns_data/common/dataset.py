@@ -116,7 +116,7 @@ class Dataset:
         return data
 
 
-    def rename_columns(self, data, drop_others=True):
+    def rename_columns(self, data, drop_others=False):
         """
         Rename columns in the dataset using the names in the yml file.
         """

@@ -48,7 +48,7 @@ class NSContactsDataset(Dataset):
 
         # Rename and order columns
         data = data.rename(columns={'country': 'Country', 'iso_3': 'ISO3', 'NSO_ZON_name': 'Region'})
-        data = self.rename_columns(data)
+        data = self.rename_columns(data, drop_others=True)
         data = self.order_index_columns(data)
 
         return data

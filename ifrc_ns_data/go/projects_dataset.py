@@ -71,7 +71,7 @@ class ProjectsDataset(Dataset):
             raise ValueError('Dataset contains non-public data.')
 
         # Rename, order and select columns
-        data = self.rename_columns(data)
+        data = self.rename_columns(data, drop_others=True)
         data = self.order_index_columns(data)
 
         return data

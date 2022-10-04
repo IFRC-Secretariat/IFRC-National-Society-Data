@@ -70,7 +70,7 @@ class OperationsDataset(Dataset):
         data['funding'] = 100*(data['amount_funded']/data['amount_requested']).round(0)
 
         # Rename, order and select columns
-        data = self.rename_columns(data)
+        data = self.rename_columns(data, drop_others=True)
         data = self.order_index_columns(data)
 
         return data
