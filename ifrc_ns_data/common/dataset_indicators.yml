@@ -91,9 +91,6 @@ OCAC:
     Type: Internal
     Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
     Focal point: Roger Fischli
-  indicators:
-    - name: OCAC year of last assessment
-      source_name: Year
 
 Statutes:
   meta:

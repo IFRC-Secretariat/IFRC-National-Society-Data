@@ -94,7 +94,7 @@ class Dataset:
         raise NotImplementedError
 
 
-    def rename_indicators(self, data):
+    def rename_indicators(self, data, missing='ignore'):
         """
         Rename indicators in the 'Indicator' column in the dataset using the names in the yml file.
         """
@@ -102,16 +102,17 @@ class Dataset:
         rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.dataset_info['indicators']}
 
         # Raise an error if any indicators are missing from the dataset
-        missing_indicators = [indicator for indicator in rename_indicators if indicator not in data['Indicator'].unique()]
-        if missing_indicators:
-            raise KeyError(f"{missing_indicators} not found in columns")
+        if missing=='raise':
+            missing_indicators = [indicator for indicator in rename_indicators if indicator not in data['Indicator'].unique()]
+            if missing_indicators:
+                raise KeyError(f"{missing_indicators} not found in columns")
 
         # Rename and select indicators
         data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
         data = data.loc[data['Indicator'].isin(rename_indicators.values())]
 
         # Order columns
-        data = self.order_index_columns(data, other_columns=['Indicator', 'Dataset', 'Value', 'Year'], missing='raise')
+        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'], missing='raise')
 
         return data
 
@@ -149,11 +150,11 @@ class Dataset:
         # Create a list giving the required order of columns
         columns_order = self.index_columns
         if other_columns is not None:
-            if missing:
+            columns_order += other_columns
+            if missing=='raise':
                 missing_columns = [column for column in data.columns if column not in columns_order]
                 if missing_columns:
                     raise ValueError(f'{missing_columns} missing from dataset')
-            columns_order += other_columns
         else:
             columns_order+=[column for column in data.columns if column not in self.index_columns]
 

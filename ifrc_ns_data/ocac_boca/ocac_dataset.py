@@ -19,21 +19,20 @@ class OCACDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath):
+    def __init__(self, filepath, sheet_name):
         self.name = 'OCAC'
-        super().__init__(filepath=filepath, reload=False)
-        pass
+        super().__init__(filepath=filepath, sheet_name=sheet_name)
 
 
-    def process(self):
+    def process_data(self, data, filter_latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Process the data into a log format, with a row for each assessment
-        self.data = self.data.rename(columns={'Name': 'Indicator'})
-        self.data.loc[self.data['Indicator'].isnull(), 'Indicator'] = self.data['Code']
-        self.data['Indicator'] = self.data['Indicator'].str.strip()
-        self.data = self.data.drop(columns=['Code'])\
+        data = data.rename(columns={'Name': 'Indicator'})
+        data.loc[data['Indicator'].isnull(), 'Indicator'] = data['Code']
+        data['Indicator'] = data['Indicator'].str.strip()
+        data = data.drop(columns=['Code'])\
                              .set_index(['Indicator'])\
                              .dropna(how='all')\
                              .transpose()\
@@ -42,16 +41,18 @@ class OCACDataset(Dataset):
                              .rename(columns={'National Society': 'National Society name'})
 
         # Check that the NS names are consistent with the centralised names list, and add extra information
-        self.data['National Society name'] = NSInfoCleaner().clean_ns_names(self.data['National Society name'])
+        data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
         extra_columns = [column for column in self.index_columns if column!='National Society name']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            self.data[column] = ns_info_mapper.map(data=self.data['National Society name'], on='National Society name', column=column)
+            data[column] = ns_info_mapper.map(data=data['National Society name'], on='National Society name', column=column)
 
         # Keep only the latest assessment for each NS
-        self.data = self.data.sort_values(by=['National Society name', 'Year'], ascending=[True, False])\
-                             .drop_duplicates(subset=['National Society name'], keep='first')\
-                             .set_index(self.index_columns)
+        if filter_latest:
+            data = data.sort_values(by=['National Society name', 'Year'], ascending=[True, False])\
+                                 .drop_duplicates(subset=['National Society name'], keep='first')
 
-        # Add another column level
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['Value']])
+        # Order columns
+        data = self.order_index_columns(data)
+
+        return data

@@ -18,51 +18,58 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when pulled, and to read the dataset from.
     """
-    def __init__(self, filepath, reload=True):
+    def __init__(self):
         self.name = 'World Development Indicators'
-        super().__init__(filepath=filepath, reload=reload)
-        self.reload = reload
+        super().__init__()
 
 
-    def reload_data(self):
+    def pull_data(self):
         """
         Pull data from the World Bank API and save to file.
         """
         data = pd.DataFrame()
         page = 1; per_page = 1000
         while True:
-            api_indicators = ';'.join([indicator['source_name'] for indicator in self.indicators])
-            response = requests.get(url=f'https://api.worldbank.org/v2/country/all/indicator/{api_indicators}?source=2&page={page}&format=json&per_page={per_page}')
+            api_indicators = ';'.join([indicator['source_name'] for indicator in self.dataset_info['indicators']])
+            url = f'https://api.worldbank.org/v2/country/all/indicator/{api_indicators}?source=2&page={page}&format=json&per_page={per_page}'
+            print(f'Requesting page {page}', end=' ')
+            response = requests.get(url=url)
             data = pd.concat([data, pd.DataFrame(response.json()[1])])
-            if page == response.json()[0]['pages']: break
+            total_pages = response.json()[0]['pages']
+            print(f'out of {total_pages}')
+            if page == total_pages:
+                break
             page += 1
 
-        # Save the data
-        data.to_csv(self.filepath, index=False)
+        return data
 
 
-    def process(self):
+    def process_data(self, data, filter_latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Expand dict-type columns
         expand_columns = ['indicator', 'country']
-        self.data = DictColumnExpander().clean(data=self.data,
-                                               columns=expand_columns,
-                                               drop=True)
+        data = DictColumnExpander().clean(data=data, columns=['indicator', 'country'], drop=True)
 
         # Map ISO3 codes to NS names and add extra columns
-        self.data['National Society name'] = NSInfoMapper().map_iso_to_ns(data=self.data['countryiso3code'])
+        data['National Society name'] = NSInfoMapper().map_iso_to_ns(data=data['countryiso3code'])
         extra_columns = [column for column in self.index_columns if column!='National Society name']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            self.data[column] = ns_info_mapper.map(data=self.data['National Society name'], on='National Society name', column=column)
+            data[column] = ns_info_mapper.map(data=data['National Society name'], on='National Society name', column=column)
+
+        # The data contains regional and world-level information, drop this
+        data = data.dropna(subset=['National Society name', 'indicator.value', 'value', 'date'], how='any')\
+                   .rename(columns={'date': 'Year', 'indicator.id': 'Indicator', 'value': 'Value'}, errors='raise')\
+                   .drop(columns=['countryiso3code', 'country.id', 'country.value', 'unit', 'obs_status', 'decimal', 'scale', 'indicator.value'])
 
         # Get the latest values of each indicator for each NS
-        self.data = self.data.dropna(subset=['National Society name', 'indicator.value', 'value', 'date'], how='any')\
-                             .sort_values(by=['National Society name', 'indicator.value', 'date'], ascending=[True, True, False])\
-                             .drop_duplicates(subset=['National Society name', 'indicator.value'], keep='first')\
-                             .rename(columns={'date': 'Year', 'indicator.id': 'Indicator', 'value': 'Value'})\
-                             .pivot(index=self.index_columns, columns='Indicator', values=['Value', 'Year'])\
-                             .swaplevel(axis='columns')\
-                             .sort_index(axis='columns', level=0, sort_remaining=False)
+        if filter_latest:
+            data = data.sort_values(by=['National Society name', 'indicator.value', 'Year'], ascending=[True, True, False])\
+                       .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
+
+        # Select and rename indicators
+        data = self.rename_indicators(data)
+
+        return data

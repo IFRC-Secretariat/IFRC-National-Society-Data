@@ -269,7 +269,7 @@ class DictColumnExpander:
     def clean(self, data, columns, drop=False):
         """
         Expand the dict-type column into multiple columns
-        Names of the new columns will be in the format column+dict_key.
+        Names of the new columns will be in the format column.dict_key.
 
         Parameters
         ----------
@@ -295,7 +295,7 @@ class DictColumnExpander:
             expanded_column.rename(columns={dict_key: f'{column}.{dict_key}' for dict_key in expanded_column.columns},
                                    errors='raise',
                                    inplace=True)
-            data = pd.concat([data, expanded_column], axis=1)
+            data = pd.concat([data.reset_index(drop=True), expanded_column], axis=1)
             if drop_column:
                 data.drop(columns=[column], inplace=True)
 
