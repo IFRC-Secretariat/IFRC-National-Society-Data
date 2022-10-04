@@ -63,7 +63,7 @@ class FDRSDataset(Dataset):
 
         # Map in country and region information
         for column in self.index_columns:
-            data[column] = NSInfoMapper().map(data['National Society ID'], on='National Society ID', column=column)
+            data[column] = NSInfoMapper().map(data['National Society ID'], map_from='National Society ID', map_to=column)
 
         # Replace False for nan for boolean indicators, so that they are dropped in the next step
         get_latest_columns = ['KPI_hasFinancialStatement', 'audited', 'ar', 'sp']
@@ -72,12 +72,14 @@ class FDRSDataset(Dataset):
 
         # Convert NS supported and receiving support lists from NS IDs to NS names
         def split_convert_ns_ids(x):
-            ns_ids = x.split(',')
-            ns_names = DatabankNSIDMapper(api_key=self.api_key).map(ns_ids)
+            ns_ids = [item.strip() for item in x.replace(';',',').split(',') if item.strip()!='']
+            ns_names = DatabankNSIDMapper(api_key=self.api_key).map(ns_ids, clean_names=True)
             return ', '.join(ns_names)
+        data['Value'] = data['Value'].replace('One of our staff was sent for support to DRC-Congo on a surge', 'Red Cross of the Democratic Republic of the Congo')
         data['Value'] = data.apply(lambda row: split_convert_ns_ids(row['Value']) if ((row['Indicator'] in ['supported1', 'received_support1']) and (row['Value']==row['Value'])) else row['Value'], axis=1)
 
         # Select and rename indicators
         data = self.rename_indicators(data)
+        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
 
         return data

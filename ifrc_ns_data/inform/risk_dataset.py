@@ -64,16 +64,17 @@ class INFORMRiskDataset(Dataset):
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Map ISO3 codes to NS names and add extra columns
-        data['National Society name'] = NSInfoMapper().map_iso_to_ns(data['Iso3'])
-        extra_columns = [column for column in self.index_columns if column!='National Society name']
         ns_info_mapper = NSInfoMapper()
+        data['National Society name'] = ns_info_mapper.map_iso_to_ns(data['Iso3'])
+        extra_columns = [column for column in self.index_columns if column!='National Society name']
         for column in extra_columns:
-            data[column] = ns_info_mapper.map(data=data['National Society name'], on='National Society name', column=column)
+            data[column] = ns_info_mapper.map(data=data['National Society name'], map_from='National Society name', map_to=column)
 
         # Set the indicator name and drop columns
         data = data.drop(columns=['Iso3', 'IndicatorName', 'nodelevel', 'ValidityYear', 'Unit', 'Note'])
 
         # Select and rename indicators
         data = self.rename_indicators(data)
+        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
 
         return data

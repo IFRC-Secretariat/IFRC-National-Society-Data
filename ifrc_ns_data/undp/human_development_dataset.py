@@ -56,7 +56,7 @@ class HumanDevelopmentDataset(Dataset):
         extra_columns = [column for column in self.index_columns if column!='National Society name']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            data[column] = ns_info_mapper.map(data=data['National Society name'], on='National Society name', column=column)
+            data[column] = ns_info_mapper.map(data=data['National Society name'], map_from='National Society name', map_to=column)
 
         # Melt the data into a log format
         data = data.drop(columns=['iso3'])\
@@ -71,5 +71,6 @@ class HumanDevelopmentDataset(Dataset):
 
         # Select and rename indicators
         data = self.rename_indicators(data)
+        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
 
         return data

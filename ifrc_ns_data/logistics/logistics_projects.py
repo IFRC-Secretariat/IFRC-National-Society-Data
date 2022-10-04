@@ -37,7 +37,7 @@ class LogisticsProjectsDataset(Dataset):
         extra_columns = [column for column in self.index_columns if column!='Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            data[column] = ns_info_mapper.map(data=data['Country'], on='Country', column=column)
+            data[column] = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)
 
         # Order the NS index columns
         data = self.order_index_columns(data)

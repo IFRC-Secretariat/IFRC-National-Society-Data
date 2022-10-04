@@ -129,7 +129,9 @@
   ISO2: BE
   Region: Europe and Central Asia
   National Society ID: DBE001
-  Alternative National Society names: []
+  Alternative National Society names:
+  - belg
+  - Belgian RC
   Alternative country names: []
 - National Society name: Belize Red Cross Society
   Country: Belize
@@ -179,7 +181,8 @@
   ISO2: GB
   Region: Europe and Central Asia
   National Society ID: DGB001
-  Alternative National Society names: []
+  Alternative National Society names:
+  - British RC
   Alternative country names: []
 - National Society name: Brunei Darussalam Red Crescent Society
   Country: Brunei Darussalam
@@ -317,7 +320,8 @@
   ISO2: DK
   Region: Europe and Central Asia
   National Society ID: DDK001
-  Alternative National Society names: []
+  Alternative National Society names:
+  - Danish RC
   Alternative country names: []
 - National Society name: Dominica Red Cross Society
   Country: Dominica
@@ -384,7 +388,8 @@
   ISO2: FI
   Region: Europe and Central Asia
   National Society ID: DFI001
-  Alternative National Society names: []
+  Alternative National Society names:
+  - Finnish RC
   Alternative country names: []
 - National Society name: French Red Cross
   Country: France
@@ -450,7 +455,8 @@
   Region: Europe and Central Asia
   National Society ID: DGR001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names:
+  - Grecia
 - National Society name: Honduran Red Cross
   Country: Honduras
   ISO3: HND
@@ -606,7 +612,8 @@
   Region: Middle East and North Africa
   National Society ID: DLB001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names:
+  - Libano
 - National Society name: Lesotho Red Cross Society
   Country: Lesotho
   ISO3: LSO
@@ -871,7 +878,8 @@
   Region: Asia Pacific
   National Society ID: DPH001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names:
+  - Filipinas
 - National Society name: Polish Red Cross
   Country: Poland
   ISO3: POL
@@ -1119,7 +1127,8 @@
   Region: Africa
   National Society ID: DRW001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names:
+  - Ruanda
 - National Society name: Saint Kitts and Nevis Red Cross Society
   Country: Saint Kitts and Nevis
   ISO3: KNA
@@ -1367,6 +1376,7 @@
   Alternative National Society names: []
   Alternative country names:
   - Palestine
+  - Territorios Palestinos
 - National Society name: Red Cross of North Macedonia
   Country: North Macedonia
   ISO3: MKD

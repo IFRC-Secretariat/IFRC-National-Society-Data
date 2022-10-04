@@ -56,7 +56,7 @@ class NSDocumentsDataset(Dataset):
         data = data[['National Society ID', 'name', 'document_type', 'year', 'url']]
         ns_info_mapper = NSInfoMapper()
         for column in self.index_columns:
-            data[column] = ns_info_mapper.map(data=data['National Society ID'], on='National Society ID', column=column, errors='raise')
+            data[column] = ns_info_mapper.map(data=data['National Society ID'], map_from='National Society ID', map_to=column, errors='raise')
 
         # Keep only the latest document for each document type and NS
         data = data.dropna(subset=['National Society name', 'document_type', 'year'], how='any')\
@@ -69,5 +69,6 @@ class NSDocumentsDataset(Dataset):
 
         # Select and rename indicators
         data = self.rename_indicators(data)
+        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
 
         return data

@@ -62,7 +62,7 @@ class OperationsDataset(Dataset):
         data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
         new_columns = [column for column in self.index_columns if column!='National Society name']
         for column in new_columns:
-            data[column] = NSInfoMapper().map(data['National Society name'], on='National Society name', column=column)
+            data[column] = NSInfoMapper().map(data['National Society name'], map_from='National Society name', map_to=column)
 
         # Select only active operations
         data = data.loc[data['status_display']=='Active']

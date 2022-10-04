@@ -61,7 +61,7 @@ class DatabankNSIDMapper:
         self.api_key = api_key
 
 
-    def map(self, data, reverse=False):
+    def map(self, data, reverse=False, clean_names=False):
         """
         Convert National Society IDs from the NS Databank, to National Society names.
 
@@ -72,6 +72,9 @@ class DatabankNSIDMapper:
 
         reverse : boolean (default=False)
             If True, map NS names to NS IDs.
+
+        fix_unknowns : boolean (default=False)
+            If True, try to clean and convert unknown NS IDs/ names by checking if they are (alternate) NS names/ IDs.
         """
         # Pull the data from the databank API
         if DatabankNSIDMapper.api_response is None:
@@ -82,14 +85,27 @@ class DatabankNSIDMapper:
         ns_ids_names_map = pd.DataFrame(DatabankNSIDMapper.api_response.json()).set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
         if reverse: ns_ids_names_map = {v: k for k, v in ns_ids_names_map.items()}
 
+        # Try to detect and clean NS names and convert them to IDs
+        unknown_ids = list(set(data).difference(ns_ids_names_map.keys()))
+        if clean_names and unknown_ids:
+            # Clean and map countries to NSs, then clean NSs, and map to NS IDs
+            ns_info_mapper = NSInfoMapper()
+            data = ns_info_mapper.map_country_to_ns(data, errors='ignore')
+            data = NSInfoCleaner().clean_ns_names(data, errors='ignore')
+            if not reverse:
+                data = NSInfoMapper().map_ns_to_nsid(data, errors='ignore')
+
         # Check if there are any unkown IDs
-        unknown_ids = set(data).difference(ns_ids_names_map.keys())
+        unknown_ids = list(set(data).difference(ns_ids_names_map.keys()))
         if unknown_ids:
-            warnings.warn(f'Unknown NSs in data will not be converted: {unknown_ids}')
+            if reverse:
+                warnings.warn(f'{unknown_ids} unknown NS names cannot be converted to IDs')
+            else:
+                warnings.warn(f'{unknown_ids} unknown NS IDs cannot be converted to NS names')
 
         # Map the names depending on the data type, and return
         if isinstance(data, pd.Series):
-            results = data.map(ns_ids_names_map)
+            results = data.map(ns_ids_names_map, na_action='ignore')
         elif isinstance(data, list):
             results = [ns_ids_names_map[ns_id] if (ns_id in ns_ids_names_map) else ns_id for ns_id in data]
         else:
@@ -114,8 +130,8 @@ class NSInfoCleaner:
 
         Parameters
         ----------
-        data : pandas Series (required)
-            Series of a pandas DataFrame to be cleaned.
+        data : pandas Series or list (required)
+            List or series of a pandas DataFrame to be cleaned.
 
         column : string (required)
             Name of the column to be used to compare the data to, to clean.
@@ -125,10 +141,13 @@ class NSInfoCleaner:
         """
         ns_info = NationalSocietiesInfo().data
 
-        # Run some basic cleaning
-        data = data.str.strip()
+        # Strip whitespace
+        if isinstance(data, pd.Series):
+            data = data.str.strip()
+        else:
+            data = list(map(str.strip, data))
 
-        # Map the list of alternative names including country names to the main name
+        # Map the list of known alternative names including country names to the main name
         alternative_names = {'National Society name': 'Alternative National Society names', 'Country': 'Alternative country names'}
         if column not in alternative_names:
             raise ValueError(f'Unrecognised column name for cleaning {column}')
@@ -136,11 +155,17 @@ class NSInfoCleaner:
         ns_clean_map = {}
         for ns in ns_info:
             for alt_name in ns[alt_column]:
-                ns_clean_map[alt_name] = ns[column]
-        data = data.replace(ns_clean_map)
+                ns_clean_map[alt_name.lower()] = ns[column]
+        if isinstance(data, pd.Series):
+            data = data.str.lower().replace(ns_clean_map)
+        else:
+            data = [ns_clean_map[item.lower()] if item.lower() in ns_clean_map else item for item in data]
 
         # Check for unrecognised values
-        unrecognised_values = set(data.unique()).difference(set([ns[column] for ns in ns_info]))
+        if isinstance(data, pd.Series):
+            unrecognised_values = set(data.unique()).difference(set([ns[column] for ns in ns_info]))
+        else:
+            unrecognised_values = set(data).difference(set([ns[column] for ns in ns_info]))
         if unrecognised_values:
             if errors=='ignore':
                 pass
@@ -172,7 +197,7 @@ class NSInfoCleaner:
 
     def clean_country_names(self, data, errors='raise'):
         """
-        Compare the NS names in the provided data series to a known list of National Society names.
+        Compare the country names in the provided data series to a known list of country names.
 
         Parameters
         ----------
@@ -194,42 +219,50 @@ class NSInfoMapper:
         pass
 
 
-    def map(self, data, on, column, errors='warn'):
+    def map(self, data, map_from, map_to, errors='warn'):
         """
-        Merge NS information into the dataset.
+        Map NS information from one variable to another.
 
         Parameters
         ----------
-        data : pandas Series (required)
-            Pandas Series.
+        data : list or pandas Series (required)
+            List or pandas Series to be mapped.
 
-        on : string (required)
-            Column to use to merge the data onto.
+        map_from : string (required)
+            Name of the variable to map from. Can be one of ['National Society name', 'Country', 'ISO3', 'ISO2', 'Region', 'National Society ID']
 
-        column : string (required)
-            Name of the column to map onto the data.
+        map_to : string (required)
+            Name of the column to map onto the data. Can be one of ['National Society name', 'Country', 'ISO3', 'ISO2', 'Region', 'National Society ID']
 
         errors : string (default='warn')
             What to do with errors: raise, warn, or ignore.
         """
         # Map the list of alternative names to the main name
         ns_info_data = NationalSocietiesInfo().data
-        ns_map = {ns[on]: ns[column] for ns in ns_info_data}
+        ns_map = {ns[map_from].lower(): ns[map_to] for ns in ns_info_data if ns[map_from] is not None}
 
         # Check if there are any unknown values
-        unknown_values = [value for value in data.unique() if (value==value) and (value not in ns_map)]
+        if isinstance(data, pd.Series):
+            unknown_values = [value for value in data.unique() if (value==value) and (value.lower() not in ns_map)]
+        else:
+            unknown_values = [value for value in list(set(data)) if (value==value) and (value.lower() not in ns_map)]
         if unknown_values:
             if errors=='ignore':
                 pass
             elif errors=='warn':
-                warnings.warn(f'Unknown {on} values in data will not be converted: {unknown_values}')
+                warnings.warn(f'Unknown {map_from} values in data will not be converted to {map_to}: {unknown_values}')
             elif errors=='raise':
-                raise ValueError(f'Unknown {on} values in data will not be converted: {unknown_values}')
+                raise ValueError(f'Unknown {map_from} values in data will not be converted to {map_to}: {unknown_values}')
             else:
                 raise ValueError(f'Unrecognised values for parameter errors: {errors}')
 
         # Map the NS names to the NS IDs in the provided data
-        return data.map(ns_map)
+        if isinstance(data, pd.Series):
+            mapped_data = data.str.lower().map(ns_map, na_action='ignore')
+        else:
+            mapped_data = [ns_map[item.lower()] if item.lower() in ns_map else item for item in data]
+
+        return mapped_data
 
 
     def map_iso_to_ns(self, data, errors='ignore'):
@@ -238,10 +271,10 @@ class NSInfoMapper:
 
         Parameters
         ----------
-        data : pandas Series (required)
-            Series of a pandas DataFrame to be mapped to National Society names.
+        data : list or pandas Series (required)
+            List of series of a pandas DataFrame to be mapped to National Society names.
         """
-        mapped_data = self.map(data=data, on='ISO3', column='National Society name', errors=errors)
+        mapped_data = self.map(data=data, map_from='ISO3', map_to='National Society name', errors=errors)
         return mapped_data
 
 
@@ -251,10 +284,44 @@ class NSInfoMapper:
 
         Parameters
         ----------
-        data : pandas Series (required)
-            Series of a pandas DataFrame to be mapped to National Society names.
+        data : list or pandas Series (required)
+            List or series of a pandas DataFrame to be mapped to National Society names.
         """
-        mapped_data = self.map(data=data, on='National Society ID', column='National Society name', errors=errors)
+        mapped_data = self.map(data=data, map_from='National Society ID', map_to='National Society name', errors=errors)
+        return mapped_data
+
+
+    def map_ns_to_nsid(self, data, clean=True, errors='raise'):
+        """
+        Map NS names to NS IDs.
+
+        Parameters
+        ----------
+        data : list or pandas Series (required)
+            List or series of a pandas DataFrame to be mapped to National Society IDs.
+        """
+        # Clean the NS names and then map to NS IDs
+        if clean:
+            data = NSInfoCleaner().clean_ns_names(data, errors='ignore')
+        mapped_data = self.map(data=data, map_from='National Society name', map_to='National Society ID', errors=errors)
+
+        return mapped_data
+
+
+    def map_country_to_ns(self, data, clean=True, errors='raise'):
+        """
+        Map country names to NS names.
+
+        Parameters
+        ----------
+        data : list or pandas Series (required)
+            List or series of a pandas DataFrame to be mapped to National Society names.
+        """
+        # Clean the country names and then map to NS IDs
+        if clean:
+            data = NSInfoCleaner().clean_country_names(data, errors='ignore')
+        mapped_data = self.map(data=data, map_from='Country', map_to='National Society name', errors=errors)
+
         return mapped_data
 
 

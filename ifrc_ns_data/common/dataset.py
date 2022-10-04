@@ -97,7 +97,7 @@ class Dataset:
         raise NotImplementedError
 
 
-    def rename_indicators(self, data, missing='ignore'):
+    def rename_indicators(self, data, missing='raise'):
         """
         Rename indicators in the 'Indicator' column in the dataset using the names in the yml file.
 
@@ -106,8 +106,8 @@ class Dataset:
         data : pandas DataFrame (required)
             Dataset to rename indicators in.
 
-        missing : string (default='ignore')
-            What to do with indicators which are in the rename list but not in the dataset. If 'ignore' then they are ignored, if 'raise' then an error is raised.
+        missing : string (default='raise')
+            If 'raise', raise an error if there are indicators in rename_indicators which are not in the dataset.
         """
         # Get a map of indicator current names to verbose names
         rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.dataset_info['indicators']}
@@ -116,14 +116,11 @@ class Dataset:
         if missing=='raise':
             missing_indicators = [indicator for indicator in rename_indicators if indicator not in data['Indicator'].unique()]
             if missing_indicators:
-                raise KeyError(f"{missing_indicators} not found in columns")
+                raise KeyError(f"{missing_indicators} not found in dataset indicators")
 
         # Rename and select indicators
         data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
         data = data.loc[data['Indicator'].isin(rename_indicators.values())]
-
-        # Order columns
-        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'], missing='raise')
 
         return data
 
@@ -151,7 +148,7 @@ class Dataset:
         return data
 
 
-    def order_index_columns(self, data, other_columns=None, missing='ignore'):
+    def order_index_columns(self, data, other_columns=None, drop_others=False):
         """
         Move the index columns containing NS information to the front of the dataset.
 
@@ -163,19 +160,17 @@ class Dataset:
         other_columns : list (default=None)
             If not None, this will be used to order the other columns following the index columns.
 
-        missing : string (default='ignore')
-            If other_columns is not None and missing is 'raise' then an error will be raised if there are columns in data which are not in other_columns.
+        drop_others : bool (default=False)
+            If other_columns is not None and drop_others is True, drop columns which are not specified in other_columns or are index columns.
         """
         # Create a list giving the required order of columns
         columns_order = self.index_columns
         if other_columns is not None:
             columns_order += other_columns
-            if missing=='raise':
-                missing_columns = [column for column in data.columns if column not in columns_order]
-                if missing_columns:
-                    raise ValueError(f'{missing_columns} missing from dataset')
+            if not drop_others:
+                columns_order+=[column for column in data.columns if column not in columns_order]
         else:
-            columns_order+=[column for column in data.columns if column not in self.index_columns]
+            columns_order+=[column for column in data.columns if column not in columns_order]
 
         # Order columns
         data = data[columns_order]

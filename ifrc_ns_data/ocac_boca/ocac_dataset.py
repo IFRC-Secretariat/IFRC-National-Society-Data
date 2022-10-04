@@ -45,7 +45,7 @@ class OCACDataset(Dataset):
         extra_columns = [column for column in self.index_columns if column!='National Society name']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            data[column] = ns_info_mapper.map(data=data['National Society name'], on='National Society name', column=column)
+            data[column] = ns_info_mapper.map(data=data['National Society name'], map_from='National Society name', map_to=column)
 
         # Keep only the latest assessment for each NS
         if filter_latest:
