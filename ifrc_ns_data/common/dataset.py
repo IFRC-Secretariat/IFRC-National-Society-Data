@@ -14,7 +14,10 @@ class Dataset:
     Parameters
     ----------
     filepath : string (default=None)
-        If reading from file, the location of the source file data.
+        If reading from file, this is the location of the source file data. This is required for datasets which are not pulled from elsewhere (e.g. API).
+
+    sheet_name : string (default=None)
+        Required when the filepath is a path to an Excel document.
     """
     def __init__(self, filepath=None, sheet_name=None):
         self.filepath = filepath
@@ -97,6 +100,14 @@ class Dataset:
     def rename_indicators(self, data, missing='ignore'):
         """
         Rename indicators in the 'Indicator' column in the dataset using the names in the yml file.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Dataset to rename indicators in.
+
+        missing : string (default='ignore')
+            What to do with indicators which are in the rename list but not in the dataset. If 'ignore' then they are ignored, if 'raise' then an error is raised.
         """
         # Get a map of indicator current names to verbose names
         rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.dataset_info['indicators']}
@@ -120,6 +131,14 @@ class Dataset:
     def rename_columns(self, data, drop_others=False):
         """
         Rename columns in the dataset using the names in the yml file.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Dataset to rename the columns of.
+
+        drop_others : bool (default=False)
+            If True, then columns which are not index columns and which not in the dataset_info yml file will be dropped.
         """
         # Get a map of indicator current names to verbose names, and rename
         rename_columns = {column['source_name']: column['name'] for column in self.dataset_info['columns']}
@@ -167,6 +186,11 @@ class Dataset:
     def filter_latest(self, data):
         """
         Filter the dataset to only return the latest data for each National Society for each indicator.
+
+        Parameters
+        ----------
+        data : pandas DataFrame
+            Dataset to filter.
         """
         # Keep only the latest values for each indicator: keep the smallest value if there are duplicates
         data = data.sort_values(by=['Year', 'Value'], ascending=[False, True])\
