@@ -18,6 +18,7 @@ class Dataset:
     """
     def __init__(self, filepath=None, sheet_name=None):
         self.filepath = filepath
+        self.sheet_name = sheet_name
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
         self.dataset_info = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))[self.name]
 
@@ -40,20 +41,15 @@ class Dataset:
         return dataset_info['indicators']
 
 
-    def get_data(self, latest=False):
+    def get_data(self):
         """
         Pull the raw data, process it, and return the final dataset.
 
         Parameters
         ----------
-        latest : bool (default=False)
-            If True, only the most recent data for each NS and indicator is returned.
         """
         raw_data = self.load_data()
         processed_data = self.process_data(data=raw_data)
-        processed_data = self.process_common_data(data=processed_data)
-        if latest:
-            processed_data = self.filter_latest(data=processed_data)
 
         return processed_data
 
@@ -97,7 +93,7 @@ class Dataset:
         raise NotImplementedError
 
 
-    def process_common_data(self, data):
+    def process_indicator_data(self, data):
         """
         Process the dataset in a way that is common to all of the datasets.
         """
@@ -117,12 +113,39 @@ class Dataset:
         data['Dataset'] = self.name
 
         # Order columns
-        columns_order = ['National Society name', 'National Society ID', 'Country', 'ISO3', 'Region', 'Indicator', 'Dataset', 'Value', 'Year']
-        missing_columns = [column for column in data.columns if column not in columns_order]
-        if missing_columns:
-            print(data)
-            raise ValueError(f'{missing_columns} missing from dataset')
-        data = data[['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Dataset', 'Value', 'Year']]
+        data = self.order_index_columns(data, other_columns=['Indicator', 'Dataset', 'Value', 'Year'], missing='raise')
+
+        return data
+
+
+    def order_index_columns(self, data, other_columns=None, missing='ignore'):
+        """
+        Move the index columns containing NS information to the front of the dataset.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Dataset to order the columns of.
+
+        other_columns : list (default=None)
+            If not None, this will be used to order the other columns following the index columns.
+
+        missing : string (default='ignore')
+            If other_columns is not None and missing is 'raise' then an error will be raised if there are columns in data which are not in other_columns.
+        """
+        # Create a list giving the required order of columns
+        columns_order = self.index_columns
+        if other_columns is not None:
+            if missing:
+                missing_columns = [column for column in data.columns if column not in columns_order]
+                if missing_columns:
+                    raise ValueError(f'{missing_columns} missing from dataset')
+            columns_order += other_columns
+        else:
+            columns_order+=[column for column in data.columns if column not in self.index_columns]
+
+        # Order columns
+        data = data[columns_order]
 
         return data
 

@@ -73,4 +73,7 @@ class INFORMRiskDataset(Dataset):
         # Set the indicator name and drop columns
         data = data.drop(columns=['Iso3', 'IndicatorName', 'nodelevel', 'ValidityYear', 'Unit', 'Note'])
 
+        # Common processing for indicator-type datasets
+        data = self.process_indicator_data(data)
+
         return data

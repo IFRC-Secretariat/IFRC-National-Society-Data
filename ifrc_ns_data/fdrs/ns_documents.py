@@ -67,4 +67,7 @@ class NSDocumentsDataset(Dataset):
         # Drop columns which are not needed
         data = data.drop(columns=['name'])
 
+        # Common processing for indicator-type datasets
+        data = self.process_indicator_data(data)
+
         return data

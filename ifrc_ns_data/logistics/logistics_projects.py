@@ -19,26 +19,27 @@ class LogisticsProjectsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath):
+    def __init__(self, filepath, sheet_name):
         self.name = 'Logistics Projects'
-        super().__init__(filepath=filepath, reload=False, sheet_name='Append')
+        super().__init__(filepath=filepath, sheet_name=sheet_name)
         pass
 
 
-    def process(self):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Clean the data
-        self.data = self.data.drop(columns=['Region']).dropna(how='all')
+        data = data.drop(columns=['Region']).dropna(how='all')
 
         # Clean the country column and map on extra information
-        self.data['Country'] = NSInfoCleaner().clean_country_names(self.data['Country'])
+        data['Country'] = NSInfoCleaner().clean_country_names(data['Country'])
         extra_columns = [column for column in self.index_columns if column!='Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            self.data[column] = ns_info_mapper.map(data=self.data['Country'], on='Country', column=column)
+            data[column] = ns_info_mapper.map(data=data['Country'], on='Country', column=column)
 
-        # Add another column level
-        self.data.set_index(self.index_columns, inplace=True)
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['Value']], names=['Indicator', None])
+        # Order the NS index columns
+        data = self.order_index_columns(data)
+
+        return data

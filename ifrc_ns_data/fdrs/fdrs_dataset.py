@@ -77,4 +77,7 @@ class FDRSDataset(Dataset):
             return ', '.join(ns_names)
         data['Value'] = data.apply(lambda row: split_convert_ns_ids(row['Value']) if ((row['Indicator'] in ['supported1', 'received_support1']) and (row['Value']==row['Value'])) else row['Value'], axis=1)
 
+        # Common processing for indicator-type datasets
+        data = self.process_indicator_data(data)
+
         return data
