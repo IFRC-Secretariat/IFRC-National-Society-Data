@@ -1,1 +1,1 @@
-from ifrc_ns_data.ns_contacts.ns_contacts_dataset import NSContactsDataset
+from .ns_contacts_dataset import NSContactsDataset

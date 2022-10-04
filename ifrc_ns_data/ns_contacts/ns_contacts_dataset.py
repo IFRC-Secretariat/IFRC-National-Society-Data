@@ -20,14 +20,13 @@ class NSContactsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, api_key, reload=True):
+    def __init__(self, api_key):
         self.name = 'NS Contacts'
-        super().__init__(filepath=filepath, reload=reload)
+        super().__init__()
         self.api_key = api_key
-        self.reload = reload
 
 
-    def reload_data(self):
+    def pull_data(self):
         """
         Read in data from the NS Databank API and save to file, or read in as a CSV file from the given filepath.
         """
@@ -36,18 +35,20 @@ class NSContactsDataset(Dataset):
         response.raise_for_status()
         data = pd.DataFrame(response.json())
 
-        # Save the data
-        data.to_csv(self.filepath, index=False)
+        return data
 
 
-    def process(self):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
         """
         # Make sure the NS names agree with the central list
-        self.data.rename(columns={'NSO_DON_name': 'National Society name'}, errors='raise', inplace=True)
-        self.data['National Society name'] = NSInfoCleaner().clean_ns_names(self.data['National Society name'])
-        self.data.set_index('National Society name', inplace=True)
+        data.rename(columns={'NSO_DON_name': 'National Society name'}, errors='raise', inplace=True)
+        data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
 
-        # Add another column level
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['Value']])
+        # Rename and order columns
+        data = data.rename(columns={'country': 'Country', 'iso_3': 'ISO3', 'NSO_ZON_name': 'Region'})
+        data = self.rename_columns(data)
+        data = self.order_index_columns(data)
+
+        return data

@@ -1,11 +1,15 @@
 NS Contacts:
-  indicators:
-    - name: Country
-      source_name: country
-    - name: ISO3
-      source_name: iso_3
-    - name: Region name
-      source_name: NSO_ZON_name
+  columns:
+    - name: Currency
+      source_name: cur_code
+    - name: URL
+      source_name: url
+    - name: Facebook
+      source_name: facebook
+    - name: Twitter
+      source_name: twitter
+    - name: Other social
+      source_name: othersocial
 
 FDRS:
   meta:
