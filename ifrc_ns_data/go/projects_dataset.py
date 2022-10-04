@@ -19,13 +19,12 @@ class ProjectsDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, reload=True):
+    def __init__(self):
         self.name = 'GO Projects'
-        super().__init__(filepath=filepath, reload=reload)
-        self.reload = reload
+        super().__init__()
 
 
-    def reload_data(self):
+    def pull_data(self):
         """
         Read in data from the IFRC GO API and save to file.
         """
@@ -39,44 +38,40 @@ class ProjectsDataset(Dataset):
             next_url = response.json()['next']
         data = pd.DataFrame(data)
 
-        # Save the data
-        data.to_csv(self.filepath, index=False)
+        return data
 
 
-    def process(self):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
         Process the data into a NS indicator format.
         """
         # Expand dict-type columns
         expand_columns = ['project_country_detail', 'dtype_detail', 'event_detail', 'reporting_ns_detail']
-        self.data = DictColumnExpander().clean(data=self.data,
+        data = DictColumnExpander().clean(data=data,
                                                columns=expand_columns,
                                                drop=True)
 
         # Convert the date type columns to pandas datetimes
         for column in ['start_date', 'end_date']:
-            self.data[column] = pd.to_datetime(self.data[column], format='%Y-%m-%d')
+            data[column] = pd.to_datetime(data[column], format='%Y-%m-%d')
 
         # Keep only data with a NS specified
-        self.data = self.data.rename(columns={'project_country_detail.society_name': 'National Society name'})\
+        data = data.rename(columns={'project_country_detail.society_name': 'National Society name'})\
                              .dropna(subset=['National Society name'])
 
         # Clean NS names and add additional NS information
-        self.data['National Society name'] = NSInfoCleaner().clean_ns_names(self.data['National Society name'])
+        data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
         new_columns = [column for column in self.index_columns if column!='National Society name']
         for column in new_columns:
-            self.data[column] = NSInfoMapper().map(self.data['National Society name'], on='National Society name', column=column)
+            data[column] = NSInfoMapper().map(data['National Society name'], on='National Society name', column=column)
 
         # Check all data is public, and select only ongoing projects
-        if self.data['visibility'].unique() != ['public']:
+        if data['visibility'].unique() != ['public']:
             raise ValueError('Dataset contains non-public data.')
-        self.data = self.data.loc[self.data['status_display']=='Ongoing']
 
-        # Concatenate the columns to list multiple emergencies in each cell
-        self.data = self.data.sort_values(by='modified_at', ascending=False)\
-                              .drop_duplicates(subset=['National Society name', 'name'], keep='first')\
-                              .groupby(self.index_columns).agg(lambda x: '\n'.join([str(item) for item in x]))
+        # Rename, order and select columns
+        data = self.rename_columns(data)
+        data = self.order_index_columns(data)
 
-        # Add another column level
-        self.data.columns = pd.MultiIndex.from_product([self.data.columns, ['Value']], names=['Indicator', None])
+        return data

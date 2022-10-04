@@ -50,6 +50,7 @@ class Dataset:
         """
         raw_data = self.load_data()
         processed_data = self.process_data(data=raw_data)
+        processed_data['Dataset'] = self.name
 
         return processed_data
 
@@ -93,9 +94,9 @@ class Dataset:
         raise NotImplementedError
 
 
-    def process_indicator_data(self, data):
+    def rename_indicators(self, data):
         """
-        Process the dataset in a way that is common to all of the datasets.
+        Rename indicators in the 'Indicator' column in the dataset using the names in the yml file.
         """
         # Get a map of indicator current names to verbose names
         rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.dataset_info['indicators']}
@@ -109,11 +110,23 @@ class Dataset:
         data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
         data = data.loc[data['Indicator'].isin(rename_indicators.values())]
 
-        # Add the dataset name
-        data['Dataset'] = self.name
-
         # Order columns
         data = self.order_index_columns(data, other_columns=['Indicator', 'Dataset', 'Value', 'Year'], missing='raise')
+
+        return data
+
+
+    def rename_columns(self, data, drop_others=True):
+        """
+        Rename columns in the dataset using the names in the yml file.
+        """
+        # Get a map of indicator current names to verbose names, and rename
+        rename_columns = {column['source_name']: column['name'] for column in self.dataset_info['columns']}
+        data = data.rename(columns=rename_columns, errors='raise')
+
+        # Drop columns that were not in the rename list
+        if drop_others:
+            data = data[self.index_columns+list(rename_columns.values())]
 
         return data
 
