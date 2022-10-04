@@ -1,1 +1,1 @@
-from ifrc_ns_data.logistics.logistics_projects import LogisticsProjectsDataset
+from .logistics_projects import LogisticsProjectsDataset

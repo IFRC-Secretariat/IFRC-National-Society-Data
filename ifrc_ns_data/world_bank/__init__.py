@@ -1,1 +1,1 @@
-from ifrc_ns_data.world_bank.world_development_indicators_dataset import WorldDevelopmentIndicatorsDataset
+from .world_development_indicators_dataset import WorldDevelopmentIndicatorsDataset
