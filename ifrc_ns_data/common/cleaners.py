@@ -245,9 +245,14 @@ class NSInfoMapper:
 
         # Check if there are any unknown values
         if isinstance(data, pd.Series):
-            unknown_values = [value for value in data.unique() if (value==value) and (value.lower() not in ns_map)]
+            unknown_values = [value for value in data.dropna().unique() if (value==value) and (value.lower() not in ns_map)]
         else:
-            unknown_values = [value for value in list(set(data)) if (value==value) and (value.lower() not in ns_map)]
+            unknown_values = []
+            for value in list(set(data)):
+                if (value!=value) or (value is None):
+                    continue
+                if value.lower() not in ns_map:
+                    unknown_values.append(value)
         if unknown_values:
             if errors=='ignore':
                 pass

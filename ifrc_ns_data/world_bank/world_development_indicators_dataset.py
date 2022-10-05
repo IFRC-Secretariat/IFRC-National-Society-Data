@@ -20,22 +20,25 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
     """
     def __init__(self):
         self.name = 'World Development Indicators'
+        self.test_flag = os.environ.get('TEST_FLAG')
         super().__init__()
 
 
     def pull_data(self):
         """
-        Pull data from the World Bank API and save to file.
+        Pull data from the World Bank API.
         """
         data = pd.DataFrame()
-        page = 1; per_page = 1000
+        page = 1; per_page = 1000;
+        total_pages = 5 if self.test_flag else None # When testing pull only 5 pages because otherwise it takes a long time
         while True:
             api_indicators = ';'.join([indicator['source_name'] for indicator in self.dataset_info['indicators']])
             url = f'https://api.worldbank.org/v2/country/all/indicator/{api_indicators}?source=2&page={page}&format=json&per_page={per_page}'
             print(f'Requesting page {page}', end=' ')
             response = requests.get(url=url)
             data = pd.concat([data, pd.DataFrame(response.json()[1])])
-            total_pages = response.json()[0]['pages']
+            if total_pages is None:
+                total_pages = response.json()[0]['pages']
             print(f'out of {total_pages}')
             if page == total_pages:
                 break
@@ -70,7 +73,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
                        .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
 
         # Select and rename indicators
-        data = self.rename_indicators(data)
+        data = self.rename_indicators(data, missing=('ignore' if self.test_flag else 'raise'))
         data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
 
         return data
