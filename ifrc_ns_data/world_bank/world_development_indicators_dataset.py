@@ -50,6 +50,14 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
     def process_data(self, data, filter_latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
+
+        latest : bool (default=False)
+            If True, only the latest data for each National Society and indicator will be returned.
         """
         # Expand dict-type columns
         expand_columns = ['indicator', 'country']
@@ -69,8 +77,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
 
         # Get the latest values of each indicator for each NS
         if filter_latest:
-            data = data.sort_values(by=['National Society name', 'indicator.value', 'Year'], ascending=[True, True, False])\
-                       .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
+            data = self.filter_latest_indicators(data)
 
         # Select and rename indicators
         data = self.rename_indicators(data, missing=('ignore' if self.test_flag else 'raise'))

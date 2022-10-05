@@ -59,9 +59,17 @@ class INFORMRiskDataset(Dataset):
         return data
 
 
-    def process_data(self, data):
+    def process_data(self, data, latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
+
+        latest : bool (default=False)
+            If True, only the latest data for each National Society and indicator will be returned.
         """
         # Map ISO3 codes to NS names and add extra columns
         ns_info_mapper = NSInfoMapper()
@@ -76,5 +84,9 @@ class INFORMRiskDataset(Dataset):
         # Select and rename indicators
         data = self.rename_indicators(data)
         data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
+
+        # Filter the dataset if required
+        if latest:
+            data = self.filter_latest_indicators(data).reset_index(drop=True)
 
         return data

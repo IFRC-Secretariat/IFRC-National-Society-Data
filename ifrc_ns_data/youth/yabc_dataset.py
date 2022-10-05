@@ -3,6 +3,7 @@ Module to handle YABC data, including loading it from the data file, cleaning, a
 """
 import re
 import os
+import warnings
 import yaml
 import pandas as pd
 from ifrc_ns_data.common import Dataset
@@ -26,10 +27,22 @@ class YABCDataset(Dataset):
         super().__init__(filepath=filepath, sheet_name=sheet_name)
 
 
-    def process_data(self, data):
+    def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
+
+        latest : bool (default=None)
+            Not in use.
         """
+        # Print a warning if filtering is given as this does not apply
+        if latest is not None:
+            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
+
         # Set the columns
         data.columns = data.iloc[1]
         data = data.iloc[2:, 1:]

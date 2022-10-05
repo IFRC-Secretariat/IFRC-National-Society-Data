@@ -50,6 +50,14 @@ class HumanDevelopmentDataset(Dataset):
     def process_data(self, data, filter_latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
+
+        latest : bool (default=False)
+            If True, only the latest data for each National Society and indicator will be returned.
         """
         # Map ISO3 codes to NS names, and add extra columns
         data['National Society name'] = NSInfoMapper().map_iso_to_ns(data=data['iso3'])
@@ -60,14 +68,13 @@ class HumanDevelopmentDataset(Dataset):
 
         # Melt the data into a log format
         data = data.drop(columns=['iso3'])\
-                             .melt(id_vars=self.index_columns+['Indicator'], var_name='Year')\
-                             .dropna(how='any')
+                   .melt(id_vars=self.index_columns+['Indicator'], var_name='Year')\
+                   .dropna(how='any')\
+                   .rename(columns={'value': 'Value'})
 
         # Filter the latest data for each NS/ indicator
         if filter_latest:
-            data = data.sort_values(by=['National Society name', 'Indicator', 'Year'], ascending=[True, True, False])\
-                       .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
-                       .rename(columns={'value': 'Value'})
+            data = self.filter_latest_indicators(data)
 
         # Select and rename indicators
         data = self.rename_indicators(data)

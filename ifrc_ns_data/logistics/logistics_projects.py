@@ -3,6 +3,7 @@ Module to handle data on Logistics Projects, including loading it from the data 
 """
 import re
 import os
+import warnings
 import yaml
 import pandas as pd
 from ifrc_ns_data.common import Dataset
@@ -27,10 +28,22 @@ class LogisticsProjectsDataset(Dataset):
         pass
 
 
-    def process_data(self, data):
+    def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
+
+        latest : bool (default=None)
+            Not in use.
         """
+        # Print a warning if filtering is given as this does not apply
+        if latest is not None:
+            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
+
         # Clean the data
         data = data.drop(columns=['Region']).dropna(how='all')
 

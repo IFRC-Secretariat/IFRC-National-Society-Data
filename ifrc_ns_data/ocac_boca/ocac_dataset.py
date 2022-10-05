@@ -29,6 +29,14 @@ class OCACDataset(Dataset):
     def process_data(self, data, filter_latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
+
+        latest : bool (default=False)
+            If True, only the latest data for each National Society and indicator will be returned.
         """
         # Process the data into a log format, with a row for each assessment
         data = data.rename(columns={'Name': 'Indicator'})

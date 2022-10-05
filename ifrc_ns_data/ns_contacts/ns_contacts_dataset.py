@@ -5,6 +5,7 @@ The module can be used to pull this data from the NS Databank API, process, and 
 """
 import requests
 import os
+import warnings
 import yaml
 import pandas as pd
 from ifrc_ns_data.common import Dataset
@@ -38,10 +39,22 @@ class NSContactsDataset(Dataset):
         return data
 
 
-    def process_data(self, data):
+    def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
+
+        latest : bool (default=None)
+            Not in use.
         """
+        # Print a warning if filtering is given as this does not apply
+        if latest is not None:
+            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
+
         # Make sure the NS names agree with the central list
         data.rename(columns={'NSO_DON_name': 'National Society name'}, errors='raise', inplace=True)
         data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])

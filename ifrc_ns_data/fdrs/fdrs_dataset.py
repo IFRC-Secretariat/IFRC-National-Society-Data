@@ -48,7 +48,7 @@ class FDRSDataset(Dataset):
         return data
 
 
-    def process_data(self, data):
+    def process_data(self, data, latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -56,6 +56,9 @@ class FDRSDataset(Dataset):
         ----------
         data : pandas DataFrame (required)
             Raw data to be processed.
+
+        latest : bool (default=False)
+            If True, only the latest data for each National Society and indicator will be returned.
         """
         # Rename columns and remove nans
         data = data.rename(columns={'value': 'Value', 'year': 'Year'})\
@@ -83,5 +86,9 @@ class FDRSDataset(Dataset):
         # Select and rename indicators
         data = self.rename_indicators(data)
         data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
+
+        # Filter the dataset if required
+        if latest:
+            data = self.filter_latest_indicators(data).reset_index(drop=True)
 
         return data

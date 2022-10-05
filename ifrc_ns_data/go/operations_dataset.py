@@ -4,6 +4,7 @@ The module can be used to pull this data from the IFRC GO API, process, and clea
 """
 import requests
 import os
+import warnings
 import yaml
 import pandas as pd
 from ifrc_ns_data.common import Dataset
@@ -36,11 +37,23 @@ class OperationsDataset(Dataset):
         return data
 
 
-    def process_data(self, data):
+    def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
         Process the data into a NS indicator format.
+
+        Parameters
+        ----------
+        data : pandas DataFrame (required)
+            Raw data to be processed.
+
+        latest : bool (default=None)
+            Not in use.
         """
+        # Print a warning if filtering is given as this does not apply
+        if latest is not None:
+            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
+
         # Expand dict-type columns
         expand_columns = ['dtype', 'region', 'country']
         data = DictColumnExpander().clean(data=data,

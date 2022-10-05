@@ -22,7 +22,7 @@ class Dataset:
     def __init__(self, filepath=None, sheet_name=None):
         # Validate the filepath and sheet_name
         if filepath is not None:
-            extension = os.path.splitext(self.filepath)[1][1:]
+            extension = os.path.splitext(filepath)[1][1:]
             if extension in ['xlsx', 'xls']:
                 if sheet_name is None:
                     raise ValueError('Excel file must have sheet_name specified')
@@ -53,15 +53,17 @@ class Dataset:
         return dataset_info['indicators']
 
 
-    def get_data(self):
+    def get_data(self, latest=False):
         """
         Pull the raw data, process it, and return the final dataset.
 
         Parameters
         ----------
+        latest : bool (default=False)
+            If True, only the latest data for each National Society and indicator will be returned.
         """
         raw_data = self.load_data()
-        processed_data = self.process_data(data=raw_data)
+        processed_data = self.process_data(data=raw_data, latest=latest)
         processed_data['Dataset'] = self.name
 
         return processed_data
@@ -187,9 +189,9 @@ class Dataset:
         return data
 
 
-    def filter_latest(self, data):
+    def filter_latest_indicators(self, data):
         """
-        Filter the dataset to only return the latest data for each National Society for each indicator.
+        Filter an indicator-style dataset to only return the latest data for each National Society for each indicator.
 
         Parameters
         ----------
