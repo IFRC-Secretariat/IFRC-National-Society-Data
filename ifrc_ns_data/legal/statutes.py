@@ -19,7 +19,9 @@ class StatutesDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, sheet_name):
+    def __init__(self, filepath=None, sheet_name=None):
+        if filepath is None:
+            raise ValueError('Please specify a path to the National Society statutes dataset.')
         self.name = 'Statutes'
         super().__init__(filepath=filepath, sheet_name=sheet_name)
 

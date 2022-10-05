@@ -19,7 +19,9 @@ class YABCDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, sheet_name):
+    def __init__(self, filepath=None, sheet_name=None):
+        if filepath is None:
+            raise ValueError('Please specify a path to the IFRC Youth YABC dataset.')
         self.name = 'YABC'
         super().__init__(filepath=filepath, sheet_name=sheet_name)
 

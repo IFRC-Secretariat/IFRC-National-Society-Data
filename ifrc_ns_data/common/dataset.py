@@ -20,6 +20,15 @@ class Dataset:
         Required when the filepath is a path to an Excel document.
     """
     def __init__(self, filepath=None, sheet_name=None):
+        # Validate the filepath and sheet_name
+        if filepath is not None:
+            extension = os.path.splitext(self.filepath)[1][1:]
+            if extension in ['xlsx', 'xls']:
+                if sheet_name is None:
+                    raise ValueError('Excel file must have sheet_name specified')
+            elif extension not in ['csv']:
+                raise ValueError(f'File specified in filepath must be Excel (xlsx or xls) or CSV (csv)')
+
         self.filepath = filepath
         self.sheet_name = sheet_name
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']

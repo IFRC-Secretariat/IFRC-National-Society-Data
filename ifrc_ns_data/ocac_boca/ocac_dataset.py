@@ -19,7 +19,9 @@ class OCACDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath, sheet_name):
+    def __init__(self, filepath=None, sheet_name=None):
+        if filepath is None:
+            raise ValueError('Please specify a path to the OCAC dataset. This can be downloaded from the OCAC site at https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac.')
         self.name = 'OCAC'
         super().__init__(filepath=filepath, sheet_name=sheet_name)
 
