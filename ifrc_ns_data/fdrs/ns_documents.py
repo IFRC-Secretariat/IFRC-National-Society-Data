@@ -53,10 +53,12 @@ class NSDocumentsDataset(Dataset):
             Raw data to be processed.
         """
         # Add extra NS and country information based on the NS ID
-        data = data[['National Society ID', 'name', 'document_type', 'year', 'url']]
+        data = data[['National Society ID', 'name', 'document_type', 'year', 'url']].reset_index(drop=True)
         ns_info_mapper = NSInfoMapper()
         for column in self.index_columns:
-            data[column] = ns_info_mapper.map(data=data['National Society ID'], map_from='National Society ID', map_to=column, errors='raise')
+            ns_id_mapped = ns_info_mapper.map(data=data['National Society ID'], map_from='National Society ID', map_to=column, errors='raise')\
+                                         .rename(column)
+            data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
 
         # Keep only the latest document for each document type and NS
         data = data.dropna(subset=['National Society name', 'document_type', 'year'], how='any')\
@@ -65,7 +67,7 @@ class NSDocumentsDataset(Dataset):
         data['Indicator'] = data['Indicator'].str.strip()
 
         # Drop columns which are not needed
-        data = data.drop(columns=['name'])
+        data = data.drop(columns=['name', 'National Society ID'])
 
         # Select and rename indicators
         data = self.rename_indicators(data)

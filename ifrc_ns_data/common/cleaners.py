@@ -154,6 +154,8 @@ class NSInfoCleaner:
         alt_column = alternative_names[column]
         ns_clean_map = {}
         for ns in ns_info:
+            if ns[column] is not None:
+                ns_clean_map[ns[column].lower()] = ns[column]
             for alt_name in ns[alt_column]:
                 ns_clean_map[alt_name.lower()] = ns[column]
         if isinstance(data, pd.Series):
