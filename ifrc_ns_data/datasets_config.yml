@@ -100,6 +100,14 @@ OCAC:
   Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
   Focal point: Roger Fischli
 
+OCAC Assessment Dates:
+  Source: file
+  format: indicators
+  Type: Internal
+  privacy: public
+  Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
+  Focal point: Roger Fischli
+
 Statutes:
   Source: file
   Type: Internal

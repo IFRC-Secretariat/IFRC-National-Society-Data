@@ -47,7 +47,7 @@ class HumanDevelopmentDataset(Dataset):
         return data
 
 
-    def process_data(self, data, filter_latest=False):
+    def process_data(self, data, latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -73,7 +73,7 @@ class HumanDevelopmentDataset(Dataset):
                    .rename(columns={'value': 'Value'})
 
         # Filter the latest data for each NS/ indicator
-        if filter_latest:
+        if latest:
             data = self.filter_latest_indicators(data)
 
         # Select and rename indicators

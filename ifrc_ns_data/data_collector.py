@@ -209,6 +209,11 @@ class DataCollector:
                 dataset_classes.append(ifrc_ns_data.ocac_boca.OCACDataset(**dataset_args['ocac']))
             else:
                 warnings.warn('OCAC arguments not provided so skipping')
+        if 'ocac assessment dates' in datasets:
+            if 'ocac assessment dates' in dataset_args:
+                dataset_classes.append(ifrc_ns_data.ocac_boca.OCACAssessmentDatesDataset(**dataset_args['ocac assessment dates']))
+            else:
+                warnings.warn('OCAC arguments not provided so skipping')
         if 'world development indicators' in datasets:
             dataset_classes.append(ifrc_ns_data.world_bank.WorldDevelopmentIndicatorsDataset())
         if 'yabc' in datasets:
