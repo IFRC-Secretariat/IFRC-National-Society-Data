@@ -29,7 +29,7 @@ class HumanDevelopmentDataset(Dataset):
         """
         # Pull the data for each indicator
         data = pd.DataFrame()
-        for indicator in self.dataset_info['indicators']:
+        for indicator in self.indicators:
             response = requests.get(url=f'http://ec2-54-174-131-205.compute-1.amazonaws.com/API/HDRO_API.php/indicator_id={indicator["source_name"]}')
             response.raise_for_status()
 

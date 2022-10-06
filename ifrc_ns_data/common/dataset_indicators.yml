@@ -1,4 +1,8 @@
 NS Contacts:
+  source: API
+  format: indicators
+  type: internal
+  privacy: public
   columns:
     - name: Currency
       source_name: cur_code
@@ -12,11 +16,12 @@ NS Contacts:
       source_name: othersocial
 
 FDRS:
-  meta:
-    Source: FDRS
-    Type: Internal
-    Link: https://data.ifrc.org/fdrs
-    Focal point: Rania Alerksoussi
+  Source: API
+  format: indicators
+  type: internal
+  privacy: public
+  Link: https://data.ifrc.org/fdrs
+  Focal point: Rania Alerksoussi
   indicators:
     - name: Number of local units
       source_name: KPI_noLocalUnits
@@ -66,9 +71,11 @@ FDRS:
       source_name: KPI_ReachSI_CPD
 
 NS Documents:
-  meta:
-    Source: FDRS
-    Type: Internal
+  Source: API
+  format: indicators
+  type: internal
+  privacy: public
+  link: https://data.ifrc.org/fdrs
   indicators:
   - name: Annual report
     source_name: Our Annual Report
@@ -86,17 +93,19 @@ NS Documents:
     source_name: Our Emblem Law
 
 OCAC:
-  meta:
-    Source: OCAC
-    Type: Internal
-    Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
-    Focal point: Roger Fischli
+  Source: file
+  format: columns
+  Type: Internal
+  privacy: confidential
+  Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
+  Focal point: Roger Fischli
 
 Statutes:
-  meta:
-    Source: Statutes
-    Type: Internal
-    Focal point: Drina Karahasanovic
+  Source: file
+  Type: Internal
+  format: columns
+  privacy: confidential
+  Focal point: Drina Karahasanovic
   columns:
     - name: "Statutes in force (Date of adoption)"
       source_name: Statutes in force (Date of adoption)
@@ -114,19 +123,22 @@ Statutes:
       source_name: Action/Follow-up required
 
 Recognition Laws:
-  meta:
-    Source: Recognition Laws
-    Type: Internal
-    Focal point: Drina Karahasanovic
+  Source: file
+  format: columns
+  privacy: confidential
+  Type: Internal
+  Focal point: Drina Karahasanovic
   columns:
     - name: NS recognition laws/ other regulations in force
       source_name: Law/other regulations in force
 
 YABC:
-  meta:
-    Source: IFRC Youth
-    Type: Internal
-    Focal point: Amjad Saleem
+  source: file
+  source_description: IFRC Youth
+  Type: Internal
+  privacy: confidential
+  format: columns
+  Focal point: Amjad Saleem
   columns:
     - name: Number of YABC trainings to date
       source_name: number of YABC trainings to date
@@ -138,17 +150,21 @@ YABC:
       source_name: Comment
 
 Logistics Projects:
-  meta:
-    Source: IFRC Logistics
-    Type: Internal
-    Focal point: Juan Galvez
+  source: file
+  source_description: IFRC Logistics
+  Type: Internal
+  privacy: confidential
+  format: columns
+  Focal point: Juan Galvez
 
 GO Operations:
-  meta:
-    Source: IFRC GO
-    Type: Internal
-    Link: https://go.ifrc.org/
-    Focal point: Luke Caley
+  source: API
+  source_description: IFRC GO
+  Type: Internal
+  Link: https://go.ifrc.org/
+  privacy: public
+  format: columns
+  Focal point: Luke Caley
   columns:
     - name: Operation name
       source_name: name
@@ -166,11 +182,13 @@ GO Operations:
       source_name: funding
 
 GO Projects:
-  meta:
-    Source: IFRC GO
-    Type: Internal
-    Link: https://go.ifrc.org/three-w/
-    Focal point: Luke Caley
+  source: API
+  source_description: IFRC GO
+  Type: Internal
+  privacy: public
+  format: columns
+  Link: https://go.ifrc.org/three-w/
+  Focal point: Luke Caley
   columns:
     - name: Project name
       source_name: name
@@ -198,10 +216,12 @@ GO Projects:
       source_name: reached_total
 
 World Development Indicators:
-  meta:
-    Source: WorldBank World Development Indicators
-    Type: External
-    Link: https://databank.worldbank.org/source/world-development-indicators
+  source: API
+  privacy: public
+  format: indicators
+  source_description: WorldBank World Development Indicators
+  Type: External
+  Link: https://databank.worldbank.org/source/world-development-indicators
   indicators:
     - name: Population, total
       source_name: SP.POP.TOTL
@@ -219,19 +239,23 @@ World Development Indicators:
       source_name: SP.URB.TOTL.IN.ZS
 
 UNDP Human Development:
-  meta:
-    Source: UNDP
-    Type: External
-    Link: https://hdr.undp.org/en/content/human-development-index-hdi
+  source: API
+  privacy: public
+  format: indicators
+  source_description: UNDP
+  Type: External
+  Link: https://hdr.undp.org/en/content/human-development-index-hdi
   indicators:
     - name: Human Development Index (HDI)
       source_name: 137506
 
 INFORM Risk:
-  meta:
-    Source: EC DRMKC INFORM
-    Type: External
-    Link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
+  source: API
+  privacy: public
+  format: indicators
+  source_description: EC DRMKC INFORM
+  Type: External
+  Link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
   indicators:
     - name: INFORM Risk Index
       source_name: INFORM

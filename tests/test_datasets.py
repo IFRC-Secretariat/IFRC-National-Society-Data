@@ -7,7 +7,7 @@ import ifrc_ns_data
 class TestDatasets(unittest.TestCase):
     def setUp(self):
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
-        self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year', 'Dataset']
+        self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year']
         self.fdrs_api_key = os.environ.get('FDRS_PUBLIC_API_KEY')
 
     def test_fdrs(self):

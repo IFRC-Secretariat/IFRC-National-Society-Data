@@ -5,6 +5,7 @@ import os
 import warnings
 import pandas as pd
 import yaml
+from definitions import DATASETS_CONFIG_PATH
 
 
 class Dataset:
@@ -28,48 +29,34 @@ class Dataset:
                     raise ValueError('Excel file must have sheet_name specified')
             elif extension not in ['csv']:
                 raise ValueError(f'File specified in filepath must be Excel (xlsx or xls) or CSV (csv)')
-
         self.filepath = filepath
         self.sheet_name = sheet_name
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
-        self.dataset_info = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'common/dataset_indicators.yml')))[self.name]
+
+        # Set information about the dataset as attributes
+        dataset_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))[self.name]
+        for info in dataset_info:
+            setattr(self, info.lower(), dataset_info[info])
 
 
-    @property
-    def meta(self):
-        """
-        Get meta information about the dataset.
-        """
-        dataset_meta = self.dataset_info['meta'] if 'meta' in self.dataset_info.keys() else None
-        return dataset_meta
-
-
-    @property
-    def indicators(self):
-        """
-        Get the list of dataset indicators.
-        """
-        dataset_info = self.dataset_info
-        return dataset_info['indicators']
-
-
-    def get_data(self, latest=False):
+    def get_data(self, latest=None):
         """
         Pull the raw data, process it, and return the final dataset.
 
         Parameters
         ----------
-        latest : bool (default=False)
+        latest : bool (default=None)
             If True, only the latest data for each National Society and indicator will be returned.
         """
-        raw_data = self.load_data()
+        raw_data = self.load_source_data()
         processed_data = self.process_data(data=raw_data, latest=latest)
-        processed_data['Dataset'] = self.name
+        processed_data = processed_data.dropna(subset=['National Society name'])
+        self.data = processed_data
 
         return processed_data
 
 
-    def load_data(self):
+    def load_source_data(self):
         """
         Read in the data from the source: either as a CSV or Excel file from a given file path, or pull from an API.
         """
@@ -121,7 +108,7 @@ class Dataset:
             If 'raise', raise an error if there are indicators in rename_indicators which are not in the dataset.
         """
         # Get a map of indicator current names to verbose names
-        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.dataset_info['indicators']}
+        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators}
 
         # Raise an error if any indicators are missing from the dataset
         if missing=='raise':
@@ -149,7 +136,7 @@ class Dataset:
             If True, then columns which are not index columns and which not in the dataset_info yml file will be dropped.
         """
         # Get a map of indicator current names to verbose names, and rename
-        rename_columns = {column['source_name']: column['name'] for column in self.dataset_info['columns']}
+        rename_columns = {column['source_name']: column['name'] for column in self.columns}
         data = data.rename(columns=rename_columns, errors='raise')
 
         # Drop columns that were not in the rename list

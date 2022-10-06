@@ -32,7 +32,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         page = 1; per_page = 1000;
         total_pages = 5 if self.test_flag else None # When testing pull only 5 pages because otherwise it takes a long time
         while True:
-            api_indicators = ';'.join([indicator['source_name'] for indicator in self.dataset_info['indicators']])
+            api_indicators = ';'.join([indicator['source_name'] for indicator in self.indicators])
             url = f'https://api.worldbank.org/v2/country/all/indicator/{api_indicators}?source=2&page={page}&format=json&per_page={per_page}'
             print(f'Requesting page {page}', end=' ')
             response = requests.get(url=url)
@@ -47,7 +47,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         return data
 
 
-    def process_data(self, data, filter_latest=False):
+    def process_data(self, data, latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -76,7 +76,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
                    .drop(columns=['countryiso3code', 'country.id', 'country.value', 'unit', 'obs_status', 'decimal', 'scale', 'indicator.value'])
 
         # Get the latest values of each indicator for each NS
-        if filter_latest:
+        if latest:
             data = self.filter_latest_indicators(data)
 
         # Select and rename indicators
