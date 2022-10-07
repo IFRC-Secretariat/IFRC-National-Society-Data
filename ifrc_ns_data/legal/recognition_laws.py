@@ -2,7 +2,6 @@
 Module to handle NS Recognition Laws data, including loading it from the data file, cleaning, and processing.
 """
 import warnings
-import pandas as pd
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, NSInfoMapper
 
