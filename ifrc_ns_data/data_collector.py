@@ -18,7 +18,8 @@ class DataCollector:
     """
     def __init__(self):
         self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
-        self.dataset_names = list(self.datasets_info)
+        archived_datasets = ['UNDP Human Development'] # Archived because the API has stopped working
+        self.dataset_names = [name for name in self.datasets_info if name not in archived_datasets]
 
 
     def get_data(self, datasets=None, dataset_args=None, filters=None, latest=None):
@@ -45,12 +46,12 @@ class DataCollector:
 
         Returns
         -------
-        dataset_classes : list of Dataset objects
+        dataset_instances : list of Dataset objects
             List of Dataset objects. The attribute 'data' is a pandas DataFrame containing the data. Other attributes contain information about the dataset such as source, focal_point, and privacy.
         """
         # Validate the provided dataset names, or set to all
         if datasets is not None:
-            dataset_names = validate_dataset_names(datasets)
+            dataset_names = self.validate_dataset_names(datasets)
         else:
             dataset_names = self.dataset_names.copy()
 
@@ -80,14 +81,15 @@ class DataCollector:
 
         # Initiate the dataset classes list
         print(f'Getting datasets {filtered_datasets}...')
-        dataset_classes = self.initiate_datasets(datasets=filtered_datasets, dataset_args=dataset_args)
+        dataset_instances = self.initiate_datasets(datasets=filtered_datasets,
+                                                   dataset_args=dataset_args)
 
         # Load the data from the source and process
-        for dataset in dataset_classes:
+        for dataset in dataset_instances:
             print(f'Getting {dataset.name} data...')
             dataset.get_data(latest=latest)
 
-        return dataset_classes
+        return dataset_instances
 
 
     def get_merged_indicator_data(self, datasets=None, dataset_args=None, filters=None, latest=None):
@@ -111,16 +113,16 @@ class DataCollector:
         # Initiate the dataset classes for these datasets and get data
         if filters is None: filters = {}
         filters = {**filters, **{'format': 'indicators'}}
-        dataset_classes = self.get_data(datasets=datasets,
-                                        dataset_args=dataset_args,
-                                        filters=filters,
-                                        latest=latest)
+        dataset_instances = self.get_data(datasets=datasets,
+                                          dataset_args=dataset_args,
+                                          filters=filters,
+                                          latest=latest)
 
         # Merge all of the datasets together
-        if not dataset_classes: return
-        for dataset in dataset_classes:
+        if not dataset_instances: return
+        for dataset in dataset_instances:
             dataset.data['Dataset'] = dataset.name
-        all_indicator_data = pd.concat([dataset.data for dataset in dataset_classes])
+        all_indicator_data = pd.concat([dataset.data for dataset in dataset_instances])
         all_indicator_data = all_indicator_data.sort_values(by=['Dataset', 'National Society name', 'Indicator', 'Year', 'Value'])\
                                                .reset_index(drop=True)
 
@@ -166,60 +168,32 @@ class DataCollector:
             dataset_args = {}
         datasets = [item.lower().strip() for item in datasets]
 
-        # Initiate all dataset classes including providing arguments. Skip when arguments are not provided.
-        dataset_classes = []
-        if 'fdrs' in datasets:
-            if 'fdrs' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.fdrs.FDRSDataset(**dataset_args['fdrs']))
-            else:
-                warnings.warn('FDRS arguments not provided so skipping')
-        if 'ns documents' in datasets:
-            if 'ns documents' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.fdrs.NSDocumentsDataset(**dataset_args['ns documents']))
-            else:
-                warnings.warn('NS Documents arguments not provided so skipping')
-        if 'go operations' in datasets:
-            dataset_classes.append(ifrc_ns_data.go.OperationsDataset())
-        if 'go projects' in datasets:
-            dataset_classes.append(ifrc_ns_data.go.ProjectsDataset())
-        if 'inform risk' in datasets:
-            dataset_classes.append(ifrc_ns_data.inform.INFORMRiskDataset())
-        if 'recognition laws' in datasets:
-            if 'recognition laws' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.legal.RecognitionLawsDataset(**dataset_args['recognition laws']))
-            else:
-                warnings.warn('Recognition Laws arguments not provided so skipping')
-        if 'statutes' in datasets:
-            if 'statutes' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.legal.Statutes(**dataset_args['statutes']))
-            else:
-                warnings.warn('Statutes arguments not provided so skipping')
-        if 'logistics projects' in datasets:
-            if 'logistics projects' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.logistics.LogisticsProjectsDataset(**dataset_args['logistics projects']))
-            else:
-                warnings.warn('Logistics Projects arguments not provided so skipping')
-        if 'ns contacts' in datasets:
-            if 'ns contacts' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.ns_contacts.NSContactsDataset(**dataset_args['ns contacts']))
-            else:
-                warnings.warn('NS Contacts arguments not provided so skipping')
-        if 'ocac' in datasets:
-            if 'ocac' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.ocac_boca.OCACDataset(**dataset_args['ocac']))
-            else:
-                warnings.warn('OCAC arguments not provided so skipping')
-        if 'ocac assessment dates' in datasets:
-            if 'ocac assessment dates' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.ocac_boca.OCACAssessmentDatesDataset(**dataset_args['ocac assessment dates']))
-            else:
-                warnings.warn('OCAC arguments not provided so skipping')
-        if 'world development indicators' in datasets:
-            dataset_classes.append(ifrc_ns_data.world_bank.WorldDevelopmentIndicatorsDataset())
-        if 'yabc' in datasets:
-            if 'yabc' in dataset_args:
-                dataset_classes.append(ifrc_ns_data.youth.YABCDataset(**dataset_args['yabc']))
-            else:
-                warnings.warn('YABC arguments not provided so skipping')
+        # Add in empty args for datasets not in dataset_args
+        for dataset in datasets:
+            if dataset not in dataset_args:
+                dataset_args[dataset] = {}
 
-        return dataset_classes
+        # Initiate all dataset classes including providing arguments. Skip when arguments are not provided.
+        class_names = {'FDRS': ifrc_ns_data.fdrs.FDRSDataset,
+                       'NS Documents': ifrc_ns_data.fdrs.NSDocumentsDataset,
+                       'NS Contacts': ifrc_ns_data.ns_contacts.NSContactsDataset,
+                       'OCAC': ifrc_ns_data.ocac_boca.OCACDataset,
+                       'OCAC Assessment Dates': ifrc_ns_data.ocac_boca.OCACAssessmentDatesDataset,
+                       'GO Operations': ifrc_ns_data.go.OperationsDataset,
+                       'GO Projects': ifrc_ns_data.go.ProjectsDataset,
+                       'INFORM Risk': ifrc_ns_data.inform.INFORMRiskDataset,
+                       'Recognition laws': ifrc_ns_data.legal.RecognitionLawsDataset,
+                       'Statutes': ifrc_ns_data.legal.StatutesDataset,
+                       'Logistics projects': ifrc_ns_data.logistics.LogisticsProjectsDataset,
+                       'World Development Indicators': ifrc_ns_data.world_bank.WorldDevelopmentIndicatorsDataset,
+                       'YABC': ifrc_ns_data.youth.YABCDataset,
+                       }
+        class_names = {k.lower(): v for k, v in class_names.items()}
+        dataset_instances = []
+        for dataset_name in datasets:
+            try:
+                dataset_instances.append(class_names[dataset_name](**dataset_args[dataset_name]))
+            except TypeError as err:
+                warnings.warn(f'Arguments for dataset "{dataset_name}" not provided so skipping.\n{err}')
+
+        return dataset_instances

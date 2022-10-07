@@ -22,10 +22,11 @@ class OCACDataset(Dataset):
     """
     def __init__(self, filepath=None, sheet_name=None):
         if filepath is None:
-            raise ValueError(
-                'Please specify a path to the OCAC dataset. The data'
-                'can be downloaded as an Excel file from the OCAC site at'
-                'https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac (there is not yet an API).')
+            raise TypeError(
+                'Please specify a path to the OCAC dataset. The data '
+                'can be downloaded as an Excel file from the OCAC site at '
+                'https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac '
+                '(there is not yet an API).')
         super().__init__(name='OCAC', filepath=filepath, sheet_name=sheet_name)
 
 
@@ -86,9 +87,12 @@ class OCACAssessmentDatesDataset(Dataset):
     """
     def __init__(self, filepath=None, sheet_name=None):
         if filepath is None:
-            raise ValueError('Please specify a path to the OCAC dataset. The data can be downloaded as an Excel file from the OCAC site at https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac (there is not yet an API).')
+            raise TypeError('Please specify a path to the OCAC dataset. The data'
+                'can be downloaded as an Excel file from the OCAC site at '
+                'https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac '
+                '(there is not yet an API).')
         self.name = 'OCAC Assessment Dates'
-        super().__init__(filepath=filepath, sheet_name=sheet_name)
+        super().__init__(name='OCAC Assessment Dates', filepath=filepath, sheet_name=sheet_name)
 
 
     def process_data(self, data, latest=False):

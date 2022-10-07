@@ -22,7 +22,7 @@ class LogisticsProjectsDataset(Dataset):
     """
     def __init__(self, filepath=None, sheet_name=None):
         if filepath is None:
-            raise ValueError('Please specify a path to the IFRC logistics projects dataset.')
+            raise TypeError('Please specify a path to the IFRC logistics projects dataset.')
         super().__init__(name='Logistics Projects', filepath=filepath, sheet_name=sheet_name)
         pass
 

@@ -22,7 +22,7 @@ class StatutesDataset(Dataset):
     """
     def __init__(self, filepath=None, sheet_name=None):
         if filepath is None:
-            raise ValueError('Please specify a path to the National Society statutes dataset.')
+            raise TypeError('Please specify a path to the National Society statutes dataset.')
         super().__init__(name='Statutes', filepath=filepath, sheet_name=sheet_name)
 
 
