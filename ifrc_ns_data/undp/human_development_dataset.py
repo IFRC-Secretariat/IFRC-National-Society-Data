@@ -2,11 +2,9 @@
 Module to handle UNDP Human Development data, including pulling it from the API, cleaning, and processing.
 """
 import requests
-import os
-import yaml
 import pandas as pd
 from ifrc_ns_data.common import Dataset
-from ifrc_ns_data.common.cleaners import DictColumnExpander, NSInfoMapper
+from ifrc_ns_data.common.cleaners import NSInfoMapper
 
 
 class HumanDevelopmentDataset(Dataset):

@@ -1,7 +1,6 @@
 """
 Module to access and return multiple datasets at once.
 """
-import os
 import warnings
 import yaml
 import pandas as pd

@@ -1,9 +1,6 @@
 """
 Module to handle OCAC data, including loading it from the downloaded data file, cleaning, and processing.
 """
-import requests
-import os
-import yaml
 import pandas as pd
 import numpy as np
 from ifrc_ns_data.common import Dataset

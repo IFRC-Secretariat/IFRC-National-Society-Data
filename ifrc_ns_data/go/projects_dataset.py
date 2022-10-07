@@ -3,9 +3,7 @@ Module to handle projects (3W) data from the IFRC GO platform..
 The module can be used to pull this data from the IFRC GO API, process, and clean the data.
 """
 import requests
-import os
 import warnings
-import yaml
 import pandas as pd
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, DictColumnExpander, NSInfoMapper

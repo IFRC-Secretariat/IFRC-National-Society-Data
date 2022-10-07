@@ -2,7 +2,6 @@
 Module to define a Dataset Class with methods to load, clean, and process datasets.
 """
 import os
-import warnings
 import pandas as pd
 import yaml
 from definitions import DATASETS_CONFIG_PATH
@@ -22,7 +21,7 @@ class Dataset:
     """
     def __init__(self, name, filepath=None, sheet_name=None):
         self.name = name
-        
+
         # Validate the filepath and sheet_name
         if filepath is not None:
             extension = os.path.splitext(filepath)[1][1:]

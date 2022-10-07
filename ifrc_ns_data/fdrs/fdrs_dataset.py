@@ -2,8 +2,6 @@
 Module to handle FDRS data, including loading it from the API, cleaning, and processing.
 """
 import requests
-import os
-import yaml
 import pandas as pd
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import DatabankNSIDMapper, NSInfoMapper

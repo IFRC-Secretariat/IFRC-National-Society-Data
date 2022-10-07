@@ -3,7 +3,6 @@ Module to handle World Bank data, including pulling it from the World Bank API, 
 """
 import requests
 import os
-import yaml
 import pandas as pd
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import DictColumnExpander, NSInfoMapper

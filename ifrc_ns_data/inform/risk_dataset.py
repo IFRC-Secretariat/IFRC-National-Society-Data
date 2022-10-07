@@ -2,8 +2,6 @@
 Module to handle INFORM Risk data, including pulling it from the INFORM API, cleaning, and processing.
 """
 import requests
-import os
-import yaml
 from datetime import date
 import pandas as pd
 from ifrc_ns_data.common import Dataset

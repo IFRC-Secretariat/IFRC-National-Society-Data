@@ -1,12 +1,10 @@
 """
 Module to define data cleaners.
 """
-import os
 from ast import literal_eval
 import warnings
 import requests
 import pandas as pd
-import yaml
 from ifrc_ns_data.common import NationalSocietiesInfo
 
 
