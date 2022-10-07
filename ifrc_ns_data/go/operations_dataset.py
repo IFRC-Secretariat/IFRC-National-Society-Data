@@ -16,8 +16,7 @@ class OperationsDataset(Dataset):
     Pull IFRC operations information from the IFRC GO platform API, and clean and process the data.
     """
     def __init__(self):
-        self.name = 'GO Operations'
-        super().__init__()
+        super().__init__(name='GO Operations')
 
 
     def pull_data(self):

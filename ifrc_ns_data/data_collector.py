@@ -60,7 +60,7 @@ class DataCollector:
             # Check filters provided are valid
             valid_filters = []
             for dataset_name, dataset_info in self.datasets_info.items():
-                valid_filters += list(map(str.lower, dataset_info.keys()))
+                valid_filters.extend(map(str.lower, dataset_info.keys()))
             valid_filters = sorted([item for item in list(set(valid_filters)) if item not in ['indicators', 'columns']])
             invalid_filters = [item.strip().lower() for item in filters if item not in valid_filters]
             if invalid_filters:

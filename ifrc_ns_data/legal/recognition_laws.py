@@ -23,8 +23,7 @@ class RecognitionLawsDataset(Dataset):
     def __init__(self, filepath=None, sheet_name=None):
         if filepath is None:
             raise ValueError('Please specify a path to the National Society recognition laws dataset.')
-        self.name = 'Recognition Laws'
-        super().__init__(filepath=filepath, sheet_name=sheet_name)
+        super().__init__(name='Recognition Laws', filepath=filepath, sheet_name=sheet_name)
 
 
     def process_data(self, data, latest=None):

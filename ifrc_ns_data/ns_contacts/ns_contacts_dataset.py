@@ -22,8 +22,7 @@ class NSContactsDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, api_key):
-        self.name = 'NS Contacts'
-        super().__init__()
+        super().__init__(name='NS Contacts')
         self.api_key = api_key
 
 

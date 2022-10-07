@@ -20,7 +20,9 @@ class Dataset:
     sheet_name : string (default=None)
         Required when the filepath is a path to an Excel document.
     """
-    def __init__(self, filepath=None, sheet_name=None):
+    def __init__(self, name, filepath=None, sheet_name=None):
+        self.name = name
+        
         # Validate the filepath and sheet_name
         if filepath is not None:
             extension = os.path.splitext(filepath)[1][1:]

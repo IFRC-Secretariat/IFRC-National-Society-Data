@@ -20,8 +20,7 @@ class INFORMRiskDataset(Dataset):
         Path to save the dataset when pulled, and to read the dataset from.
     """
     def __init__(self):
-        self.name = 'INFORM Risk'
-        super().__init__()
+        super().__init__(name='INFORM Risk')
 
 
     def pull_data(self):

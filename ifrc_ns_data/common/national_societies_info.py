@@ -6,6 +6,7 @@ The module can be used to pull this data from the NS Databank API, process, and 
 import os
 import yaml
 import pandas as pd
+from definitions import ROOT_DIR
 
 
 class NationalSocietiesInfo:
@@ -21,7 +22,7 @@ class NationalSocietiesInfo:
 
     def __init__(self):
         if NationalSocietiesInfo.data is None:
-            NationalSocietiesInfo.data = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'national_societies_info.yml')))
+            NationalSocietiesInfo.data = yaml.safe_load(open(os.path.join(ROOT_DIR, 'ifrc_ns_data', 'common', 'national_societies_info.yml')))
 
 
     @property

@@ -19,9 +19,8 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         Path to save the dataset when pulled, and to read the dataset from.
     """
     def __init__(self):
-        self.name = 'World Development Indicators'
         self.test_flag = os.environ.get('TEST_FLAG')
-        super().__init__()
+        super().__init__(name='World Development Indicators')
 
 
     def pull_data(self):

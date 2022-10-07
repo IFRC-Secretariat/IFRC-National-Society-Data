@@ -7,7 +7,7 @@ import warnings
 import requests
 import pandas as pd
 import yaml
-from . import NationalSocietiesInfo
+from ifrc_ns_data.common import NationalSocietiesInfo
 
 
 class DatabankNSIDMap:

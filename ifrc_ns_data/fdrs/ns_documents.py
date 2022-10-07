@@ -19,8 +19,7 @@ class NSDocumentsDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self, api_key):
-        self.name = 'NS Documents'
-        super().__init__()
+        super().__init__(name='NS Documents')
         self.api_key = api_key
 
 

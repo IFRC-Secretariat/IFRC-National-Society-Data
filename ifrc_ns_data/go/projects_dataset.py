@@ -21,8 +21,7 @@ class ProjectsDataset(Dataset):
         Path to save the dataset when loaded, and to read the dataset from.
     """
     def __init__(self):
-        self.name = 'GO Projects'
-        super().__init__()
+        super().__init__(name='GO Projects')
 
 
     def pull_data(self):

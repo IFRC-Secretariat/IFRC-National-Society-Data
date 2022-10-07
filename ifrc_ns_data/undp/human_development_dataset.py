@@ -19,8 +19,7 @@ class HumanDevelopmentDataset(Dataset):
         Path to save the dataset when pulled, and to read the dataset from.
     """
     def __init__(self):
-        self.name = 'UNDP Human Development'
-        super().__init__()
+        super().__init__(name='UNDP Human Development')
 
 
     def pull_data(self):
