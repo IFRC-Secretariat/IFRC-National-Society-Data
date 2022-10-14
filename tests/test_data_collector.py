@@ -70,3 +70,18 @@ class TestDataCollector(unittest.TestCase):
         # Check all datasets are public
         for dataset_name in indicator_dataset['Dataset'].unique():
             self.assertEqual(self.datasets_info[dataset_name]['privacy'], 'public')
+
+
+    def test_get_latest_indicator_data(self):
+        """
+        Test getting the latest indicator data, only returning the latest result for each NS/ indicator.
+        """
+        # Get the indicator data and check the return is a non-empty pandas DataFrame
+        indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args,
+                                                                          latest=True)
+        self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
+        self.assertFalse(indicator_dataset.empty)
+
+        # Check that there is only one result for each NS/ indicator/ dataset
+        counts = indicator_dataset.groupby(['National Society name', 'Indicator', 'Dataset']).size()
+        self.assertEqual(counts.unique(), [1])
