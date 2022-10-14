@@ -2,6 +2,7 @@
 Module to handle NS Recognition Laws data, including loading it from the data file, cleaning, and processing.
 """
 import warnings
+import pandas as pd
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, NSInfoMapper
 
@@ -41,6 +42,7 @@ class RecognitionLawsDataset(Dataset):
         # Set the columns from the data row
         data.columns = data.iloc[0]
         data = data.iloc[1:]
+        data = data.dropna(how='all')
 
         # Clean up the column names
         data.rename(columns={column: column.strip() for column in data.columns}, inplace=True)
@@ -51,7 +53,9 @@ class RecognitionLawsDataset(Dataset):
         extra_columns = [column for column in self.index_columns if column!='Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            data[column] = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)
+            ns_id_mapped = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)\
+                                         .rename(column)
+            data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
 
         # Rename and order columns
         data = self.rename_columns(data)

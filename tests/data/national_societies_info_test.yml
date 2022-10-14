@@ -1,0 +1,29 @@
+- National Society name: Nat1
+  Country: Country1
+  ISO3: AAA
+  ISO2: AA
+  Region: Region1
+  National Society ID: AAA001
+  Alternative National Society names:
+  - Nat 1
+  Alternative country names:
+  - Country 1
+- National Society name: Nat2
+  Country: Country2
+  ISO3: BBB
+  ISO2: BB
+  Region: Region2
+  National Society ID: BBB001
+  Alternative National Society names:
+  - Country 2
+  Alternative country names: []
+- National Society name: Nat3
+  Country: Country3
+  ISO3: CCC
+  ISO2: CC
+  Region: Region3
+  National Society ID: CCC001
+  Alternative National Society names:
+  - Nat 3
+  Alternative country names:
+  - Country 3

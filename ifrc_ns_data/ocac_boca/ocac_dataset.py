@@ -47,7 +47,7 @@ class OCACDataset(Dataset):
                              .set_index(['Indicator'])\
                              .dropna(how='all')\
                              .transpose()\
-                             .drop(columns=['iso', 'Region', 'SubRegion', 'Month', 'Version', 'Principal facilitator', 'Second facilitator', 'NS Focal point', 'OCAC data public', 'OCAC report public'], errors='raise')\
+                             .drop(columns=['iso', 'Region', 'SubRegion', 'Month', 'Version', 'Principal facilitator', 'Second facilitator', 'NS Focal point', 'OCAC data public', 'OCAC report public'], errors='ignore')\
                              .reset_index(drop=True)\
                              .rename(columns={'National Society': 'National Society name'})
 
@@ -109,7 +109,7 @@ class OCACAssessmentDatesDataset(Dataset):
         ocac_data = ocac_dataset.process_data(data=data, latest=latest)
 
         # Select only dates of OCAC assessment and NOT results
-        data = ocac_data[self.index_columns+['Year']]
+        data = ocac_data[self.index_columns+['Year']].copy()
 
         # Double check that column names are only these, and that the Year data type is numeric
         expected_columns = ['National Society name', 'Country', 'ISO3', 'Region', 'Year']

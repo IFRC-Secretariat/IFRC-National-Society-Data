@@ -42,9 +42,10 @@ class StatutesDataset(Dataset):
         # Set the columns
         data.columns = data.iloc[1]
         data = data.iloc[3:, :8]
+        data = data.dropna(how='all')
 
         # Clean up the column names
-        clean_columns = {column: re.sub("^\d.", "", column.strip()).strip().replace('\n', ' ') for column in data.columns}
+        clean_columns = {column: re.sub(r'^\d.', "", column.strip()).strip().replace('\n', ' ') for column in data.columns}
         data.rename(columns=clean_columns, inplace=True, errors='raise')
         data.rename(columns={'National Society (NS)': 'Country'}, inplace=True, errors='raise')
 
@@ -56,7 +57,6 @@ class StatutesDataset(Dataset):
             data[column] = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)
 
         # Rename and order columns
-        data = self.rename_columns(data)
         data = self.order_index_columns(data)
 
         return data

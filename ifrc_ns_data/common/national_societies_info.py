@@ -23,6 +23,9 @@ class NationalSocietiesInfo:
     def __init__(self):
         if NationalSocietiesInfo.data is None:
             NationalSocietiesInfo.data = yaml.safe_load(open(os.path.join(ROOT_DIR, 'ifrc_ns_data', 'common', 'national_societies_info.yml')))
+            if os.environ.get('TEST_FLAG'):
+                test_ns_info = yaml.safe_load(open(os.path.join(ROOT_DIR, 'tests', 'data', 'national_societies_info_test.yml')))
+                NationalSocietiesInfo.data += test_ns_info
 
 
     @property

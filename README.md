@@ -120,9 +120,9 @@ print(df.columns) # Print the columns
 | OCAC assessment dates | Dates of OCAC assessments run by a NS | OCAC website Excel download | NSContactsDataset | filename, sheet_name |
 | GO operations | List of operations | GO API | GOOperationsDataset | |
 | GO projects | List of projects | GO API | GOProjectsDataset | |
-| NS recognition laws | NS recognition laws | Excel document | RecognitionLawsDataset | filename, sheet_name |
-| NS statutes | NS statutes | Excel document | StatutesDataset | filename, sheet_name |
+| Recognition laws | NS recognition laws | Excel document | RecognitionLawsDataset | filename, sheet_name |
+| Statutes | NS statutes | Excel document | StatutesDataset | filename, sheet_name |
 | Logistics projects | List of IFRC logistics projects | Excel document | LogisticsProjectsDataset | filename, sheet_name |
-| Youth YABC | IFRC youth YABC projects | Excel document | YABCDataset | filename, sheet_name |
-| INFORM risk (external) | INFORM Risk data | INFORM API | INFORMRiskDataset | |
-| World development indicators (external) | World development indicators | World Bank API | WorldDevelopmentIndicatorsDataset | |
+| YABC | IFRC youth YABC projects | Excel document | YABCDataset | filename, sheet_name |
+| INFORM risk | INFORM Risk data | INFORM API | INFORMRiskDataset | |
+| World development indicators | World development indicators | World Bank API | WorldDevelopmentIndicatorsDataset | |

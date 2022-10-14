@@ -114,21 +114,6 @@ Statutes:
   format: columns
   privacy: confidential
   Focal point: Drina Karahasanovic
-  columns:
-    - name: "Statutes in force (Date of adoption)"
-      source_name: Statutes in force (Date of adoption)
-    - name: "Complementary frameworks (Internal regulations, Policies, CoC) (Titles, dates of adoption)"
-      source_name: Complementary frameworks (Internal regulations, Policies, CoC) (Titles, dates of adoption)
-    - name: "Recognition Act (Law or Decree) (Title, date of entry into force)"
-      source_name: Recognition Act (Law or Decree) (Title, date of entry into force)
-    - name: "Draft/revised Statutes received by the JSC"
-      source_name: Draft/revised Statutes received by the JSC
-    - name: "NS progress towards compliance with the GD"
-      source_name: NS progress towards compliance with the GD
-    - name: "Past exchanges with the JSC"
-      source_name: Past exchanges with the JSC
-    - name: "Action/Follow-up required"
-      source_name: Action/Follow-up required
 
 Recognition Laws:
   Source: file

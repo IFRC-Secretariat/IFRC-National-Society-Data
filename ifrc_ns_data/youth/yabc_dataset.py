@@ -41,6 +41,7 @@ class YABCDataset(Dataset):
         # Set the columns
         data.columns = data.iloc[1]
         data = data.iloc[2:, 1:]
+        data = data.dropna(how='all', axis=0).dropna(how='all', axis=1)
 
         # Clean up the column names
         clean_columns = {column: column.strip() for column in data.columns}

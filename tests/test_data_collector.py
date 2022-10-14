@@ -3,7 +3,7 @@ import unittest
 import pandas as pd
 import yaml
 import ifrc_ns_data
-from definitions import DATASETS_CONFIG_PATH
+from definitions import DATASETS_CONFIG_PATH, ROOT_DIR
 
 
 class TestDataCollector(unittest.TestCase):
@@ -12,9 +12,16 @@ class TestDataCollector(unittest.TestCase):
         self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year', 'Dataset']
         self.fdrs_api_key = os.environ.get('FDRS_PUBLIC_API_KEY')
         self.data_collector = ifrc_ns_data.DataCollector()
+        test_datasets_path = os.path.join(ROOT_DIR, 'tests', 'data')
         self.dataset_args = {'FDRS': {'api_key': self.fdrs_api_key},
                              'NS Contacts': {'api_key': self.fdrs_api_key},
-                             'NS Documents': {'api_key': self.fdrs_api_key}}
+                             'NS Documents': {'api_key': self.fdrs_api_key},
+                             'Statutes': {'filepath': os.path.join(test_datasets_path, 'statutes.csv')},
+                             'Recognition laws': {'filepath': os.path.join(test_datasets_path, 'recognition_laws.csv')},
+                             'Logistics projects': {'filepath': os.path.join(test_datasets_path, 'logistics_projects.csv')},
+                             'OCAC': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
+                             'OCAC assessment dates': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
+                             'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}}
         self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
 
 
