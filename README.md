@@ -44,16 +44,15 @@ import ifrc_ns_data
 
 # Initiate the class to access FDRS data
 fdrs_dataset = ifrc_ns_data.FDRSDataset(api_key='xxxxxxx')
+print(fdrs_dataset.name)
 
 # Call the get_data method to pull the data from the API, process the data, and return the processed data
 fdrs_data = fdrs_dataset.get_data()
+print(fdrs_dataset.data)
 
 # Get only the latest data
 fdrs_data = fdrs_dataset.get_data(latest=True)
-
-# Print the dataset name, and print data as a pandas DataFrame
-print(fdrs_data.name)
-print(fdrs_data.data)
+print(fdrs_dataset.data)
 ```
 
 
@@ -97,7 +96,7 @@ for dataset in latest_data:
   print(dataset.data.columns) # Print the columns of the pandas DataFrame
 ```
 
-Several of the datasets have the same "indicator" style structure, with a row for each National Society/ indicator/ year. These all have the same columns: ```National Society name```, ```Country```, ```ISO3```, ```Region```, ```Indicator```, ```Value```, ```Year```. The ```get_merged_indicator_data``` method can be used to get all of this data in a single pandas DataFrame. This method has the same parameters as the ```get_data``` method (```datasets```, ```dataset_args```, ```filters```, and ```latest```).
+Several of the datasets have the same "indicator" style structure, with a row for each National Society/ indicator/ year. These all have the same columns: ```National Society name```, ```Country```, ```ISO3```, ```Region```, ```Indicator```, ```Value```, ```Year```. The ```get_merged_indicator_data``` method can be used to get all of this data in a single pandas DataFrame. This method has the same parameters as the ```get_data``` method (```datasets```, ```dataset_args```, ```filters```, and ```latest```). As with ```get_data```, if ```dataset_args``` is not provided as an argument then only the datasets not requiring parameters will be returned, and warnings will be printed for the others.
 
 ```python
 import ifrc_ns_data

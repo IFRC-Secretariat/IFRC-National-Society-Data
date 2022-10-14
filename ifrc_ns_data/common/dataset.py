@@ -142,7 +142,7 @@ class Dataset:
 
         # Drop columns that were not in the rename list
         if drop_others:
-            data = data[self.index_columns+list(rename_columns.values())]
+            data = data[self.index_columns.copy()+list(rename_columns.values())]
 
         return data
 
@@ -163,7 +163,7 @@ class Dataset:
             If other_columns is not None and drop_others is True, drop columns which are not specified in other_columns or are index columns.
         """
         # Create a list giving the required order of columns
-        columns_order = self.index_columns
+        columns_order = self.index_columns.copy()
         if other_columns is not None:
             columns_order += other_columns
             if not drop_others:
