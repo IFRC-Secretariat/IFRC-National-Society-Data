@@ -9,7 +9,7 @@ from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, DictColumnExpander, NSInfoMapper
 
 
-class ProjectsDataset(Dataset):
+class GOProjectsDataset(Dataset):
     """
     Pull IFRC projects (3W) information from the IFRC GO platform API, and clean and process the data.
 

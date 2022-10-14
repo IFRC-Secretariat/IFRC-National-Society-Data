@@ -173,19 +173,19 @@ class DataCollector:
                 dataset_args[dataset] = {}
 
         # Initiate all dataset classes including providing arguments. Skip when arguments are not provided.
-        class_names = {'FDRS': ifrc_ns_data.fdrs.FDRSDataset,
-                       'NS Documents': ifrc_ns_data.fdrs.NSDocumentsDataset,
-                       'NS Contacts': ifrc_ns_data.ns_contacts.NSContactsDataset,
-                       'OCAC': ifrc_ns_data.ocac_boca.OCACDataset,
-                       'OCAC Assessment Dates': ifrc_ns_data.ocac_boca.OCACAssessmentDatesDataset,
-                       'GO Operations': ifrc_ns_data.go.OperationsDataset,
-                       'GO Projects': ifrc_ns_data.go.ProjectsDataset,
-                       'INFORM Risk': ifrc_ns_data.inform.INFORMRiskDataset,
-                       'Recognition laws': ifrc_ns_data.legal.RecognitionLawsDataset,
-                       'Statutes': ifrc_ns_data.legal.StatutesDataset,
-                       'Logistics projects': ifrc_ns_data.logistics.LogisticsProjectsDataset,
-                       'World Development Indicators': ifrc_ns_data.world_bank.WorldDevelopmentIndicatorsDataset,
-                       'YABC': ifrc_ns_data.youth.YABCDataset,
+        class_names = {'FDRS': ifrc_ns_data.FDRSDataset,
+                       'NS Documents': ifrc_ns_data.NSDocumentsDataset,
+                       'NS Contacts': ifrc_ns_data.NSContactsDataset,
+                       'OCAC': ifrc_ns_data.OCACDataset,
+                       'OCAC Assessment Dates': ifrc_ns_data.OCACAssessmentDatesDataset,
+                       'GO Operations': ifrc_ns_data.GOOperationsDataset,
+                       'GO Projects': ifrc_ns_data.GOProjectsDataset,
+                       'INFORM Risk': ifrc_ns_data.INFORMRiskDataset,
+                       'Recognition laws': ifrc_ns_data.RecognitionLawsDataset,
+                       'Statutes': ifrc_ns_data.StatutesDataset,
+                       'Logistics projects': ifrc_ns_data.LogisticsProjectsDataset,
+                       'World Development Indicators': ifrc_ns_data.WorldDevelopmentIndicatorsDataset,
+                       'YABC': ifrc_ns_data.YABCDataset,
                        }
         class_names = {k.lower(): v for k, v in class_names.items()}
         dataset_instances = []

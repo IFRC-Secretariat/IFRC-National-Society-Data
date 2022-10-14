@@ -1,2 +1,2 @@
-from .operations_dataset import OperationsDataset
-from .projects_dataset import ProjectsDataset
+from .operations_dataset import GOOperationsDataset
+from .projects_dataset import GOProjectsDataset

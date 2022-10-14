@@ -9,7 +9,7 @@ from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, DictColumnExpander, NSInfoMapper
 
 
-class OperationsDataset(Dataset):
+class GOOperationsDataset(Dataset):
     """
     Pull IFRC operations information from the IFRC GO platform API, and clean and process the data.
     """

@@ -43,7 +43,7 @@ The ```get_data``` method returns an instance of the dataset class. The ```data`
 import ifrc_ns_data
 
 # Initiate the class to access FDRS data
-fdrs_dataset = ifrc_ns_data.fdrs.FDRSDataset(api_key='xxxxxxx')
+fdrs_dataset = ifrc_ns_data.FDRSDataset(api_key='xxxxxxx')
 
 # Call the get_data method to pull the data from the API, process the data, and return the processed data
 fdrs_data = fdrs_dataset.get_data()
@@ -118,8 +118,8 @@ print(df.columns) # Print the columns
 | NS contacts | Contact information and social media links | FDRS API | NSContactsDataset | api_key |
 | OCAC | Results of OCAC assessment which assesses the strength of a NS | OCAC website Excel download | OCACDataset | filename, sheet_name |
 | OCAC assessment dates | Dates of OCAC assessments run by a NS | OCAC website Excel download | NSContactsDataset | filename, sheet_name |
-| GO operations | List of operations | GO API | OperationsDataset | |
-| GO projects | List of projects | GO API | ProjectsDataset | |
+| GO operations | List of operations | GO API | GOOperationsDataset | |
+| GO projects | List of projects | GO API | GOProjectsDataset | |
 | NS recognition laws | NS recognition laws | Excel document | RecognitionLawsDataset | filename, sheet_name |
 | NS statutes | NS statutes | Excel document | StatutesDataset | filename, sheet_name |
 | Logistics projects | List of IFRC logistics projects | Excel document | LogisticsProjectsDataset | filename, sheet_name |
