@@ -4,7 +4,7 @@ Module to define a Dataset Class with methods to load, clean, and process datase
 import os
 import pandas as pd
 import yaml
-from definitions import DATASETS_CONFIG_PATH
+from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH
 
 
 class Dataset:

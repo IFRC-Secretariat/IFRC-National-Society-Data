@@ -5,7 +5,7 @@ import warnings
 import yaml
 import pandas as pd
 import ifrc_ns_data
-from definitions import DATASETS_CONFIG_PATH
+from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH
 
 
 class DataCollector:

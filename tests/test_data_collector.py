@@ -3,7 +3,7 @@ import unittest
 import pandas as pd
 import yaml
 import ifrc_ns_data
-from definitions import DATASETS_CONFIG_PATH, ROOT_DIR
+from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH, ROOT_DIR
 
 
 class TestDataCollector(unittest.TestCase):

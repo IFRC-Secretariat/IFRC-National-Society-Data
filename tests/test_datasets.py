@@ -2,7 +2,7 @@ import os
 import unittest
 import pandas as pd
 import ifrc_ns_data
-from definitions import ROOT_DIR
+from ifrc_ns_data.definitions import ROOT_DIR
 
 
 class TestDatasets(unittest.TestCase):

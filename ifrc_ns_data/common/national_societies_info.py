@@ -6,7 +6,7 @@ The module can be used to pull this data from the NS Databank API, process, and 
 import os
 import yaml
 import pandas as pd
-from definitions import ROOT_DIR
+from ifrc_ns_data.definitions import ROOT_DIR
 
 
 class NationalSocietiesInfo:
