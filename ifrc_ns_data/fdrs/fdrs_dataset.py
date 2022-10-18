@@ -18,7 +18,7 @@ class FDRSDataset(Dataset):
     """
     def __init__(self, api_key):
         super().__init__(name='FDRS')
-        self.api_key = api_key
+        self.api_key = api_key.strip()
 
 
     def pull_data(self):

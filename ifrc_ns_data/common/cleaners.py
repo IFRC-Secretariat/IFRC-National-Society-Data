@@ -20,7 +20,7 @@ class DatabankNSIDMap:
     api_response = None
 
     def __init__(self, api_key):
-        self.api_key = api_key
+        self.api_key = api_key.strip()
 
 
     def get_map(self, reverse=False):
@@ -56,7 +56,7 @@ class DatabankNSIDMapper:
     api_response = None
 
     def __init__(self, api_key):
-        self.api_key = api_key
+        self.api_key = api_key.strip()
 
 
     def map(self, data, reverse=False, clean_names=False):
