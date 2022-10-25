@@ -7,14 +7,16 @@ This library can be used for getting data on a National Society/ country level f
 This package requires Python 3.8+. Required Python packages can be installed from the requirements file:
 
 ```bash
-pip3 install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 To install the package, run the following command in a bash terminal from the root directory:
 
 ```bash
-pip3 install .
+python -m pip install .
 ```
+
+Note that depending on your setup, you may need to use ```pip3``` instead in these examples.
 
 ## Usage
 
