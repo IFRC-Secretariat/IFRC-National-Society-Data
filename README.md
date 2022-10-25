@@ -106,7 +106,7 @@ print(df.columns) # Print the columns
 
 ### Power BI
 
-The package can be used to import data into Power BI. First, follow the [Power BI instructions](https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-python-scripts) to setup Python for Power BI. Once you have installed the IFRC NS data library (see [Setup](setup)), then you can use it in Power Query. E.g. the following example in Power Query M will import FDRS data (replace ```xxxxxxx``` with your FDRS API key).
+The package can be used to import data into Power BI. First, follow the [Power BI instructions](https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-python-scripts) to setup Python for Power BI. Once you have installed the IFRC NS data library (see [Setup](#setup)), then you can use it in Power Query. E.g. the following example in Power Query M will import FDRS data (replace ```xxxxxxx``` with your FDRS API key).
 
 ```
 let
