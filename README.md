@@ -4,15 +4,11 @@ This library can be used for getting data on a National Society/ country level f
 
 ## Setup
 
-### Requirements
-
-Requires Python 3.8+. Required Python packages can be installed from the requirements file:
+This package requires Python 3.8+. Required Python packages can be installed from the requirements file:
 
 ```bash
 pip3 install -r requirements.txt
 ```
-
-### Installation
 
 To install the package, run the following command in a bash terminal from the root directory:
 
@@ -107,6 +103,23 @@ data_collector = ifrc_ns_data.DataCollector()
 df = data_collector.get_merged_indicator_data()
 print(df.columns) # Print the columns
 ```
+
+### Power BI
+
+The package can be used to import data into Power BI. First, follow the [Power BI instructions](https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-python-scripts) to setup Python for Power BI. Once you have installed the IFRC NS data library (see [Setup](setup)), then you can use it in Power Query. E.g. the following example in Power Query M will import FDRS data (replace ```xxxxxxx``` with your FDRS API key).
+
+```
+let
+    Source = Python.Execute("
+import ifrc_ns_data#(lf)
+fdrs_dataset = ifrc_ns_data.FDRSDataset(api_key='xxxxxxx')#(lf)
+fdrs_data = fdrs_dataset.get_data()
+    "),
+    fdrs_data = Source{[Name="fdrs_data"]}[Value]
+in
+    fdrs_data
+```
+
 
 ## Datasets table
 
