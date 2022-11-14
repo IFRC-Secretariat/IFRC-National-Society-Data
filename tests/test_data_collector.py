@@ -2,6 +2,7 @@ import os
 import unittest
 import pandas as pd
 import yaml
+import numpy as np
 import ifrc_ns_data
 from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH, ROOT_DIR
 
@@ -85,3 +86,18 @@ class TestDataCollector(unittest.TestCase):
         # Check that there is only one result for each NS/ indicator/ dataset
         counts = indicator_dataset.groupby(['National Society name', 'Indicator', 'Dataset']).size()
         self.assertEqual(counts.unique(), [1])
+
+
+    def test_get_quantitative_indicator_data(self):
+        """
+        Test getting the merged indicator data, but filtered by quantitative only.
+        """
+        # Get the indicator data and check the return value is numeric
+        indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args,
+                                                                          quantitative=True)
+        self.assertEqual(indicator_dataset['Value'].dtype, np.float64)
+
+        # Get the indicator data and check the return value is numeric
+        indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args,
+                                                                          quantitative=False)
+        self.assertEqual(indicator_dataset['Value'].dtype, 'object')

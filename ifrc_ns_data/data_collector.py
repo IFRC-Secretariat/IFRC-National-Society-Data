@@ -91,7 +91,7 @@ class DataCollector:
         return dataset_instances
 
 
-    def get_merged_indicator_data(self, datasets=None, dataset_args=None, filters=None, latest=None):
+    def get_merged_indicator_data(self, datasets=None, dataset_args=None, filters=None, latest=None, quantitative=None):
         """
         Get a dataset of all indicator-format data on National Societies.
 
@@ -108,6 +108,9 @@ class DataCollector:
         latest : bool (default=None)
             If True, only the latest data will be returned for the dataset, and older data will not be included.
             For datasets where this is not valid the whole dataset is returned and a warning is printed.
+
+        quantitative : bool (default=None)
+            If True, only return quantitative data (some datasets contain a mix of qualitative and quantitative indicators so this cannot be filtered at dataset-level).
         """
         # Initiate the dataset classes for these datasets and get data
         if filters is None: filters = {}
@@ -124,6 +127,13 @@ class DataCollector:
         all_indicator_data = pd.concat([dataset.data for dataset in dataset_instances])
         all_indicator_data = all_indicator_data.sort_values(by=['Dataset', 'National Society name', 'Indicator', 'Year', 'Value'])\
                                                .reset_index(drop=True)
+
+        # Filter for only quantitative data or only qualitative data
+        if quantitative==True:
+            all_indicator_data = all_indicator_data.loc[all_indicator_data['Value'].astype(str).str.isnumeric()]
+            all_indicator_data['Value'] = all_indicator_data['Value'].astype(float)
+        elif quantitative==False:
+            all_indicator_data = all_indicator_data.loc[~all_indicator_data['Value'].astype(str).str.isnumeric()]
 
         return all_indicator_data
 
