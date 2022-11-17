@@ -80,7 +80,7 @@ class TestDatasets(unittest.TestCase):
         data = ns_contacts_data.get_data()
         self.assertTrue(isinstance(data, pd.DataFrame))
         self.assertFalse(data.empty)
-        self.assertEqual(data.columns.to_list()[:4], self.index_columns)
+        self.assertEqual(data.columns.to_list(), self.indicator_dataset_columns)
 
     def test_ocac(self):
         ocac_data = ifrc_ns_data.OCACDataset(filepath=os.path.join(self.test_datasets_path, 'ocac.csv'))

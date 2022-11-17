@@ -59,6 +59,13 @@ class NSContactsDataset(Dataset):
         # Rename and order columns
         data = data.rename(columns={'country': 'Country', 'iso_3': 'ISO3', 'NSO_ZON_name': 'Region'})
         data = self.rename_columns(data, drop_others=True)
+
+        # Melt into indicator format
+        data = pd.melt(data,
+                       id_vars=self.index_columns, value_vars=[column for column in data.columns if column not in self.index_columns],
+                       var_name="Indicator",
+                       value_name="Value")
+        data['Year'] = ''
         data = self.order_index_columns(data)
 
         return data

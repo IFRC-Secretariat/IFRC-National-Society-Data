@@ -57,6 +57,7 @@ class TestDataCollector(unittest.TestCase):
         indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args)
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
+        self.assertEqual(indicator_dataset.columns.tolist(), self.indicator_dataset_columns)
 
 
     def test_get_public_indicator_data(self):
@@ -95,9 +96,13 @@ class TestDataCollector(unittest.TestCase):
         # Get the indicator data and check the return value is numeric
         indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args,
                                                                           quantitative=True)
+        self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
+        self.assertFalse(indicator_dataset.empty)
         self.assertEqual(indicator_dataset['Value'].dtype, np.float64)
 
         # Get the indicator data and check the return value is numeric
         indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args,
                                                                           quantitative=False)
+        self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
+        self.assertFalse(indicator_dataset.empty)
         self.assertEqual(indicator_dataset['Value'].dtype, 'object')
