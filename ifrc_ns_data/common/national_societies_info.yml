@@ -1631,13 +1631,14 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: null
-  Country: Curaçao
+  Country: Curacao
   ISO3: CUW
   ISO2: CW
   Region: Americas
   National Society ID: null
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names:
+  - Curaçao
 - National Society name: null
   Country: Western Sahara
   ISO3: ESH

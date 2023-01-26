@@ -51,7 +51,7 @@ class ICRCPresenceDataset(Dataset):
                         country_soup = BeautifulSoup(country_page.content, 'html.parser')
                         description = country_soup.find("div", {"class": "block-introduction"}).find_all()[2].text.strip()
                     except Exception as err:
-                        continue
+                        pass
                 # Append all the information to the list
                 country_list.append({"Country": name,
                                      "ICRC presence": presence,
@@ -85,7 +85,7 @@ class ICRCPresenceDataset(Dataset):
             ns_id_mapped = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)\
                                          .rename(column)
             data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
-
+        
         # Reorder columns
         data = self.rename_columns(data, drop_others=True)
         data = self.order_index_columns(data)
