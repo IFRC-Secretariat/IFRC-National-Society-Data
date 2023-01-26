@@ -115,6 +115,7 @@
   Alternative country names:
   - Baphalali Eswatini
   - Swaziland
+  - Eswatini
 - National Society name: Belarus Red Cross
   Country: Belarus
   ISO3: BLR
@@ -191,7 +192,8 @@
   Region: Asia Pacific
   National Society ID: DBN001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names:
+  - Brunei
 - National Society name: Bulgarian Red Cross
   Country: Bulgaria
   ISO3: BGR
@@ -599,6 +601,7 @@
   Alternative National Society names: []
   Alternative country names:
   - Laos
+  - Lao
 - National Society name: Latvian Red Cross
   Country: Latvia
   ISO3: LVA
@@ -883,6 +886,7 @@
   Alternative National Society names: []
   Alternative country names:
   - Filipinas
+  - The Philippines
 - National Society name: Polish Red Cross
   Country: Poland
   ISO3: POL
@@ -1185,7 +1189,8 @@
   Region: Africa
   National Society ID: DST001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names:
+  - São Tomé and Príncipe
 - National Society name: Saudi Red Crescent Authority
   Country: Saudi Arabia
   ISO3: SAU
@@ -1356,7 +1361,8 @@
   Region: Africa
   National Society ID: DGM001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names:
+  - The Gambia
 - National Society name: The Guyana Red Cross Society
   Country: Guyana
   ISO3: GUY

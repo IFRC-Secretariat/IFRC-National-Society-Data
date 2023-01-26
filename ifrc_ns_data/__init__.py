@@ -11,6 +11,7 @@ from .undp import *
 from .world_bank import *
 from .youth import *
 from .icrc import *
+from .idl import *
 
 # Import data collector
 from .data_collector import DataCollector

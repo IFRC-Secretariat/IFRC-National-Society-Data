@@ -267,3 +267,20 @@ ICRC Presence:
       source_name: Key operation
     - name: URL
       source_name: URL
+    - name: Description
+      source_name: Description
+
+IFRC Disaster Law:
+  source: website
+  privacy: public
+  format: columns
+  source_description: IFRC disaster law information
+  Type: External
+  Link: https://disasterlaw.ifrc.org/where-we-work
+  Columns:
+    - name: ID
+      source_name: ID
+    - name: URL
+      source_name: URL
+    - name: Description
+      source_name: Description

@@ -141,3 +141,4 @@ in
 | INFORM risk | INFORM Risk data | INFORM API | INFORMRiskDataset | |
 | World development indicators | World development indicators | World Bank API | WorldDevelopmentIndicatorsDataset | |
 | ICRC Presence | Presence of ICRC | ICRC website | ICRCPresenceDataset | |
+| IFRC Disaster Law | IFRC Disaster Law overview | IFRC Disaster Law website | IFRCDisasterLawDataset | |

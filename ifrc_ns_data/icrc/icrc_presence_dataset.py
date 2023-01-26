@@ -23,9 +23,9 @@ class ICRCPresenceDataset(Dataset):
 
     def pull_data(self):
         """
-        Read in raw data from the NS Databank API.
+        Scrape data from the ICRC website at https://www.icrc.org/en/where-we-work.
         """
-        # Pull data from FDRS API
+        # Get the home page
         response = requests.get(url='https://www.icrc.org/en/where-we-work',
                                 headers={'User-Agent': ''})
         response.raise_for_status()
