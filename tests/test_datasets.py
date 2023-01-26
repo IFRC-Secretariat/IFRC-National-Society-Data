@@ -102,3 +102,10 @@ class TestDatasets(unittest.TestCase):
         self.assertTrue(isinstance(data, pd.DataFrame))
         self.assertFalse(data.empty)
         self.assertEqual(data.columns.to_list(), self.indicator_dataset_columns)
+
+    def test_icrc_presence(self):
+        icrc_presence_data = ifrc_ns_data.ICRCPresenceDataset()
+        data = icrc_presence_data.get_data()
+        self.assertTrue(isinstance(data, pd.DataFrame))
+        self.assertFalse(data.empty)
+        self.assertEqual(data.columns.to_list()[:4], self.index_columns)

@@ -130,13 +130,14 @@ in
 | FDRS |  FDRS data gives an overview of a National Society in a number of indicators | FDRS API | FDRSDataset | api_key |
 | NS documents | Links to key documents including annual plans and financial statements | FDRS API | NSDocumentsDataset | api_key |
 | NS contacts | Contact information and social media links | FDRS API | NSContactsDataset | api_key |
-| OCAC | Results of OCAC assessment which assesses the strength of a NS | OCAC website Excel download | OCACDataset | filename, sheet_name |
-| OCAC assessment dates | Dates of OCAC assessments run by a NS | OCAC website Excel download | NSContactsDataset | filename, sheet_name |
+| OCAC | Results of OCAC assessment which assesses the strength of a NS | OCAC website Excel download | OCACDataset | filepath, sheet_name |
+| OCAC assessment dates | Dates of OCAC assessments run by a NS | OCAC website Excel download | NSContactsDataset | filepath, sheet_name |
 | GO operations | List of operations | GO API | GOOperationsDataset | |
 | GO projects | List of projects | GO API | GOProjectsDataset | |
-| Recognition laws | NS recognition laws | Excel document | RecognitionLawsDataset | filename, sheet_name |
-| Statutes | NS statutes | Excel document | StatutesDataset | filename, sheet_name |
-| Logistics projects | List of IFRC logistics projects | Excel document | LogisticsProjectsDataset | filename, sheet_name |
-| YABC | IFRC youth YABC projects | Excel document | YABCDataset | filename, sheet_name |
+| Recognition laws | NS recognition laws | Excel document | RecognitionLawsDataset | filepath, sheet_name |
+| Statutes | NS statutes | Excel document | StatutesDataset | filepath, sheet_name |
+| Logistics projects | List of IFRC logistics projects | Excel document | LogisticsProjectsDataset | filepath, sheet_name |
+| YABC | IFRC youth YABC projects | Excel document | YABCDataset | filepath, sheet_name |
 | INFORM risk | INFORM Risk data | INFORM API | INFORMRiskDataset | |
 | World development indicators | World development indicators | World Bank API | WorldDevelopmentIndicatorsDataset | |
+| ICRC Presence | Presence of ICRC | ICRC website | ICRCPresenceDataset | |

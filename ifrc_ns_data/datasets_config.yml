@@ -252,3 +252,18 @@ INFORM Risk:
   indicators:
     - name: INFORM Risk Index
       source_name: INFORM
+
+ICRC Presence:
+  source: website
+  privacy: public
+  format: columns
+  source_description: ICRC presence
+  Type: External
+  Link: https://www.icrc.org/en/where-we-work
+  Columns:
+    - name: ICRC presence
+      source_name: ICRC presence
+    - name: Key operation
+      source_name: Key operation
+    - name: URL
+      source_name: URL

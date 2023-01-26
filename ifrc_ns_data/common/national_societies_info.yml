@@ -266,6 +266,7 @@
   Alternative National Society names: []
   Alternative country names:
   - Congo (Republic of the)
+  - Republic of the Congo
 - National Society name: Cook Islands Red Cross Society
   Country: Cook Islands
   ISO3: COK
@@ -521,7 +522,8 @@
   National Society ID: DIL001
   Alternative National Society names:
   - Magen David Adom in Israel
-  Alternative country names: []
+  Alternative country names:
+  - Israel and the occupied territories
 - National Society name: Italian Red Cross
   Country: Italy
   ISO3: ITA
@@ -751,6 +753,7 @@
   Alternative National Society names: []
   Alternative country names:
   - Micronesia
+  - Federated States of Micronesia
 - National Society name: Mongolian Red Cross Society
   Country: Mongolia
   ISO3: MNG
@@ -1027,6 +1030,7 @@
   Alternative National Society names: []
   Alternative country names:
   - Congo (Democratic Republic of the)
+  - Democratic Republic of the Congo
 - National Society name: Red Cross of the Republic of San Marino
   Country: San Marino
   ISO3: SMR
@@ -1103,6 +1107,7 @@
   Alternative country names:
   - Korea (Democratic People's Republic of)
   - DPR Korea
+  - Democratic people's republic of Korea
 - National Society name: Red Cross Society of the Republic of Moldova
   Country: Moldova, Republic of
   ISO3: MDA
@@ -1112,6 +1117,7 @@
   Alternative National Society names: []
   Alternative country names:
   - Moldova
+  - Republic of Moldova
 - National Society name: Romanian Red Cross
   Country: Romania
   ISO3: ROU
@@ -1414,6 +1420,7 @@
   Alternative National Society names: []
   Alternative country names:
   - Korea (Republic of)
+  - Republic of Korea
 - National Society name: The Russian Red Cross Society
   Country: Russian Federation
   ISO3: RUS
@@ -1598,6 +1605,78 @@
   ISO3: PRI
   ISO2: PR
   Region: Americas
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Bonaire
+  ISO3: BES
+  ISO2: BQ
+  Region: Americas
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Aruba
+  ISO3: ABW
+  ISO2: AW
+  Region: Americas
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Curaçao
+  ISO3: CUW
+  ISO2: CW
+  Region: Americas
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Western Sahara
+  ISO3: ESH
+  ISO2: EH
+  Region: Africa
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Holy See
+  ISO3: VAT
+  ISO2: VA
+  Region: Europe and Central Asia
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Niue
+  ISO3: NIU
+  ISO2: NU
+  Region: Asia Pacific
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Nauru
+  ISO3: NRU
+  ISO2: NR
+  Region: Asia Pacific
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Kosovo
+  ISO3: null
+  ISO2: null
+  Region: Europe
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: null
+  Country: Oman
+  ISO3: OMN
+  ISO2: OM
+  Region: Middle East and North Africa
   National Society ID: null
   Alternative National Society names: []
   Alternative country names: []
