@@ -288,7 +288,7 @@ IFRC Disaster Law:
 Corruption Perception Index:
   source: website
   privacy: public
-  format: indicators
+  format: columns
   source_description: Transparency International (TI) Corruption Perception Index (CPI)
   type: external
   link: https://www.transparency.org/en/
