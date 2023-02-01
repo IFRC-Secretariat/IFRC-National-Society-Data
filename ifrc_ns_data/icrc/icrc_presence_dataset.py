@@ -2,6 +2,7 @@
 Module to access and handle ICRC data.
 """
 import requests
+import warnings
 from bs4 import BeautifulSoup
 import pandas as pd
 from ifrc_ns_data.common import Dataset
