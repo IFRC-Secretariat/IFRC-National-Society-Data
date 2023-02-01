@@ -198,6 +198,7 @@ class DataCollector:
                        'YABC': ifrc_ns_data.YABCDataset,
                        'ICRC Presence': ifrc_ns_data.ICRCPresenceDataset,
                        'IFRC Disaster Law': ifrc_ns_data.IFRCDisasterLawDataset,
+                       'Corruption Perception Index': ifrc_ns_data.CorruptionPerceptionIndexDataset,
                        }
         class_names = {k.lower(): v for k, v in class_names.items()}
         dataset_instances = []

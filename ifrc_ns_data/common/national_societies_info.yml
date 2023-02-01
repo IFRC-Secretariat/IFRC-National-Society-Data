@@ -1673,7 +1673,7 @@
   Alternative country names: []
 - National Society name: null
   Country: Kosovo
-  ISO3: null
+  ISO3: KSV
   ISO2: null
   Region: Europe
   National Society ID: null
@@ -1684,6 +1684,22 @@
   ISO3: OMN
   ISO2: OM
   Region: Middle East and North Africa
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: Hong Kong Red Cross
+  Country: Hong Kong
+  ISO3: HKG
+  ISO2: HK
+  Region: Asia Pacific
+  National Society ID: null
+  Alternative National Society names: []
+  Alternative country names: []
+- National Society name: The Red Cross Society of The Republic of China (Taiwan)
+  Country: Taiwan
+  ISO3: TWN
+  ISO2: TW
+  Region: Asia Pacific
   National Society ID: null
   Alternative National Society names: []
   Alternative country names: []

@@ -284,3 +284,20 @@ IFRC Disaster Law:
       source_name: URL
     - name: Description
       source_name: Description
+
+Corruption Perception Index:
+  source: website
+  privacy: public
+  format: indicators
+  source_description: Transparency International (TI) Corruption Perception Index (CPI)
+  type: external
+  link: https://www.transparency.org/en/
+  columns:
+    - name: Score
+      source_name: score
+    - name: Rank
+      source_name: rank
+    - name: Sources
+      source_name: sources
+    - name: Standard error
+      source_name: standardError

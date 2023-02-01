@@ -12,6 +12,7 @@ from .world_bank import *
 from .youth import *
 from .icrc import *
 from .idl import *
+from .transparency_international import *
 
 # Import data collector
 from .data_collector import DataCollector
