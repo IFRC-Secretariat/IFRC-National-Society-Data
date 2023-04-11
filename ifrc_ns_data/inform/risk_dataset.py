@@ -1,6 +1,7 @@
 """
 Module to handle INFORM Risk data, including pulling it from the INFORM API, cleaning, and processing.
 """
+import warnings
 import requests
 from datetime import date
 import pandas as pd
@@ -21,10 +22,21 @@ class INFORMRiskDataset(Dataset):
         super().__init__(name='INFORM Risk')
 
 
-    def pull_data(self):
+    def pull_data(self, filters):
         """
         Pull data from the INFORM API and save to file.
+
+        Parameters
+        ----------
+        filters : dict (default=None)
+            Filters to filter by country or by National Society.
+            Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
+            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
         """
+        # The data cannot be filtered from the API so raise a warning if filters are provided
+        if filters is not None:
+            warnings.warn(f'Filters {filters} not applied because the API response cannot be filtered.')
+
         # Get the workflow ID of the latest dataset
         year = date.today().year
         response = requests.get(f'https://drmkc.jrc.ec.europa.eu/Inform-Index/API/InformAPI/workflows/GetByWorkflowGroup/INFORM{year}')

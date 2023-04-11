@@ -4,7 +4,7 @@ Module to handle World Bank data, including pulling it from the World Bank API, 
 import requests
 import os
 import pandas as pd
-from ifrc_ns_data.common import Dataset
+from ifrc_ns_data.common import Dataset, NationalSocietiesInfo
 from ifrc_ns_data.common.cleaners import DictColumnExpander, NSInfoMapper
 
 
@@ -22,16 +22,26 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         super().__init__(name='World Development Indicators')
 
 
-    def pull_data(self):
+    def pull_data(self, filters=None):
         """
         Pull data from the World Bank API.
         """
+         # Get the list of NSs to filter by
+        if filters:
+            selected_ns = NationalSocietiesInfo().data
+            for filter_name, filter_values in filters.items():
+                selected_ns = [ns for ns in selected_ns if ns[filter_name] in filter_values]
+            selected_countries = ';'.join([ns['ISO3'] for ns in selected_ns if ns['National Society ID'] is not None])
+        else:
+            selected_countries = 'all'
+
+        # Pull data from the API
         data = pd.DataFrame()
         page = 1; per_page = 1000;
         total_pages = 5 if self.test_flag else None # When testing pull only 5 pages because otherwise it takes a long time
         while True:
             api_indicators = ';'.join([indicator['source_name'] for indicator in self.indicators])
-            url = f'https://api.worldbank.org/v2/country/all/indicator/{api_indicators}?source=2&page={page}&format=json&per_page={per_page}'
+            url = f'https://api.worldbank.org/v2/country/{selected_countries}/indicator/{api_indicators}?source=2&page={page}&format=json&per_page={per_page}'
             print(f'Requesting page {page}', end=' ')
             response = requests.get(url=url)
             data = pd.concat([data, pd.DataFrame(response.json()[1])])
@@ -60,7 +70,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         # Expand dict-type columns
         expand_columns = ['indicator', 'country']
         data = DictColumnExpander().clean(data=data, columns=['indicator', 'country'], drop=True)
-
+        
         # Map ISO3 codes to NS names and add extra columns
         data['National Society name'] = NSInfoMapper().map_iso_to_ns(data=data['countryiso3code'])
         extra_columns = [column for column in self.index_columns if column!='National Society name']
@@ -71,7 +81,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         # The data contains regional and world-level information, drop this
         data = data.dropna(subset=['National Society name', 'indicator.value', 'value', 'date'], how='any')\
                    .rename(columns={'date': 'Year', 'indicator.id': 'Indicator', 'value': 'Value'}, errors='raise')\
-                   .drop(columns=['countryiso3code', 'country.id', 'country.value', 'unit', 'obs_status', 'decimal', 'scale', 'indicator.value'])
+                   .drop(columns=['countryiso3code', 'country.id', 'country.value', 'unit', 'obs_status', 'decimal', 'scale', 'indicator.value'], errors='ignore')
 
         # Get the latest values of each indicator for each NS
         if latest:

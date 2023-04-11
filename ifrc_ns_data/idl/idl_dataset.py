@@ -22,10 +22,21 @@ class IFRCDisasterLawDataset(Dataset):
         super().__init__(name='IFRC Disaster Law')
 
 
-    def pull_data(self):
+    def pull_data(self, filters):
         """
         Scrape data from the IFRC Disaster Law website at https://disasterlaw.ifrc.org/where-we-work.
+        
+        Parameters
+        ----------
+        filters : dict (default=None)
+            Filters to filter by country or by National Society.
+            Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
+            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
         """
+        # The data cannot be filtered from the API so raise a warning if filters are provided
+        if filters is not None:
+            warnings.warn(f'Filters {filters} not applied because the API response cannot be filtered.')
+
         # Loop through regions to get the list of countries for each region
         home_url = "https://disasterlaw.ifrc.org/"
         region_names = ["africa", "americas", "asia-and-pacific", "middle-east-north-africa", "europe-central-asia"]

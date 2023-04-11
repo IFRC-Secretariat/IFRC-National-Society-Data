@@ -1329,7 +1329,7 @@
   Region: Americas
   National Society ID: DBS001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names: [The Bahamas]
 - National Society name: The Barbados Red Cross Society
   Country: Barbados
   ISO3: BRB
@@ -1517,13 +1517,13 @@
   Alternative National Society names: []
   Alternative country names: []
 - National Society name: Turkish Red Crescent Society
-  Country: Turkey
+  Country: Türkiye
   ISO3: TUR
   ISO2: TR
   Region: Europe and Central Asia
   National Society ID: DTR001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names: [Turkey]
 - National Society name: Tuvalu Red Cross Society
   Country: Tuvalu
   ISO3: TUV
