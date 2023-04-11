@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import yaml
 from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH
-
+from .national_societies_info import NationalSocietiesInfo
 
 class Dataset:
     """
@@ -40,26 +40,73 @@ class Dataset:
             setattr(self, info.lower(), dataset_info[info])
 
 
-    def get_data(self, latest=None):
+    def get_data(self, latest=None, iso3=None, country=None, ns=None):
         """
         Pull the raw data, process it, and return the final dataset.
 
         Parameters
         ----------
+        iso3 : string or list (default=None)
+            String or list of country ISO3 codes to filter the dataset.
+
+        country : string or list (default=None)
+            String or list of country names to filter the dataset.
+
+        ns : string or list (default=None)
+            String or list of National Society names to filter the dataset.
+
         latest : bool (default=None)
             If True, only the latest data for each National Society and indicator will be returned.
         """
-        raw_data = self.load_source_data()
+        # Process the input parameters
+        inputs = {'ISO3': iso3, 'Country': country, 'National Society name': ns}
+        filters = {}
+        for name, val in inputs.items():
+            if val is None:
+                continue
+            elif isinstance(val, str):
+                filters[name] = [val]
+            elif isinstance(val, list):
+                filters[name] = val
+            else:
+                raise TypeError(f'{val} is not a list or string')
+                
+        # Check all countries and NS names are valid
+        if filters:
+            ns_info = NationalSocietiesInfo()
+            check_values = {'ISO3': ns_info.iso3_list,
+                            'Country': ns_info.country_list,
+                            'National Society name': ns_info.ns_list}
+            for filter_name, val_list in filters.items():
+                unrecognised_values = [item for item in val_list if item not in check_values[filter_name]]
+                if unrecognised_values:
+                    raise ValueError(f'Unrecognised values {unrecognised_values}.\n\nThe allowed values are: {check_values[filter_name]}')
+
+        # Get the data from file or API
+        raw_data = self.load_source_data(filters)
+
+        # Process the data: tidy, add country/ NS info, restructure
         processed_data = self.process_data(data=raw_data, latest=latest)
         processed_data = processed_data.dropna(subset=['National Society name'])
+
+        # Filter the processed data
+        for filter_name, filter_values in filters.items():
+            processed_data = processed_data.loc[processed_data[filter_name].isin(filter_values)]
+        processed_data.reset_index(inplace=True, drop=True)
+
         self.data = processed_data
 
         return processed_data
 
 
-    def load_source_data(self):
+    def load_source_data(self, filters=None):
         """
         Read in the data from the source: either as a CSV or Excel file from a given file path, or pull from an API.
+        
+        Parameters
+        ----------
+        filters : dict (default=None)
+            Dict mapping filter names to lists of values, e.g. {'iso3': ['AFG', 'ALB']}.
         """
         # Read in the data from a CSV or Excel file
         if self.filepath is not None:
@@ -70,9 +117,9 @@ class Dataset:
                 data = pd.read_excel(self.filepath, sheet_name=self.sheet_name)
             else:
                 raise ValueError(f'Unknown file extension {extension}')
-        # Pull data from an API
+        # Pull data from an API, if possible apply the filters
         else:
-            data = self.pull_data()
+            data = self.pull_data(filters)
 
         return data
 

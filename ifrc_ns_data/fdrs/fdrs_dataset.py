@@ -1,6 +1,7 @@
 """
 Module to handle FDRS data, including loading it from the API, cleaning, and processing.
 """
+import warnings
 import requests
 import pandas as pd
 from ifrc_ns_data.common import Dataset
@@ -21,10 +22,21 @@ class FDRSDataset(Dataset):
         self.api_key = api_key.strip()
 
 
-    def pull_data(self):
+    def pull_data(self, filters=None):
         """
         Read in raw data from the NS Databank API.
+
+        Parameters
+        ----------
+        filters : dict (default=None)
+            Filters to filter by country or by National Society.
+            Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
+            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
         """
+        # The data cannot be filtered from the API so raise a warning if filters are provided
+        if filters is not None:
+            warnings.warn(f'Filters {filters} not applied because the API response cannot be filtered.')
+
         # Pull data from FDRS API
         response = requests.get(url=f'https://data-api.ifrc.org/api/Data?apiKey={self.api_key}')
         response.raise_for_status()

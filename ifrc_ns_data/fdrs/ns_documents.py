@@ -3,7 +3,7 @@ Module to handle NS documents data from FDRS, including loading it from the API,
 """
 import requests
 import pandas as pd
-from ifrc_ns_data.common import Dataset
+from ifrc_ns_data.common import Dataset, NationalSocietiesInfo
 from ifrc_ns_data.common.cleaners import DatabankNSIDMap, NSInfoMapper
 
 
@@ -21,14 +21,24 @@ class NSDocumentsDataset(Dataset):
         self.api_key = api_key.strip()
 
 
-    def pull_data(self):
+    def pull_data(self, filters):
         """
         Read in data from the NS Databank API and save to file.
+
+        Parameters
+        ----------
+        filters : dict (default=None)
+            Filters to filter by country or by National Society.
+            Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
         """
-        # Pull data from FDRS API, looping through NSs
-        ns_ids_names_map = DatabankNSIDMap(api_key=self.api_key).get_map()
-        ns_ids_string = ','.join(ns_ids_names_map.keys())
-        response = requests.get(url=f'https://data-api.ifrc.org/api/documents?ns={ns_ids_string}&apiKey={self.api_key}')
+        # Get the list of NSs
+        selected_ns = NationalSocietiesInfo().data
+        for filter_name, filter_values in filters.items():
+            selected_ns = [ns for ns in selected_ns if ns[filter_name] in filter_values]
+        selected_ns_ids = [ns['National Society ID'] for ns in selected_ns if ns['National Society ID'] is not None]
+
+        # Pull data from FDRS API
+        response = requests.get(url=f'https://data-api.ifrc.org/api/documents?ns={",".join(selected_ns_ids)}&apiKey={self.api_key}')
         response.raise_for_status()
         data_list = []
         for ns_response in response.json():
@@ -70,7 +80,7 @@ class NSDocumentsDataset(Dataset):
         data = data.drop(columns=['name', 'National Society ID'])
 
         # Select and rename indicators
-        data = self.rename_indicators(data)
+        data = self.rename_indicators(data, missing='ignore')
         data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
 
         # Filter the dataset if required

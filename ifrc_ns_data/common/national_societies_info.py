@@ -29,12 +29,30 @@ class NationalSocietiesInfo:
 
 
     @property
-    def ns_names(self):
+    def ns_list(self):
         """
         Get the list of NS names.
         """
-        ns_names = [ns['National Society name'] for ns in NationalSocietiesInfo.data]
-        return ns_names
+        ns_list = [ns['National Society name'] for ns in NationalSocietiesInfo.data]
+        return ns_list
+
+
+    @property
+    def country_list(self):
+        """
+        Get the list of NS names.
+        """
+        country_list = [ns['Country'] for ns in NationalSocietiesInfo.data]
+        return country_list
+
+    
+    @property
+    def iso3_list(self):
+        """
+        Get the list of NS names.
+        """
+        iso3_list = [ns['ISO3'] for ns in NationalSocietiesInfo.data]
+        return iso3_list
 
 
     @property
