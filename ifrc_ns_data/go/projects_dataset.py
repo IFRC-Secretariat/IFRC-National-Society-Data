@@ -22,18 +22,42 @@ class GOProjectsDataset(Dataset):
         super().__init__(name='GO Projects')
 
 
-    def pull_data(self):
+    def pull_data(self, filters=None):
         """
         Read in data from the IFRC GO API and save to file.
+
+        Parameters
+        ----------
+        filters : dict (default=None)
+            Filters to filter by country or by National Society.
+            Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
         """
-        # Pull data from FDRS API and save the data locally
+        # Get the list of ISO3 codes
+        selected_iso3s = None
+        if filters:
+            selected_ns = NationalSocietiesInfo().data
+            for filter_name, filter_values in filters.items():
+                selected_ns = [ns for ns in selected_ns if ns[filter_name] in filter_values]
+            selected_iso3s = [ns['ISO3'] for ns in selected_ns if ns['National Society ID'] is not None]
+
+        # Pull data from GO API
         data = []
-        next_url = f'https://goadmin.ifrc.org/api/v2/project/?limit=100&offset=0'
-        while next_url:
-            response = requests.get(url=next_url)
-            response.raise_for_status()
-            data += response.json()['results']
-            next_url = response.json()['next']
+        url = 'https://goadmin.ifrc.org/api/v2/project/?limit=100&offset=0'
+        if selected_iso3s is None:
+            next_url = url
+            while next_url:
+                response = requests.get(url=next_url)
+                response.raise_for_status()
+                data += response.json()['results']
+                next_url = response.json()['next']
+        else:
+            for iso3 in selected_iso3s:
+                next_url = f'{url}&country__iso3={iso3}'
+                while next_url:
+                    response = requests.get(url=next_url)
+                    response.raise_for_status()
+                    data += response.json()['results']
+                    next_url = response.json()['next']
         data = pd.DataFrame(data)
 
         return data
