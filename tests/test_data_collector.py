@@ -7,7 +7,7 @@ import ifrc_ns_data
 from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH, ROOT_DIR
 
 
-class TestDataCollector(unittest.TestCase):
+class TestAllData(unittest.TestCase):
     def setUp(self):
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
         self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year', 'Dataset']
@@ -25,7 +25,6 @@ class TestDataCollector(unittest.TestCase):
                              'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}}
         self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
 
-
     def test_get_data(self):
         """
         Test getting all the data with the data collector.
@@ -35,7 +34,6 @@ class TestDataCollector(unittest.TestCase):
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
-
 
     def test_get_public_data(self):
         """
@@ -48,6 +46,48 @@ class TestDataCollector(unittest.TestCase):
             self.assertFalse(dataset.data.empty)
             self.assertEqual(dataset.privacy, 'public')
 
+    def test_get_single_country_data(self):
+        """
+        Test getting data for only one country.
+        """
+        # Get country data for all datasets
+        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, 
+                                                    iso3='AFG')
+        for dataset in all_datasets:
+            self.assertTrue(isinstance(dataset.data, pd.DataFrame))
+            self.assertFalse(dataset.data.empty)
+            self.assertEqual(dataset.data['ISO3'].unique(), ['AFG'])
+
+    def test_get_multi_country_data(self):
+        """
+        Test getting data for only one country.
+        """
+        # Get country data for all datasets
+        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, 
+                                                    iso3=['AFG', 'ZWE'])
+        for dataset in all_datasets:
+            self.assertTrue(isinstance(dataset.data, pd.DataFrame))
+            self.assertFalse(dataset.data.empty)
+            self.assertEqual(sorted(dataset.data['ISO3'].unique()), ['AFG', 'ZWE'])
+
+
+class TestIndicatorData(unittest.TestCase):
+    def setUp(self):
+        self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
+        self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year', 'Dataset']
+        self.fdrs_api_key = os.environ.get('FDRS_PUBLIC_API_KEY')
+        self.data_collector = ifrc_ns_data.DataCollector()
+        test_datasets_path = os.path.join(ROOT_DIR, 'tests', 'data')
+        self.dataset_args = {'FDRS': {'api_key': self.fdrs_api_key},
+                             'NS Contacts': {'api_key': self.fdrs_api_key},
+                             'NS Documents': {'api_key': self.fdrs_api_key},
+                             'Statutes': {'filepath': os.path.join(test_datasets_path, 'statutes.csv')},
+                             'Recognition laws': {'filepath': os.path.join(test_datasets_path, 'recognition_laws.csv')},
+                             'Logistics projects': {'filepath': os.path.join(test_datasets_path, 'logistics_projects.csv')},
+                             'OCAC': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
+                             'OCAC assessment dates': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
+                             'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}}
+        self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
 
     def test_get_indicator_data(self):
         """
@@ -58,7 +98,6 @@ class TestDataCollector(unittest.TestCase):
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
         self.assertEqual(indicator_dataset.columns.tolist(), self.indicator_dataset_columns)
-
 
     def test_get_public_indicator_data(self):
         """
@@ -73,7 +112,6 @@ class TestDataCollector(unittest.TestCase):
         for dataset_name in indicator_dataset['Dataset'].unique():
             self.assertEqual(self.datasets_info[dataset_name]['privacy'], 'public')
 
-
     def test_get_latest_indicator_data(self):
         """
         Test getting the latest indicator data, only returning the latest result for each NS/ indicator.
@@ -87,7 +125,6 @@ class TestDataCollector(unittest.TestCase):
         # Check that there is only one result for each NS/ indicator/ dataset
         counts = indicator_dataset.groupby(['National Society name', 'Indicator', 'Dataset']).size()
         self.assertEqual(counts.unique(), [1])
-
 
     def test_get_quantitative_indicator_data(self):
         """

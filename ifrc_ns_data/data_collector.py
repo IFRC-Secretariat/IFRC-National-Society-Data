@@ -5,6 +5,7 @@ import warnings
 import yaml
 import pandas as pd
 import ifrc_ns_data
+from ifrc_ns_data.common import NationalSocietiesInfo
 from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH
 
 
@@ -21,7 +22,7 @@ class DataCollector:
         self.dataset_names = [name for name in self.datasets_info if name not in archived_datasets]
 
 
-    def get_data(self, datasets=None, dataset_args=None, filters=None, latest=None):
+    def get_data(self, datasets=None, dataset_args=None, iso3=None, country=None, ns=None, filters=None, latest=None):
         """
         Get all available datasets.
 
@@ -34,6 +35,15 @@ class DataCollector:
             Arguments that need to be passed to each dataset class, e.g. API key or filepath. Note that if no arguments are required for a datset then this does not need to be provided.
             Should be a dict with keys as dataset names, and values a dict with arguments required for the dataset class.
             E.g. {'FDRS': {'api_key': 'xxxxxx'}, 'OCAC': {'filepath': 'ocac_data.xlsx', 'sheet_name': 'Sheet1'}}
+
+        iso3 : string or list (default=None)
+            String or list of country ISO3 codes to filter the dataset.
+
+        country : string or list (default=None)
+            String or list of country names to filter the dataset.
+
+        ns : string or list (default=None)
+            String or list of National Society names to filter the dataset.
 
         filters : dict (default=None)
             Filters to apply to the datasets list, e.g. {'format': 'indicators'} to get all indicator datasets, or {'privacy': 'public'} to get all public datasets.
@@ -53,6 +63,30 @@ class DataCollector:
             dataset_names = self.validate_dataset_names(datasets)
         else:
             dataset_names = self.dataset_names.copy()
+
+        # Process the iso3/ country/ ns input parameters
+        inputs = {'ISO3': iso3, 'Country': country, 'National Society name': ns}
+        country_filters = {}
+        for name, val in inputs.items():
+            if val is None:
+                continue
+            elif isinstance(val, str):
+                country_filters[name] = [val]
+            elif isinstance(val, list):
+                country_filters[name] = val
+            else:
+                raise TypeError(f'{val} is not a list or string')
+
+        # Check all countries and NS names are valid
+        if country_filters:
+            ns_info = NationalSocietiesInfo()
+            check_values = {'ISO3': ns_info.iso3_list,
+                            'Country': ns_info.country_list,
+                            'National Society name': ns_info.ns_list}
+            for filter_name, val_list in country_filters.items():
+                unrecognised_values = [item for item in val_list if item not in check_values[filter_name]]
+                if unrecognised_values:
+                    raise ValueError(f'Unrecognised values {unrecognised_values}.\n\nThe allowed values are: {check_values[filter_name]}')
 
         # Deal with filters
         if filters is not None:
@@ -84,9 +118,13 @@ class DataCollector:
                                                    dataset_args=dataset_args)
 
         # Load the data from the source and process
+        names_params = {'ISO3': 'iso3', 
+                        'Country': 'country', 
+                        'National Society name': 'ns'}
+        country_filters = {names_params[name]: country_filters[name] for name in country_filters}
         for dataset in dataset_instances:
             print(f'Getting {dataset.name} data...')
-            dataset.get_data(latest=latest)
+            dataset.get_data(latest=latest, **country_filters)
 
         return dataset_instances
 
