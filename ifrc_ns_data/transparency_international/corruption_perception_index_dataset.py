@@ -21,7 +21,7 @@ class CorruptionPerceptionIndexDataset(Dataset):
         super().__init__(name='Corruption Perception Index')
 
 
-    def pull_data(self, filters):
+    def pull_data(self, filters=None):
         """
         Read in raw data from the Transparency International CPI API.
 

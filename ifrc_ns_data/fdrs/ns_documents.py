@@ -40,8 +40,11 @@ class NSDocumentsDataset(Dataset):
         # Pull data from FDRS API
         response = requests.get(url=f'https://data-api.ifrc.org/api/documents?ns={",".join(selected_ns_ids)}&apiKey={self.api_key}')
         response.raise_for_status()
+        results = response.json()
+        if len(selected_ns_ids)==1:
+            results = [results]
         data_list = []
-        for ns_response in response.json():
+        for ns_response in results:
             ns_documents = pd.DataFrame(ns_response['documents'])
             ns_documents['National Society ID'] = ns_response['code']
             data_list.append(ns_documents)

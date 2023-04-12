@@ -5,7 +5,7 @@ The module can be used to pull this data from the IFRC GO API, process, and clea
 import requests
 import warnings
 import pandas as pd
-from ifrc_ns_data.common import Dataset
+from ifrc_ns_data.common import Dataset, NationalSocietiesInfo
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, DictColumnExpander, NSInfoMapper
 
 
