@@ -129,9 +129,9 @@ class DataCollector:
         return dataset_instances
 
 
-    def get_merged_indicator_data(self, datasets=None, dataset_args=None, filters=None, latest=None, quantitative=None):
+    def get_indicators_data(self, datasets=None, dataset_args=None, filters=None, latest=None, quantitative=None):
         """
-        Get a dataset of all indicator-format data on National Societies.
+        Get a dataset in indicators format of data on National Societies.
 
         Parameters
         ----------
@@ -150,13 +150,30 @@ class DataCollector:
         quantitative : bool (default=None)
             If True, only return quantitative data (some datasets contain a mix of qualitative and quantitative indicators so this cannot be filtered at dataset-level).
         """
+        # Get each dataset and turn into indicator-format
+        indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC assessment dates", "World Development Indicators", "INFORM Risk"]
+        if datasets is None:
+            datasets = indicator_datasets
+        else:
+            invalid_datasets = [dataset for dataset in datasets if dataset not in indicator_datasets]
+            if invalid_datasets:
+                warnings.warn(f'Dropping datasets {invalid_datasets} because they cannot be formatted in indcator format.')
+                datasets = [dataset for dataset in datasets if dataset in indicator_datasets]
+
         # Initiate the dataset classes for these datasets and get data
-        if filters is None: filters = {}
-        filters = {**filters, **{'format': 'indicators'}}
         dataset_instances = self.get_data(datasets=datasets,
                                           dataset_args=dataset_args,
                                           filters=filters,
                                           latest=latest)
+        for dataset in dataset_instances:
+            dataset.data['Dataset'] = dataset.name
+
+        # Reformat datasets if needed #TODO
+
+        # Check that the format is correct
+        for dataset in dataset_instances:
+            if dataset.data.columns.tolist() != ['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Value', 'Year', 'Dataset']:
+                raise ValueError('Columns of dataset {dataset.name} do not match the indicator format.')
 
         # Merge all of the datasets together
         if not dataset_instances: return

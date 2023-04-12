@@ -142,7 +142,7 @@ class TestIndicatorData(unittest.TestCase):
         Test getting all the indicator data.
         """
         # Get the indicator data and check the return is a non-empty pandas DataFrame
-        indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args)
+        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args)
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
         self.assertEqual(indicator_dataset.columns.tolist(), self.indicator_dataset_columns)
@@ -152,7 +152,7 @@ class TestIndicatorData(unittest.TestCase):
         Test getting all the indicator data.
         """
         # Get the indicator data filtered by privacy public
-        indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args, filters={'privacy': 'public'})
+        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args, filters={'privacy': 'public'})
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
 
@@ -165,7 +165,7 @@ class TestIndicatorData(unittest.TestCase):
         Test getting the latest indicator data, only returning the latest result for each NS/ indicator.
         """
         # Get the indicator data and check the return is a non-empty pandas DataFrame
-        indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args,
+        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args,
                                                                           latest=True)
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
@@ -179,14 +179,14 @@ class TestIndicatorData(unittest.TestCase):
         Test getting the merged indicator data, but filtered by quantitative only.
         """
         # Get the indicator data and check the return value is numeric
-        indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args,
+        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args,
                                                                           quantitative=True)
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
         self.assertEqual(indicator_dataset['Value'].dtype, np.float64)
 
         # Get the indicator data and check the return value is numeric
-        indicator_dataset = self.data_collector.get_merged_indicator_data(dataset_args=self.dataset_args,
+        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args,
                                                                           quantitative=False)
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)

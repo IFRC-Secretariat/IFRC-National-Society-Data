@@ -1,6 +1,5 @@
 NS Contacts:
   source: API
-  format: indicators
   type: internal
   privacy: public
   columns:
@@ -17,7 +16,6 @@ NS Contacts:
 
 FDRS:
   Source: API
-  format: indicators
   type: internal
   privacy: public
   Link: https://data.ifrc.org/fdrs
@@ -72,7 +70,6 @@ FDRS:
 
 NS Documents:
   Source: API
-  format: indicators
   type: internal
   privacy: public
   link: https://data.ifrc.org/fdrs
@@ -94,7 +91,6 @@ NS Documents:
 
 OCAC:
   Source: file
-  format: columns
   Type: Internal
   privacy: confidential
   Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
@@ -102,7 +98,6 @@ OCAC:
 
 OCAC Assessment Dates:
   Source: file
-  format: indicators
   Type: Internal
   privacy: public
   Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
@@ -111,13 +106,11 @@ OCAC Assessment Dates:
 Statutes:
   Source: file
   Type: Internal
-  format: columns
   privacy: confidential
   Focal point: Drina Karahasanovic
 
 Recognition Laws:
   Source: file
-  format: columns
   privacy: confidential
   Type: Internal
   Focal point: Drina Karahasanovic
@@ -130,7 +123,6 @@ YABC:
   source_description: IFRC Youth
   Type: Internal
   privacy: confidential
-  format: columns
   Focal point: Amjad Saleem
   columns:
     - name: Number of YABC trainings to date
@@ -147,7 +139,6 @@ Logistics Projects:
   source_description: IFRC Logistics
   Type: Internal
   privacy: confidential
-  format: columns
   Focal point: Juan Galvez
 
 GO Operations:
@@ -156,7 +147,6 @@ GO Operations:
   Type: Internal
   Link: https://go.ifrc.org/
   privacy: public
-  format: columns
   Focal point: Luke Caley
   columns:
     - name: Operation name
@@ -179,7 +169,6 @@ GO Projects:
   source_description: IFRC GO
   Type: Internal
   privacy: public
-  format: columns
   Link: https://go.ifrc.org/three-w/
   Focal point: Luke Caley
   columns:
@@ -211,7 +200,6 @@ GO Projects:
 World Development Indicators:
   source: API
   privacy: public
-  format: indicators
   source_description: WorldBank World Development Indicators
   Type: External
   Link: https://databank.worldbank.org/source/world-development-indicators
@@ -234,7 +222,6 @@ World Development Indicators:
 UNDP Human Development:
   source: API
   privacy: public
-  format: indicators
   source_description: UNDP
   Type: External
   Link: https://hdr.undp.org/en/content/human-development-index-hdi
@@ -245,7 +232,6 @@ UNDP Human Development:
 INFORM Risk:
   source: API
   privacy: public
-  format: indicators
   source_description: EC DRMKC INFORM
   Type: External
   Link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
@@ -256,7 +242,6 @@ INFORM Risk:
 ICRC Presence:
   source: website
   privacy: public
-  format: columns
   source_description: ICRC presence
   Type: External
   Link: https://www.icrc.org/en/where-we-work
@@ -273,7 +258,6 @@ ICRC Presence:
 IFRC Disaster Law:
   source: website
   privacy: public
-  format: columns
   source_description: IFRC disaster law information
   Type: External
   Link: https://disasterlaw.ifrc.org/where-we-work
@@ -288,7 +272,6 @@ IFRC Disaster Law:
 Corruption Perception Index:
   source: website
   privacy: public
-  format: columns
   source_description: Transparency International (TI) Corruption Perception Index (CPI)
   type: external
   link: https://www.transparency.org/en/
