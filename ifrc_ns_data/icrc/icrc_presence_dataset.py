@@ -22,7 +22,7 @@ class ICRCPresenceDataset(Dataset):
         super().__init__(name='ICRC Presence')
 
 
-    def pull_data(self, filters):
+    def pull_data(self, filters=None):
         """
         Scrape data from the ICRC website at https://www.icrc.org/en/where-we-work.
         

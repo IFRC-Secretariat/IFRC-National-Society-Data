@@ -22,7 +22,7 @@ class IFRCDisasterLawDataset(Dataset):
         super().__init__(name='IFRC Disaster Law')
 
 
-    def pull_data(self, filters):
+    def pull_data(self, filters=None):
         """
         Scrape data from the IFRC Disaster Law website at https://disasterlaw.ifrc.org/where-we-work.
         
@@ -59,7 +59,7 @@ class IFRCDisasterLawDataset(Dataset):
                 description = None
                 try:
                     country_page = requests.get(country_url)
-                    country_soup = BeautifulSoup(response.content, 'html.parser')
+                    country_soup = BeautifulSoup(country_page.content, 'html.parser')
                     description = country_soup.find("div", {"class": "field--name-field-paragraphs"})\
                                               .find_all("p")
                     description = "\n".join([para.text for para in description])

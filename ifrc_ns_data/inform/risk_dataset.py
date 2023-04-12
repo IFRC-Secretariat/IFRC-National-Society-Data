@@ -22,7 +22,7 @@ class INFORMRiskDataset(Dataset):
         super().__init__(name='INFORM Risk')
 
 
-    def pull_data(self, filters):
+    def pull_data(self, filters=None):
         """
         Pull data from the INFORM API and save to file.
 

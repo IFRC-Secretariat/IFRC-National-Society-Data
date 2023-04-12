@@ -21,7 +21,7 @@ class NSDocumentsDataset(Dataset):
         self.api_key = api_key.strip()
 
 
-    def pull_data(self, filters):
+    def pull_data(self, filters=None):
         """
         Read in data from the NS Databank API and save to file.
 
