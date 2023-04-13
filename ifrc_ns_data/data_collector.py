@@ -3,6 +3,7 @@ Module to access and return multiple datasets at once.
 """
 import warnings
 import yaml
+import datetime
 import pandas as pd
 import ifrc_ns_data
 from ifrc_ns_data.common import NationalSocietiesInfo
@@ -132,6 +133,8 @@ class DataCollector:
     def get_indicators_data(self, datasets=None, dataset_args=None, filters=None, latest=None, quantitative=None):
         """
         Get a dataset in indicators format of data on National Societies.
+        Indicator format contains columns about the National Society/ country, an indicator name, the indicator value, the year, and optionally a description and URL.
+        This includes whole datasets which are already in "indicator" format (e.g. the FDRS dataset), or parts of other datasets, such as ICRC presence.
 
         Parameters
         ----------
@@ -151,7 +154,8 @@ class DataCollector:
             If True, only return quantitative data (some datasets contain a mix of qualitative and quantitative indicators so this cannot be filtered at dataset-level).
         """
         # Get each dataset and turn into indicator-format
-        indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC assessment dates", "World Development Indicators", "INFORM Risk"]
+        indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "World Development Indicators", "INFORM Risk", "ICRC Presence", "IFRC Disaster Law", "Corruption Perception Index"]
+        column_names = ['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Value', 'Year', 'Description', 'URL']
         if datasets is None:
             datasets = indicator_datasets
         else:
@@ -165,32 +169,66 @@ class DataCollector:
                                           dataset_args=dataset_args,
                                           filters=filters,
                                           latest=latest)
+        if not dataset_instances:
+            return
+
+        # Reformat datasets to be in indicator format
+        indicator_data = pd.DataFrame()
         for dataset in dataset_instances:
+
+            # These datasets are already in indicator format
+            if dataset.name in ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "World Development Indicators", "INFORM Risk"]:
+                continue
+
+            # ICRC presence
+            elif dataset.name == 'ICRC Presence':
+                dataset.data = dataset.data.rename(columns={'ICRC presence': 'Value'})\
+                                            .drop(columns=['Key operation'])
+                dataset.data['Indicator'] = 'ICRC presence'
+                dataset.data['Year'] = datetime.date.today().year
+
+            # IFRC Disaster Law
+            elif dataset.name == 'IFRC Disaster Law':
+                dataset.data = dataset.data.rename(columns={'Description': 'Value'})\
+                                           .drop(columns=['ID'])
+                dataset.data['Indicator'] = 'IFRC Disaster Law'
+                dataset.data['Year'] = datetime.date.today().year
+
+            # CPI
+            elif dataset.name == 'Corruption Perception Index':
+                dataset.data = dataset.data.rename(columns={'Score': 'Value'})\
+                                           .drop(columns=['Standard error', 'Sources', 'Rank'])
+                dataset.data['Indicator'] = 'Corruption Perception Index'
+
+            else:
+                raise RuntimeError(f'Unrecognised dataset {dataset.name}')
+
+        # Merge all datasets
+        for dataset in dataset_instances:
+            optional_columns = ['Description', 'URL']
+            for column in optional_columns:
+                if column not in dataset.data.columns:
+                    dataset.data[column] = ""
+            if set(dataset.data.columns) != set(column_names):
+                extra_columns = [column for column in dataset.data.columns if column not in column_names]
+                missing_columns = [column for column in column_names if column not in dataset.data.columns]
+                raise ValueError(f'Columns of dataset {dataset.name} do not match the indicator format. Extra columns: {extra_columns}. Missing columns: {missing_columns}')
             dataset.data['Dataset'] = dataset.name
+            indicator_data = pd.concat([dataset.data for dataset in dataset_instances])
 
-        # Reformat datasets if needed #TODO
-
-        # Check that the format is correct
-        for dataset in dataset_instances:
-            if dataset.data.columns.tolist() != ['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Value', 'Year', 'Dataset']:
-                raise ValueError('Columns of dataset {dataset.name} do not match the indicator format.')
-
-        # Merge all of the datasets together
-        if not dataset_instances: return
-        for dataset in dataset_instances:
-            dataset.data['Dataset'] = dataset.name
-        all_indicator_data = pd.concat([dataset.data for dataset in dataset_instances])
-        all_indicator_data = all_indicator_data.sort_values(by=['Dataset', 'National Society name', 'Indicator', 'Year', 'Value'])\
-                                               .reset_index(drop=True)
+        # Tidy: sort columns, sort rows
+        indicator_data = indicator_data[column_names+['Dataset']]
+        indicator_data = indicator_data.sort_values(by=['Dataset', 'National Society name', 'Indicator', 'Year', 'Value'])\
+                                        .reset_index(drop=True)
 
         # Filter for only quantitative data or only qualitative data
         if quantitative==True:
-            all_indicator_data = all_indicator_data.loc[all_indicator_data['Value'].astype(str).str.isnumeric()]
-            all_indicator_data['Value'] = all_indicator_data['Value'].astype(float)
+            indicator_data = indicator_data.loc[indicator_data['Value'].astype(str).str.isnumeric()]
+            indicator_data['Value'] = indicator_data['Value'].astype(float)
         elif quantitative==False:
-            all_indicator_data = all_indicator_data.loc[~all_indicator_data['Value'].astype(str).str.isnumeric()]
+            indicator_data = indicator_data.loc[~indicator_data['Value'].astype(str).str.isnumeric()]
 
-        return all_indicator_data
+        return indicator_data
 
 
     def validate_dataset_names(self, datasets):
