@@ -94,7 +94,7 @@ for dataset in latest_data:
   print(dataset.data.columns) # Print the columns of the pandas DataFrame
 ```
 
-Several of the datasets have the same "indicator" style structure, with a row for each National Society/ indicator/ year. These all have the same columns: ```National Society name```, ```Country```, ```ISO3```, ```Region```, ```Indicator```, ```Value```, ```Year```. The ```get_merged_indicator_data``` method can be used to get all of this data in a single pandas DataFrame. This method has the same parameters as the ```get_data``` method (```datasets```, ```dataset_args```, ```filters```, and ```latest```). As with ```get_data```, if ```dataset_args``` is not provided as an argument then only the datasets not requiring parameters will be returned, and warnings will be printed for the others.
+Several of the datasets have the same "indicator" style structure, with a row for each National Society/ indicator/ year. These all have the same columns: ```National Society name```, ```Country```, ```ISO3```, ```Region```, ```Indicator```, ```Value```, ```Year```. The ```get_indicators_data``` method can be used to get all of this data in a single pandas DataFrame. This method has the same parameters as the ```get_data``` method (```datasets```, ```dataset_args```, ```filters```, and ```latest```). As with ```get_data```, if ```dataset_args``` is not provided as an argument then only the datasets not requiring parameters will be returned, and warnings will be printed for the others.
 
 ```python
 import ifrc_ns_data
@@ -102,7 +102,7 @@ import ifrc_ns_data
 data_collector = ifrc_ns_data.DataCollector()
 
 # Get all indicator-style datasets as a single pandas DataFrame
-df = data_collector.get_merged_indicator_data()
+df = data_collector.get_indicators_data()
 print(df.columns) # Print the columns
 ```
 

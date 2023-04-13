@@ -67,5 +67,5 @@ class TestExamples(unittest.TestCase):
          data_collector = ifrc_ns_data.DataCollector()
 
          # Get all indicator-style datasets as a single pandas DataFrame
-         df = data_collector.get_merged_indicator_data()
+         df = data_collector.get_indicators_data()
          print(df.columns) # Print the columns
