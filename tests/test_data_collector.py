@@ -10,7 +10,6 @@ from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH, ROOT_DIR
 class TestAllData(unittest.TestCase):
     def setUp(self):
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
-        self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year', 'Dataset']
         self.fdrs_api_key = os.environ.get('FDRS_PUBLIC_API_KEY')
         self.data_collector = ifrc_ns_data.DataCollector()
         test_datasets_path = os.path.join(ROOT_DIR, 'tests', 'data')
@@ -122,7 +121,7 @@ class TestAllData(unittest.TestCase):
 class TestIndicatorData(unittest.TestCase):
     def setUp(self):
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
-        self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year', 'Dataset']
+        self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year', 'Description', 'URL', 'Dataset']
         self.fdrs_api_key = os.environ.get('FDRS_PUBLIC_API_KEY')
         self.data_collector = ifrc_ns_data.DataCollector()
         test_datasets_path = os.path.join(ROOT_DIR, 'tests', 'data')
@@ -172,7 +171,7 @@ class TestIndicatorData(unittest.TestCase):
 
         # Check that there is only one result for each NS/ indicator/ dataset
         counts = indicator_dataset.groupby(['National Society name', 'Indicator', 'Dataset']).size()
-        self.assertEqual(counts.unique(), [1])
+        self.assertEqual(counts.unique().tolist(), [1])
 
     def test_get_quantitative_indicator_data(self):
         """
