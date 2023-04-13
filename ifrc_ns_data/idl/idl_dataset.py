@@ -51,9 +51,12 @@ class IFRCDisasterLawDataset(Dataset):
                 continue
 
             # Loop through countries and get information
+            duplicated_countries = (('Republic of the Congo', '921'),)
             for option in country_options[1:]:
                 country_name = option.text
                 country_id = option["value"]
+                if (country_name.strip(), str(country_id)) in duplicated_countries:
+                    continue
                 country_url = f'https://disasterlaw.ifrc.org/node/{country_id}'
                 # Get the description from the country page
                 description = None
