@@ -108,22 +108,53 @@ import ifrc_ns_data
 
 data_collector = ifrc_ns_data.DataCollector()
 
-# Get all indicator-style datasets as a single pandas DataFrame
-df = data_collector.get_indicators_data()
-print(df.columns) # Print the columns
+# Get indicator-style datasets for the specified datasets as a single pandas DataFrame (the xxxxx should be replaced by the relevant values (API keys or filepaths))
+# Change the 'latest' argument to True to get only latest data
+df = data_collector.get_indicators_data(
+    latest=False, 
+    datasets=[
+        'FDRS', 
+        'NS Documents', 
+        'NS Contacts', 
+        'INFORM risk', 
+        'World development indicators', 
+        'OCAC Assessment Dates'
+    ], 
+    dataset_args={
+        'FDRS': {'api_key': 'xxxxx'}, 
+        'NS Documents': {'api_key': 'xxxxx'}, 
+        'NS Contacts': {'api_key': 'xxxxx'}, 
+        'OCAC Assessment Dates': {'filepath': 'xxxxxxxx', 'sheet_name': 'Sheet1'}
+    }
+)
+print(df) # Print the dataframe
 ```
 
 ### Power BI
 
 The package can be used to import data into Power BI. First, follow the [Power BI instructions](https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-python-scripts) to setup Python for Power BI. Next, install the IFRC NS data library from the Windows Powershell (see [Setup](#setup)).
 
-The package can now be used in Power BI. E.g. the following example in Power Query M will import FDRS data (replace ```xxxxxxx``` with your FDRS API key).
+The package can now be used in Power BI. E.g. the following Power Query script can be used to get all indicator-style data for the specified datasets (replacing the ```xxxxx``` by the relevant values - API keys or filepaths). ```latest``` can be changed to ```True``` to get only latest data.
 
 ```
 let
     Source = Python.Execute("
-import ifrc_ns_data#(lf)
-fdrs_dataset = ifrc_ns_data.FDRSDataset(api_key='xxxxxxx')#(lf)
+import ifrc_ns_data
+data_collector = ifrc_ns_data.DataCollector()
+data = data_collector.get_indicators_data(latest=False, datasets=['FDRS', 'NS Documents', 'NS Contacts', 'INFORM risk', 'World development indicators', 'OCAC Assessment Dates'], dataset_args={'FDRS': {'api_key': 'xxxxx'}, 'NS Documents': {'api_key': 'xxxxx'}, 'NS Contacts': {'api_key': 'xxxxx'}, 'OCAC Assessment Dates': {'filepath': 'xxxxx', 'sheet_name': 'Sheet1'}})
+    "),
+    #"All indicator data" = Source{[Name="data"]}[Value]
+in
+    #"All indicator data"
+```
+
+Individual datasets can also be accessed, e.g. the following example in Power Query M will import FDRS data (replace ```xxxxxxx``` with your FDRS API key).
+
+```
+let
+    Source = Python.Execute("
+import ifrc_ns_data
+fdrs_dataset = ifrc_ns_data.FDRSDataset(api_key='xxxxxxx')
 fdrs_data = fdrs_dataset.get_data()
     "),
     fdrs_data = Source{[Name="fdrs_data"]}[Value]
