@@ -18,6 +18,12 @@ python -m pip install .
 
 Note that depending on your setup, you may need to use ```pip3``` instead in these examples.
 
+If installing on Windows (e.g. for use in Power BI), you can check that the package has installed by checking that ```ifrc_ns_data``` is in the list of installed packages. This is usually in the following location, replacing ```user.name``` with your username:
+
+```bash
+ls C:\users\user.name\appdata\local\programs\python\python310\lib\site-packages\
+```
+
 ## Usage
 
 The library can be used to access datasets individually, or to get multiple datasets at once. These are both described with examples below.
@@ -108,7 +114,9 @@ print(df.columns) # Print the columns
 
 ### Power BI
 
-The package can be used to import data into Power BI. First, follow the [Power BI instructions](https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-python-scripts) to setup Python for Power BI. Once you have installed the IFRC NS data library (see [Setup](#setup)), then you can use it in Power Query. E.g. the following example in Power Query M will import FDRS data (replace ```xxxxxxx``` with your FDRS API key).
+The package can be used to import data into Power BI. First, follow the [Power BI instructions](https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-python-scripts) to setup Python for Power BI. Next, install the IFRC NS data library from the Windows Powershell (see [Setup](#setup)).
+
+The package can now be used in Power BI. E.g. the following example in Power Query M will import FDRS data (replace ```xxxxxxx``` with your FDRS API key).
 
 ```
 let

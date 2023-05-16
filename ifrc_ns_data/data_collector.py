@@ -155,14 +155,15 @@ class DataCollector:
         """
         # Get each dataset and turn into indicator-format
         indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "World Development Indicators", "INFORM Risk", "ICRC Presence", "IFRC Disaster Law", "Corruption Perception Index"]
+        indicator_datasets_lower = [dataset.lower() for dataset in indicator_datasets]
         column_names = ['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Value', 'Year', 'Description', 'URL']
         if datasets is None:
             datasets = indicator_datasets
         else:
-            invalid_datasets = [dataset for dataset in datasets if dataset not in indicator_datasets]
+            invalid_datasets = [dataset for dataset in datasets if dataset.lower() not in indicator_datasets_lower]
             if invalid_datasets:
                 warnings.warn(f'Dropping datasets {invalid_datasets} because they cannot be formatted in indcator format.')
-                datasets = [dataset for dataset in datasets if dataset in indicator_datasets]
+                datasets = [dataset for dataset in datasets if dataset.lower() in indicator_datasets_lower]
 
         # Initiate the dataset classes for these datasets and get data
         dataset_instances = self.get_data(datasets=datasets,
