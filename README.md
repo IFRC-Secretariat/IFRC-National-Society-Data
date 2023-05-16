@@ -16,13 +16,14 @@ To install the package, run the following command in a bash terminal from the ro
 python -m pip install .
 ```
 
-Note that depending on your setup, you may need to use ```pip3``` instead in these examples.
-
-If installing on Windows (e.g. for use in Power BI), you can check that the package has installed by checking that ```ifrc_ns_data``` is in the list of installed packages. This is usually in the following location, replacing ```user.name``` with your username:
+To check that the package has installed correctly, and check the version and location, run the following:
 
 ```bash
-ls C:\users\user.name\appdata\local\programs\python\python310\lib\site-packages\
+python -m pip show ifrc_ns_data
 ```
+
+Note that depending on your setup, you may need to use ```pip3``` instead in these examples.
+
 
 ## Usage
 
