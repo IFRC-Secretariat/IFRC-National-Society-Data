@@ -90,7 +90,7 @@ class DataCollector:
                     raise ValueError(f'Unrecognised values {unrecognised_values}.\n\nThe allowed values are: {check_values[filter_name]}')
 
         # Deal with filters
-        if filters is not None:
+        if (filters is not None) and (filters != {}):
 
             # Check filters provided are valid
             valid_filters = []

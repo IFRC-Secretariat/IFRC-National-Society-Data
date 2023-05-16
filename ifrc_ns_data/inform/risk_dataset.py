@@ -34,7 +34,7 @@ class INFORMRiskDataset(Dataset):
             Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
         """
         # The data cannot be filtered from the API so raise a warning if filters are provided
-        if filters is not None:
+        if (filters is not None) and (filters != {}):
             warnings.warn(f'Filters {filters} not applied because the API response cannot be filtered.')
 
         # Get the workflow ID of the latest dataset

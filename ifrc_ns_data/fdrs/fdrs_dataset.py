@@ -34,7 +34,7 @@ class FDRSDataset(Dataset):
             Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
         """
         # The data cannot be filtered from the API so raise a warning if filters are provided
-        if filters is not None:
+        if (filters is not None) and (filters != {}):
             warnings.warn(f'Filters {filters} not applied because the API response cannot be filtered.')
 
         # Pull data from FDRS API
@@ -85,8 +85,13 @@ class FDRSDataset(Dataset):
 
         # Convert NS supported and receiving support lists from NS IDs to NS names
         def split_convert_ns_ids(x):
+            # Conver the string to a list and remove invalid IDs
             invalid_values = ['IFRC', 'DBE004']
             ns_ids = [item.strip() for item in x.replace(';',',').split(',') if item.strip()!='' and item not in invalid_values]
+            # Some IDs have been changed; replace these
+            changed_ids = {'DCS001': 'DRS001'}
+            ns_ids = [changed_ids[id] if id in changed_ids else id for id in ns_ids]
+            # Convert NS IDs to NS names
             ns_names = DatabankNSIDMapper(api_key=self.api_key).map(ns_ids, clean_names=True)
             return ', '.join(ns_names)
         data['Value'] = data['Value'].replace('One of our staff was sent for support to DRC-Congo on a surge', 'Red Cross of the Democratic Republic of the Congo')
