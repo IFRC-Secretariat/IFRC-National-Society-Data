@@ -22,7 +22,7 @@ class NationalSocietiesInfo:
 
     def __init__(self):
         if NationalSocietiesInfo.data is None:
-            NationalSocietiesInfo.data = yaml.safe_load(open(os.path.join(ROOT_DIR, 'ifrc_ns_data', 'common', 'national_societies_info.yml')))
+            NationalSocietiesInfo.data = yaml.safe_load(open(os.path.join(ROOT_DIR, 'ifrc_ns_data', 'common', 'national_societies_info.yml'), encoding='utf-8'))
 
 
     @property

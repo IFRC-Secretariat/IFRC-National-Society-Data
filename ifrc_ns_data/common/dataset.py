@@ -35,7 +35,7 @@ class Dataset:
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
 
         # Set information about the dataset as attributes
-        dataset_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))[self.name]
+        dataset_info = yaml.safe_load(open(DATASETS_CONFIG_PATH, encoding='utf-8'))[self.name]
         for info in dataset_info:
             setattr(self, info.lower(), dataset_info[info])
 

@@ -18,7 +18,7 @@ class DataCollector:
     ----------
     """
     def __init__(self):
-        self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
+        self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH, encoding='utf-8'))
         archived_datasets = ['UNDP Human Development'] # Archived because the API has stopped working
         self.dataset_names = [name for name in self.datasets_info if name not in archived_datasets]
 
