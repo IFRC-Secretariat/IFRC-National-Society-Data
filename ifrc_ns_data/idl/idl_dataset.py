@@ -88,7 +88,7 @@ class IFRCDisasterLawDataset(Dataset):
             Raw data to be processed.
         """
         # Print a warning if filtering is given as this does not apply
-        if latest is not None:
+        if latest:
             warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
 
         # Remove regional responses, check country names, then merge in other information

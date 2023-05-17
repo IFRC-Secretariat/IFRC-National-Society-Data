@@ -35,7 +35,7 @@ class YABCDataset(Dataset):
             Not in use.
         """
         # Print a warning if filtering is given as this does not apply
-        if latest is not None:
+        if latest:
             warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
 
         # Set the columns
