@@ -23,9 +23,9 @@ FDRS:
   indicators:
     - name: Number of local units
       source_name: KPI_noLocalUnits
-    - name: Year of latest financial statement
+    - name: Financial statement available
       source_name: KPI_hasFinancialStatement
-    - name: The financial statement is audited
+    - name: Audited financial statement available
       source_name: audited
     - name: Total income in local currency
       source_name: KPI_IncomeLC
@@ -39,9 +39,9 @@ FDRS:
       source_name: KPI_PStaff_Tot
     - name: Total number of paid staff covered by accident insurance
       source_name: KPI_PStaffCoveredAI_Tot
-    - name: Year of latest annual report
+    - name: Annual report available
       source_name: ar
-    - name: Year of latest strategic plan
+    - name: Strategic plan available
       source_name: sp
     - name: Supported NSs
       source_name: supported1
@@ -67,6 +67,14 @@ FDRS:
       source_name: KPI_ReachCTP_CPD
     - name: Total number of people reached by social inclusion and building a culture of non-violence and peace
       source_name: KPI_ReachSI_CPD
+    - name: Year of latest financial statement
+      source_name: Year of latest financial statement
+    - name: Year of latest audited financial statement
+      source_name: Year of latest audited financial statement
+    - name: Year of latest annual report
+      source_name: Year of latest annual report
+    - name: Year of latest strategic plan
+      source_name: Year of latest strategic plan
 
 NS Documents:
   Source: API

@@ -81,11 +81,6 @@ class FDRSDataset(Dataset):
             data[column] = NSInfoMapper().map(data['National Society ID'], map_from='National Society ID', map_to=column)
         data = data.drop(columns=['National Society ID'])
 
-        # Replace False for nan for boolean indicators, so that they are dropped in the next step
-        get_latest_columns = ['KPI_hasFinancialStatement', 'audited', 'ar', 'sp']
-        data.loc[(data['Indicator'].isin(get_latest_columns)) & (data['Value'].astype(str)=='False'), 'Value'] = float('nan')
-        data.loc[(data['Indicator'].isin(get_latest_columns)) & (data['Value'].astype(str)=='True'), 'Value'] = 'Yes'
-
         # Convert NS supported and receiving support lists from NS IDs to NS names
         def split_convert_ns_ids(x):
             # Conver the string to a list and remove invalid IDs
@@ -99,6 +94,22 @@ class FDRSDataset(Dataset):
             return ', '.join(ns_names)
         data['Value'] = data['Value'].replace('One of our staff was sent for support to DRC-Congo on a surge', 'Red Cross of the Democratic Republic of the Congo')
         data['Value'] = data.apply(lambda row: split_convert_ns_ids(row['Value']) if ((row['Indicator'] in ['supported1', 'received_support1']) and (row['Value']==row['Value'])) else row['Value'], axis=1)
+
+        # Replace True and False with Yes and No, for readability
+        latest_columns_names = {'KPI_hasFinancialStatement': 'Year of latest financial statement', 
+                                'audited': 'Year of latest audited financial statement', 
+                                'ar': 'Year of latest annual report', 
+                                'sp': 'Year of latest strategic plan'}
+        data.loc[(data['Indicator'].isin(latest_columns_names.keys())) & (data['Value'].astype(str)=='False'), 'Value'] = 'No'
+        data.loc[(data['Indicator'].isin(latest_columns_names.keys())) & (data['Value'].astype(str)=='True'), 'Value'] = 'Yes'
+        
+        # Add in year of latest financial statement, and year of latest audited financial statement
+        latest_available = data.loc[(data['Indicator'].isin(latest_columns_names)) & (data['Value']=='Yes')]\
+                                .sort_values(by=['National Society name', 'Year'], ascending=False)\
+                                .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')
+        latest_available['Indicator'] = latest_available['Indicator'].apply(lambda indicator: latest_columns_names.get(indicator))
+        latest_available['Value'] = latest_available['Year']
+        data = pd.concat([data, latest_available]).reset_index(drop=True)
 
         # Select and rename indicators
         data = self.rename_indicators(data)
