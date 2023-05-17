@@ -17,7 +17,7 @@ class TestDatasets(unittest.TestCase):
         data = fdrs_data.get_data()
         self.assertTrue(isinstance(data, pd.DataFrame))
         self.assertFalse(data.empty)
-        self.assertEqual(data.columns.to_list(), self.indicator_dataset_columns)
+        self.assertEqual(data.columns.to_list(), self.indicator_dataset_columns+['URL'])
 
     def test_ns_documents(self):
         ns_documents = ifrc_ns_data.NSDocumentsDataset(api_key=self.fdrs_api_key)

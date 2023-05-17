@@ -72,6 +72,9 @@ class FDRSDataset(Dataset):
         # Rename columns and remove nans
         data = data.rename(columns={'value': 'Value', 'year': 'Year'})\
                    .dropna(subset=['Value', 'Year', 'Indicator'], how='any')
+        
+        # Add in the FDRS page URL
+        data['URL'] = 'https://data.ifrc.org/FDRS/national-society/'+data['National Society ID']
 
         # Map in country and region information
         for column in self.index_columns:
@@ -99,7 +102,7 @@ class FDRSDataset(Dataset):
 
         # Select and rename indicators
         data = self.rename_indicators(data)
-        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
+        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year', 'URL'])
 
         # Filter the dataset if required
         if latest:
