@@ -294,3 +294,21 @@ Corruption Perception Index:
       source_name: standardError
     - name: Year
       source_name: year
+
+Youth Engagement:
+  source: website
+  privacy: public
+  source_description: IFRC Youth engagement global survey.
+  type: internal
+  link: https://volunteeringredcross.org/en/global-youth-survey-en/
+  columns:
+    - name: Year
+      source_name: Year
+    - name: Youth Policy
+      source_name: Youth Policy
+    - name: Youth Engagement Strategy
+      source_name: Youth Engagement Strategy
+    - name: Youth in GB
+      source_name: Youth in GB
+    - name: Youth-led structure
+      source_name: Youth-led structure

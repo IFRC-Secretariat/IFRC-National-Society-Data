@@ -154,7 +154,7 @@ class DataCollector:
             If True, only return quantitative data (some datasets contain a mix of qualitative and quantitative indicators so this cannot be filtered at dataset-level).
         """
         # Get each dataset and turn into indicator-format
-        indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "World Development Indicators", "INFORM Risk", "ICRC Presence", "IFRC Disaster Law", "Corruption Perception Index"]
+        indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "World Development Indicators", "INFORM Risk", "ICRC Presence", "IFRC Disaster Law", "Corruption Perception Index", "Youth Engagement"]
         indicator_datasets_lower = [dataset.lower() for dataset in indicator_datasets]
         column_names = ['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Value', 'Year', 'Description', 'URL']
         if datasets is None:
@@ -200,6 +200,16 @@ class DataCollector:
                 dataset.data = dataset.data.rename(columns={'Score': 'Value'})\
                                            .drop(columns=['Standard error', 'Sources', 'Rank'])
                 dataset.data['Indicator'] = 'Corruption Perception Index'
+
+            # Youth engagement
+            elif dataset.name == 'Youth Engagement':
+                dataset.data = pd.melt(dataset.data, 
+                                       id_vars=['National Society name', 'Country', 'ISO3', 'Region', 'Year'],
+                                       value_vars=['Youth Policy', 'Youth Engagement Strategy', 'Youth in GB', 'Youth-led structure'],
+                                       var_name='Indicator',
+                                       value_name='Value',
+                                       ignore_index=True)
+                dataset.data['URL'] = 'https://volunteeringredcross.org/en/global-youth-survey-en/'
 
             else:
                 raise RuntimeError(f'Unrecognised dataset {dataset.name}')
@@ -293,6 +303,7 @@ class DataCollector:
                        'ICRC Presence': ifrc_ns_data.ICRCPresenceDataset,
                        'IFRC Disaster Law': ifrc_ns_data.IFRCDisasterLawDataset,
                        'Corruption Perception Index': ifrc_ns_data.CorruptionPerceptionIndexDataset,
+                       'Youth Engagement': ifrc_ns_data.YouthEngagementDataset,
                        }
         class_names = {k.lower(): v for k, v in class_names.items()}
         dataset_instances = []

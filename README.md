@@ -183,3 +183,4 @@ in
 | ICRC Presence | Presence of ICRC | ICRC website | ICRCPresenceDataset | |
 | IFRC Disaster Law | IFRC Disaster Law overview | IFRC Disaster Law website | IFRCDisasterLawDataset | |
 | Corruption Perception Index | The CPI ranks 180 countries and territories around the world by their perceived levels of public sector corruption, scoring on a scale of 0 (highly corrupt) to 100 (very clean). | Transparency International | CorruptionPerceptionIndexDataset | |
+| Youth Engagement | IFRC Youth engagement global survey | IFRC VODPLA website | YouthEngagementDataset | |

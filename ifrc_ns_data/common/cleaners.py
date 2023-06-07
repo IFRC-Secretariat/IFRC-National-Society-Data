@@ -139,11 +139,13 @@ class NSInfoCleaner:
         """
         ns_info = NationalSocietiesInfo().data
 
-        # Strip whitespace
+        # Strip whitespace, and replace multiple whitespace with single
         if isinstance(data, pd.Series):
             data = data.str.strip()
+            data = data.replace(r'\s+', ' ', regex=True)
         else:
             data = list(map(str.strip, data))
+            data = [' '.join(item.split()) for item in data]
 
         # Map the list of known alternative names including country names to the main name
         alternative_names = {'National Society name': 'Alternative National Society names', 'Country': 'Alternative country names'}
