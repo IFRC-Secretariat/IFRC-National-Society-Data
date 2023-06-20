@@ -130,3 +130,10 @@ class TestDatasets(unittest.TestCase):
         self.assertTrue(isinstance(data, pd.DataFrame))
         self.assertFalse(data.empty)
         self.assertEqual(data.columns.to_list()[:4], self.index_columns)
+
+    def test_boca_assessment_dates(self):
+        boca_assessment_dates = ifrc_ns_data.BOCAAssessmentDatesDataset(api_key=self.fdrs_api_key)
+        data = boca_assessment_dates.get_data()
+        self.assertTrue(isinstance(data, pd.DataFrame))
+        self.assertFalse(data.empty)
+        self.assertEqual(data.columns.to_list()[:4], self.index_columns)

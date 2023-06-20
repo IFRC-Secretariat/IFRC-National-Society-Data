@@ -119,6 +119,23 @@ OCAC Assessment Dates:
     - name: Submission date
       source_name: SubmissionDate
 
+BOCA Assessment Dates:
+  source: API
+  source_description: NS databank
+  Type: Internal
+  privacy: public
+  Link: https://data-api.ifrc.org/Backoffice/BOCA/Form?app=boca
+  Focal point: Roger Fischli
+  columns:
+    - name: Branch name
+      source_name: BranchName
+    - name: Assessment code
+      source_name: AssementCode
+    - name: Year of assessment
+      source_name: YearOfAssesment
+    - name: Submission date
+      source_name: SubmissionDate
+
 Statutes:
   Source: file
   Type: Internal
