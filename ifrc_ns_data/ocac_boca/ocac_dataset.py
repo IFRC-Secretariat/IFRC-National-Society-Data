@@ -1,6 +1,8 @@
 """
 Module to handle OCAC data, including loading it from the downloaded data file, cleaning, and processing.
 """
+import requests
+import warnings
 import pandas as pd
 import numpy as np
 from ifrc_ns_data.common import Dataset
@@ -82,14 +84,35 @@ class OCACAssessmentDatesDataset(Dataset):
     filepath : string (required)
         Path to save the dataset when loaded, and to read the dataset from.
     """
-    def __init__(self, filepath=None, sheet_name=None):
-        if filepath is None:
-            raise TypeError('Please specify a path to the OCAC dataset. The data'
-                'can be downloaded as an Excel file from the OCAC site at '
-                'https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac '
-                '(there is not yet an API).')
-        self.name = 'OCAC Assessment Dates'
-        super().__init__(name='OCAC Assessment Dates', filepath=filepath, sheet_name=sheet_name)
+    def __init__(self, api_key):
+        super().__init__(name='OCAC Assessment Dates')
+        self.api_key = api_key.strip()
+
+
+    def pull_data(self, filters=None):
+        """
+        Read in raw data from the OCAC Assessments Dates API from the NS databank.
+
+        Parameters
+        ----------
+        filters : dict (default=None)
+            Filters to filter by country or by National Society.
+            Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
+            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
+        """
+        # The data cannot be filtered from the API so raise a warning if filters are provided
+        if (filters is not None) and (filters != {}):
+            warnings.warn(f'Filters {filters} not applied because the API response cannot be filtered.')
+
+        # Pull data from FDRS API
+        response = requests.get(url=f'https://data-api.ifrc.org/api/ocacpublic?apiKey={self.api_key}')
+        response.raise_for_status()
+        results = response.json()
+
+        # Convert the data into a pandas DataFrame
+        data = pd.DataFrame(results)
+
+        return data
 
 
     def process_data(self, data, latest=False):
@@ -104,25 +127,16 @@ class OCACAssessmentDatesDataset(Dataset):
         latest : bool (default=False)
             If True, only the latest data for each National Society and indicator will be returned.
         """
-        # Use the OCACDataset class to process the data
-        ocac_dataset = OCACDataset(filepath=self.filepath, sheet_name=self.sheet_name)
-        ocac_data = ocac_dataset.process_data(data=data, latest=latest)
+        # Use the NS code to add other NS information
+        ns_info_mapper = NSInfoMapper()
+        for column in self.index_columns:
+            ns_id_mapped = ns_info_mapper.map(data=data['NsId'], map_from='National Society ID', map_to=column, errors='raise')\
+                                         .rename(column)
+            data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
+        data = data.drop(columns=['NsId', 'NsName'])
 
-        # Select only dates of OCAC assessment and NOT results
-        data = ocac_data[self.index_columns+['Year']].copy()
-
-        # Double check that column names are only these, and that the Year data type is numeric
-        expected_columns = ['National Society name', 'Country', 'ISO3', 'Region', 'Year']
-        if data.columns.to_list()!=expected_columns:
-            unexpected_columns = [column for column in data.columns if column not in expected_columns]
-            raise ValueError(f'Unexpected columns {unexpected_columns}')
-        if data['Year'].dtype != np.int64:
-            raise TypeError(f'Expected int64 type in Year column')
-
-        # Change to indicator format so that Value is the year of assessment
-        data['Indicator'] = 'OCAC assessment date'
-        data = data.rename(columns={'Year': 'Value'})
-        data['Year'] = None
-        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
+        # Add other columns and order the columns
+        data = self.rename_columns(data, drop_others=True)
+        data = self.order_index_columns(data)
 
         return data

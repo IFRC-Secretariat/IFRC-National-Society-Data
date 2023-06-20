@@ -178,8 +178,15 @@ class DataCollector:
         for dataset in dataset_instances:
 
             # These datasets are already in indicator format
-            if dataset.name in ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "World Development Indicators", "INFORM Risk"]:
+            if dataset.name in ["NS Contacts", "FDRS", "NS Documents", "World Development Indicators", "INFORM Risk"]:
                 continue
+
+            # OCAC assessment dates
+            elif dataset.name == 'OCAC Assessment Dates':
+                dataset.data = dataset.data.rename(columns={'Year of assessment': 'Value'})\
+                                           .drop(columns=['Assessment code', 'Submission date'])
+                dataset.data['Indicator'] = 'OCAC assessment dates'
+                dataset.data['Year'] = None
 
             # ICRC presence
             elif dataset.name == 'ICRC Presence':

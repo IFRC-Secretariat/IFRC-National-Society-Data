@@ -90,11 +90,11 @@ class TestDatasets(unittest.TestCase):
         self.assertEqual(data.columns.to_list()[:4], self.index_columns)
 
     def test_ocac_assessment_dates(self):
-        ocac_assessment_dates = ifrc_ns_data.OCACAssessmentDatesDataset(filepath=os.path.join(self.test_datasets_path, 'ocac.csv'))
+        ocac_assessment_dates = ifrc_ns_data.OCACAssessmentDatesDataset(api_key=self.fdrs_api_key)
         data = ocac_assessment_dates.get_data()
         self.assertTrue(isinstance(data, pd.DataFrame))
         self.assertFalse(data.empty)
-        self.assertEqual(data.columns.to_list(), self.indicator_dataset_columns)
+        self.assertEqual(data.columns.to_list()[:4], self.index_columns)
 
     def test_world_bank(self):
         world_bank_data = ifrc_ns_data.WorldDevelopmentIndicatorsDataset()

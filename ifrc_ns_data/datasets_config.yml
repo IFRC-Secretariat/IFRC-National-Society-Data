@@ -105,11 +105,19 @@ OCAC:
   Focal point: Roger Fischli
 
 OCAC Assessment Dates:
-  Source: file
+  source: API
+  source_description: NS databank
   Type: Internal
   privacy: public
   Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
   Focal point: Roger Fischli
+  columns:
+    - name: Assessment code
+      source_name: AssementCode
+    - name: Year of assessment
+      source_name: YearOfAssesment
+    - name: Submission date
+      source_name: SubmissionDate
 
 Statutes:
   Source: file
