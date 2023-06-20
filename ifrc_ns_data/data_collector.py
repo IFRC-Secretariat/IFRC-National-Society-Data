@@ -154,7 +154,7 @@ class DataCollector:
             If True, only return quantitative data (some datasets contain a mix of qualitative and quantitative indicators so this cannot be filtered at dataset-level).
         """
         # Get each dataset and turn into indicator-format
-        indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "World Development Indicators", "INFORM Risk", "ICRC Presence", "IFRC Disaster Law", "Corruption Perception Index", "Youth Engagement"]
+        indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "BOCA Assessment Dates", "World Development Indicators", "INFORM Risk", "ICRC Presence", "IFRC Disaster Law", "Corruption Perception Index", "Youth Engagement"]
         indicator_datasets_lower = [dataset.lower() for dataset in indicator_datasets]
         column_names = ['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Value', 'Year', 'Description', 'URL']
         if datasets is None:
@@ -186,6 +186,13 @@ class DataCollector:
                 dataset.data = dataset.data.rename(columns={'Year of assessment': 'Value'})\
                                            .drop(columns=['Assessment code', 'Submission date'])
                 dataset.data['Indicator'] = 'OCAC assessment dates'
+                dataset.data['Year'] = None
+
+            # BOCA assessment dates
+            elif dataset.name == 'BOCA Assessment Dates':
+                dataset.data = dataset.data.groupby(['National Society name', 'Country', 'ISO3', 'Region'])['Assessment code'].count().reset_index()
+                dataset.data = dataset.data.rename(columns={'Assessment code': 'Value'})
+                dataset.data['Indicator'] = 'Number of BOCA assessments'
                 dataset.data['Year'] = None
 
             # ICRC presence
