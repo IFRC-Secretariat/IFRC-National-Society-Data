@@ -41,8 +41,12 @@ class NSDocumentsDataset(Dataset):
         response = requests.get(url=f'https://data-api.ifrc.org/api/documents?ns={",".join(selected_ns_ids)}&apiKey={self.api_key}')
         response.raise_for_status()
         results = response.json()
+
+        # Make the format consistent for if one or multiple NSs are provided
         if len(selected_ns_ids)==1:
             results = [results]
+
+        # Loop through the NS results and merge into a single DataFrame with a column giving the NS code
         data_list = []
         for ns_response in results:
             ns_documents = pd.DataFrame(ns_response['documents'])
