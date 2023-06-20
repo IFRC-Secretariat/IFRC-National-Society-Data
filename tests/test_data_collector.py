@@ -20,7 +20,8 @@ class TestAllData(unittest.TestCase):
                              'Recognition laws': {'filepath': os.path.join(test_datasets_path, 'recognition_laws.csv')},
                              'Logistics projects': {'filepath': os.path.join(test_datasets_path, 'logistics_projects.csv')},
                              'OCAC': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
-                             'OCAC assessment dates': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
+                             'OCAC assessment dates': {'api_key': self.fdrs_api_key},
+                             'BOCA assessment dates': {'api_key': self.fdrs_api_key},
                              'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}}
         self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
 
@@ -132,7 +133,8 @@ class TestIndicatorData(unittest.TestCase):
                              'Recognition laws': {'filepath': os.path.join(test_datasets_path, 'recognition_laws.csv')},
                              'Logistics projects': {'filepath': os.path.join(test_datasets_path, 'logistics_projects.csv')},
                              'OCAC': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
-                             'OCAC assessment dates': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
+                             'OCAC assessment dates': {'api_key': self.fdrs_api_key},
+                             'BOCA assessment dates': {'api_key': self.fdrs_api_key},
                              'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}}
         self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
 

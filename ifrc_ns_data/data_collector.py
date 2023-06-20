@@ -299,6 +299,7 @@ class DataCollector:
                        'NS Contacts': ifrc_ns_data.NSContactsDataset,
                        'OCAC': ifrc_ns_data.OCACDataset,
                        'OCAC Assessment Dates': ifrc_ns_data.OCACAssessmentDatesDataset,
+                       'BOCA Assessment Dates': ifrc_ns_data.BOCAAssessmentDatesDataset,
                        'GO Operations': ifrc_ns_data.GOOperationsDataset,
                        'GO Projects': ifrc_ns_data.GOProjectsDataset,
                        'INFORM Risk': ifrc_ns_data.INFORMRiskDataset,
