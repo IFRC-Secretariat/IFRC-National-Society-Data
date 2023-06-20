@@ -4,7 +4,6 @@ Module to handle OCAC data, including loading it from the downloaded data file, 
 import requests
 import warnings
 import pandas as pd
-import numpy as np
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, NSInfoMapper
 
