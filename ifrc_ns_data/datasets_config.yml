@@ -118,6 +118,8 @@ OCAC Assessment Dates:
       source_name: YearOfAssesment
     - name: Submission date
       source_name: SubmissionDate
+    - name: URL
+      source_name: URL
 
 BOCA Assessment Dates:
   source: API
@@ -135,6 +137,8 @@ BOCA Assessment Dates:
       source_name: YearOfAssesment
     - name: Submission date
       source_name: SubmissionDate
+    - name: URL
+      source_name: URL
 
 Statutes:
   Source: file
