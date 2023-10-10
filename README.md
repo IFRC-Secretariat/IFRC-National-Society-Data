@@ -4,7 +4,11 @@ This library can be used for getting data on a National Society/ country level f
 
 ## Setup
 
-This package requires Python 3.8+. Required Python packages can be installed from the requirements file:
+These instructions are for setting up on Windows.
+
+This package requires Python 3.8+. If you don't have it already, download and install Python from the [Microsoft Store](https://apps.microsoft.com/detail/python-3-11/9NRWMJP3717K?hl=en-gb&gl=CH). You also need to download and install [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
+
+Next, required Python packages can be installed from the requirements file:
 
 ```bash
 python -m pip install -r requirements.txt
@@ -167,11 +171,12 @@ in
 
 | Dataset   |      Description      |      Source      |  Class name       | Arguments       |
 |-----------|----------------------|------------------|------------------|-------------------|
-| FDRS |  FDRS data gives an overview of a National Society in a number of indicators | FDRS API | FDRSDataset | api_key |
+| FDRS |  FDRS data gives an overview of a National Society in a number of indicators | NS Databank API | FDRSDataset | api_key |
 | NS documents | Links to key documents including annual plans and financial statements | FDRS API | NSDocumentsDataset | api_key |
 | NS contacts | Contact information and social media links | FDRS API | NSContactsDataset | api_key |
 | OCAC | Results of OCAC assessment which assesses the strength of a NS | OCAC website Excel download | OCACDataset | filepath, sheet_name |
-| OCAC assessment dates | Dates of OCAC assessments run by a NS | OCAC website Excel download | OCACAssessmentDatesDataset | filepath, sheet_name |
+| OCAC assessment dates | Dates of OCAC assessments run by a NS | NS Databank API | OCACAssessmentDatesDataset | api_key |
+| BOCA assessment dates | Dates of BOCA assessments run by NS branches | NS Databank API | BOCAAssessmentDatesDataset | api_key |
 | GO operations | List of operations | GO API | GOOperationsDataset | |
 | GO projects | List of projects | GO API | GOProjectsDataset | |
 | Recognition laws | NS recognition laws | Excel document | RecognitionLawsDataset | filepath, sheet_name |
