@@ -61,9 +61,10 @@ class CorruptionPerceptionIndexDataset(Dataset):
         data = self.order_index_columns(data)
 
         # Filter only the latest data
-        data = data\
-            .sort_values(by=['National Society name', 'Year'], ascending=[True, False])\
-            .drop_duplicates(subset=['National Society name'], keep='first')\
-            .reset_index(drop=True)
+        if latest:
+            data = data\
+                .sort_values(by=['National Society name', 'Year'], ascending=[True, False])\
+                .drop_duplicates(subset=['National Society name'], keep='first')\
+                .reset_index(drop=True)
 
         return data

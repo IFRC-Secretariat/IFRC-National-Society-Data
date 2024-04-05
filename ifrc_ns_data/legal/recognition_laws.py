@@ -29,9 +29,6 @@ class RecognitionLawsDataset(Dataset):
         ----------
         data : pandas DataFrame (required)
             Raw data to be processed.
-
-        latest : bool (default=None)
-            Not in use.
         """
         # Set the columns from the data row
         data.columns = data.iloc[0]

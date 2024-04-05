@@ -111,7 +111,7 @@ class OCACAssessmentDatesDataset(Dataset):
 
         return data
 
-    def process_data(self, data, latest=False):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -119,9 +119,6 @@ class OCACAssessmentDatesDataset(Dataset):
         ----------
         data : pandas DataFrame (required)
             Raw data to be processed.
-
-        latest : bool (default=False)
-            If True, only the latest data for each National Society and indicator will be returned.
         """
         # Use the NS code to add other NS information
         ns_info_mapper = NSInfoMapper()
