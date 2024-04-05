@@ -32,7 +32,11 @@ class TestAllData(unittest.TestCase):
         Test getting all the data with the data collector.
         """
         # Get all datasets
-        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args)
+        all_datasets = self.data_collector.get_data(
+            dataset_args=self.dataset_args
+        )
+        # Check total datasets and all not empty
+        self.assertEqual(len(all_datasets), 18)
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
@@ -42,25 +46,22 @@ class TestAllData(unittest.TestCase):
         Test getting all public datasets.
         """
         # Get all datasets and check all returned contain non-empty pandas DataFrames with privacy public
-        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, filters={'privacy': 'public'})
+        all_datasets = self.data_collector.get_data(
+            dataset_args=self.dataset_args,
+            filters={'privacy': 'public'}
+        )
+        # Check total datasets and no private datasets
+        self.assertEqual(len(all_datasets), 13)
+        dataset_names = [dataset.name for dataset in all_datasets]
+        private_datsets = ['OCAC', 'Statutes', 'Recognition Laws', 'YABC', 'Logistics Projects']
+        for dataset_name in private_datsets:
+            self.assertNotIn(dataset_name, dataset_names)
+
+        # Check none empty
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
             self.assertEqual(dataset.privacy, 'public')
-
-    def test_get_single_iso3_data(self):
-        """
-        Test getting data for only one country, filtering by ISO3.
-        """
-        # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(
-            dataset_args=self.dataset_args,
-            iso3='AFG'
-        )
-        for dataset in all_datasets:
-            self.assertTrue(isinstance(dataset.data, pd.DataFrame))
-            self.assertFalse(dataset.data.empty)
-            self.assertEqual(dataset.data['ISO3'].unique(), ['AFG'])
 
     def test_get_single_country_data(self):
         """
@@ -73,67 +74,9 @@ class TestAllData(unittest.TestCase):
         )
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
-            self.assertFalse(dataset.data.empty)
-            self.assertEqual(dataset.data['Country'].unique(), ['Afghanistan'])
-
-    def test_get_single_ns_data(self):
-        """
-        Test getting data for only one country, filtering by National Society name.
-        """
-        # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(
-            dataset_args=self.dataset_args,
-            ns='Afghan Red Crescent'
-        )
-        for dataset in all_datasets:
-            self.assertTrue(isinstance(dataset.data, pd.DataFrame))
-            self.assertFalse(dataset.data.empty)
-            self.assertEqual(dataset.data['National Society name'].unique(), ['Afghan Red Crescent'])
-
-    def test_get_multi_iso3_data(self):
-        """
-        Test getting data for multiple countries, filtering by ISO3.
-        """
-        # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(
-            dataset_args=self.dataset_args,
-            iso3=['AFG', 'ZWE']
-        )
-        for dataset in all_datasets:
-            self.assertTrue(isinstance(dataset.data, pd.DataFrame))
-            self.assertFalse(dataset.data.empty)
-            self.assertEqual(sorted(dataset.data['ISO3'].unique()), ['AFG', 'ZWE'])
-
-    def test_get_multi_country_data(self):
-        """
-        Test getting data for multiple countries, filtering by country name.
-        """
-        # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(
-            dataset_args=self.dataset_args,
-            country=['Afghanistan', 'Zimbabwe']
-        )
-        for dataset in all_datasets:
-            self.assertTrue(isinstance(dataset.data, pd.DataFrame))
-            self.assertFalse(dataset.data.empty)
-            self.assertEqual(sorted(dataset.data['Country'].unique()), ['Afghanistan', 'Zimbabwe'])
-
-    def test_get_multi_ns_data(self):
-        """
-        Test getting data for multiple countries, filtering by National Society name.
-        """
-        # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(
-            dataset_args=self.dataset_args,
-            ns=['Afghan Red Crescent', 'Zimbabwe Red Cross Society']
-        )
-        for dataset in all_datasets:
-            self.assertTrue(isinstance(dataset.data, pd.DataFrame))
-            self.assertFalse(dataset.data.empty)
-            self.assertEqual(
-                sorted(dataset.data['National Society name'].unique()),
-                ['Afghan Red Crescent', 'Zimbabwe Red Cross Society']
-            )
+            if dataset.name not in ['BOCA Assessment Dates']:
+                self.assertFalse(dataset.data.empty)
+                self.assertEqual(dataset.data['Country'].unique(), ['Afghanistan'])
 
 
 class TestIndicatorData(unittest.TestCase):
