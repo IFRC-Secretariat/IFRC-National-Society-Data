@@ -191,10 +191,12 @@ class DataCollector:
                 datasets = [dataset for dataset in datasets if dataset.lower() in indicator_datasets_lower]
 
         # Initiate the dataset classes for these datasets and get data
-        dataset_instances = self.get_data(datasets=datasets,
-                                          dataset_args=dataset_args,
-                                          filters=filters,
-                                          latest=latest)
+        dataset_instances = self.get_data(
+            datasets=datasets,
+            dataset_args=dataset_args,
+            filters=filters,
+            latest=latest
+        )
         if not dataset_instances:
             return
 
@@ -204,7 +206,7 @@ class DataCollector:
 
             # These datasets are already in indicator format
             if dataset.name in ["NS Contacts", "FDRS", "NS Documents", "World Development Indicators", "INFORM Risk"]:
-                continue
+                pass
 
             # OCAC assessment dates
             elif dataset.name == 'OCAC Assessment Dates':
@@ -256,6 +258,10 @@ class DataCollector:
 
             else:
                 raise RuntimeError(f'Unrecognised dataset {dataset.name}')
+
+            # Get latest data
+            if latest:
+                dataset.data = dataset.filter_latest_indicators(dataset.data).reset_index(drop=True)
 
         # Merge all datasets
         for dataset in dataset_instances:
