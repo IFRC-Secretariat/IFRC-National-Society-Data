@@ -42,10 +42,11 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         total_pages = 5 if self.test_flag else None
         while True:
             api_indicators = ';'.join([indicator['source_name'] for indicator in self.indicators])
-            url = f'https://api.worldbank.org/v2/country/{selected_countries}/indicator/{api_indicators}?\
-                source=2&page={page}&format=json&per_page={per_page}'
-            print(f'Requesting page {page}', end=' ')
+            url = 'https://api.worldbank.org/v2/country/'\
+                f'{selected_countries}/indicator/{api_indicators}?'\
+                f'source=2&page={page}&format=json&per_page={per_page}'
             response = requests.get(url=url)
+            response.raise_for_status()
             data = pd.concat([data, pd.DataFrame(response.json()[1])])
             if total_pages is None:
                 total_pages = response.json()[0]['pages']
