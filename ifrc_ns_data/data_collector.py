@@ -338,25 +338,26 @@ class DataCollector:
                 dataset_args[dataset] = {}
 
         # Initiate all dataset classes including providing arguments. Skip when arguments are not provided.
-        class_names = {'FDRS': ifrc_ns_data.FDRSDataset,
-                       'NS Documents': ifrc_ns_data.NSDocumentsDataset,
-                       'NS Contacts': ifrc_ns_data.NSContactsDataset,
-                       'OCAC': ifrc_ns_data.OCACDataset,
-                       'OCAC Assessment Dates': ifrc_ns_data.OCACAssessmentDatesDataset,
-                       'BOCA Assessment Dates': ifrc_ns_data.BOCAAssessmentDatesDataset,
-                       'GO Operations': ifrc_ns_data.GOOperationsDataset,
-                       'GO Projects': ifrc_ns_data.GOProjectsDataset,
-                       'INFORM Risk': ifrc_ns_data.INFORMRiskDataset,
-                       'Recognition laws': ifrc_ns_data.RecognitionLawsDataset,
-                       'Statutes': ifrc_ns_data.StatutesDataset,
-                       'Logistics projects': ifrc_ns_data.LogisticsProjectsDataset,
-                       'World Development Indicators': ifrc_ns_data.WorldDevelopmentIndicatorsDataset,
-                       'YABC': ifrc_ns_data.YABCDataset,
-                       'ICRC Presence': ifrc_ns_data.ICRCPresenceDataset,
-                       'IFRC Disaster Law': ifrc_ns_data.IFRCDisasterLawDataset,
-                       'Corruption Perception Index': ifrc_ns_data.CorruptionPerceptionIndexDataset,
-                       'Youth Engagement': ifrc_ns_data.YouthEngagementDataset,
-                       }
+        class_names = {
+            'FDRS': ifrc_ns_data.FDRSDataset,
+            'NS Documents': ifrc_ns_data.NSDocumentsDataset,
+            'NS Contacts': ifrc_ns_data.NSContactsDataset,
+            'OCAC': ifrc_ns_data.OCACDataset,
+            'OCAC Assessment Dates': ifrc_ns_data.OCACAssessmentDatesDataset,
+            'BOCA Assessment Dates': ifrc_ns_data.BOCAAssessmentDatesDataset,
+            'GO Operations': ifrc_ns_data.GOOperationsDataset,
+            'GO Projects': ifrc_ns_data.GOProjectsDataset,
+            'INFORM Risk': ifrc_ns_data.INFORMRiskDataset,
+            'Recognition laws': ifrc_ns_data.RecognitionLawsDataset,
+            'Statutes': ifrc_ns_data.StatutesDataset,
+            'Logistics projects': ifrc_ns_data.LogisticsProjectsDataset,
+            'World Development Indicators': ifrc_ns_data.WorldDevelopmentIndicatorsDataset,
+            'YABC': ifrc_ns_data.YABCDataset,
+            'ICRC Presence': ifrc_ns_data.ICRCPresenceDataset,
+            'IFRC Disaster Law': ifrc_ns_data.IFRCDisasterLawDataset,
+            'Corruption Perception Index': ifrc_ns_data.CorruptionPerceptionIndexDataset,
+            'Youth Engagement': ifrc_ns_data.YouthEngagementDataset,
+        }
         class_names = {k.lower(): v for k, v in class_names.items()}
         dataset_instances = []
         for dataset_name in datasets:
