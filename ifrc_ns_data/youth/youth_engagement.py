@@ -3,7 +3,6 @@ Module to access and handle IFRC Youth Engagement data.
 """
 import requests
 from io import StringIO
-import warnings
 import pandas as pd
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, NSInfoMapper
@@ -40,7 +39,7 @@ class YouthEngagementDataset(Dataset):
 
         return data
 
-    def process_data(self, data, latest=None):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -49,10 +48,6 @@ class YouthEngagementDataset(Dataset):
         data : pandas DataFrame (required)
             Raw data to be processed.
         """
-        # Print a warning if filtering is given as this does not apply
-        if latest:
-            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
-
         # Drop columns and add NS information
         data = data.drop(columns=['Region'])
         data = data.rename(columns={'National Society': 'National Society name'})

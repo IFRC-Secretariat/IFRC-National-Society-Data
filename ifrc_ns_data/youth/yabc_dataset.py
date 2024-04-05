@@ -1,7 +1,6 @@
 """
 Module to handle YABC data, including loading it from the data file, cleaning, and processing.
 """
-import warnings
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, NSInfoMapper
 
@@ -21,7 +20,7 @@ class YABCDataset(Dataset):
             raise TypeError('Please specify a path to the IFRC Youth YABC dataset.')
         super().__init__(name='YABC', filepath=filepath, sheet_name=sheet_name)
 
-    def process_data(self, data, latest=None):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -29,14 +28,7 @@ class YABCDataset(Dataset):
         ----------
         data : pandas DataFrame (required)
             Raw data to be processed.
-
-        latest : bool (default=None)
-            Not in use.
         """
-        # Print a warning if filtering is given as this does not apply
-        if latest:
-            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
-
         # Set the columns
         data.columns = data.iloc[1]
         data = data.iloc[2:, 1:]

@@ -2,7 +2,6 @@
 Module to access and handle ICRC data.
 """
 import requests
-import warnings
 from bs4 import BeautifulSoup
 import pandas as pd
 from ifrc_ns_data.common import Dataset
@@ -67,7 +66,7 @@ class IFRCDisasterLawDataset(Dataset):
 
         return data
 
-    def process_data(self, data, latest=None):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -76,10 +75,6 @@ class IFRCDisasterLawDataset(Dataset):
         data : pandas DataFrame (required)
             Raw data to be processed.
         """
-        # Print a warning if filtering is given as this does not apply
-        if latest:
-            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
-
         # Remove regional responses, check country names, then merge in other information
         data["Country"] = NSInfoCleaner().clean_country_names(data["Country"])
         new_columns = [column for column in self.index_columns if column != 'Country']

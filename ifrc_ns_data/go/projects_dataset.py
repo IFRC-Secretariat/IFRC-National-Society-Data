@@ -3,7 +3,6 @@ Module to handle projects (3W) data from the IFRC GO platform..
 The module can be used to pull this data from the IFRC GO API, process, and clean the data.
 """
 import requests
-import warnings
 import pandas as pd
 from ifrc_ns_data.common import Dataset, NationalSocietiesInfo
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, DictColumnExpander, NSInfoMapper
@@ -61,7 +60,7 @@ class GOProjectsDataset(Dataset):
 
         return data
 
-    def process_data(self, data, latest=None):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
         Process the data into a NS indicator format.
@@ -74,10 +73,6 @@ class GOProjectsDataset(Dataset):
         latest : bool (default=None)
             Not in use.
         """
-        # Print a warning if filtering is given as this does not apply
-        if latest:
-            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
-
         # Expand dict-type columns
         expand_columns = ['project_country_detail', 'dtype_detail', 'event_detail', 'reporting_ns_detail']
         data = DictColumnExpander().clean(

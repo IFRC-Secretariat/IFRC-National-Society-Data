@@ -90,7 +90,10 @@ class Dataset:
         raw_data = self.load_source_data(filters)
 
         # Process the data: tidy, add country/ NS info, restructure
-        processed_data = self.process_data(data=raw_data, latest=latest)
+        try:
+            processed_data = self.process_data(data=raw_data, latest=latest)
+        except TypeError:
+            processed_data = self.process_data(data=raw_data)
         processed_data = processed_data.dropna(subset=['National Society name'])
 
         # Filter the processed data

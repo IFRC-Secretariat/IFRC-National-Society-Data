@@ -1,7 +1,6 @@
 """
 Module to handle data on Logistics Projects, including loading it from the data file, cleaning, and processing.
 """
-import warnings
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, NSInfoMapper
 
@@ -22,7 +21,7 @@ class LogisticsProjectsDataset(Dataset):
         super().__init__(name='Logistics Projects', filepath=filepath, sheet_name=sheet_name)
         pass
 
-    def process_data(self, data, latest=None):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -30,14 +29,7 @@ class LogisticsProjectsDataset(Dataset):
         ----------
         data : pandas DataFrame (required)
             Raw data to be processed.
-
-        latest : bool (default=None)
-            Not in use.
         """
-        # Print a warning if filtering is given as this does not apply
-        if latest:
-            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
-
         # Clean the data
         data = data.drop(columns=['Region']).dropna(how='all')
 

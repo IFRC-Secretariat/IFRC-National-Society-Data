@@ -1,7 +1,6 @@
 """
 Module to handle NS Recognition Laws data, including loading it from the data file, cleaning, and processing.
 """
-import warnings
 import pandas as pd
 from ifrc_ns_data.common import Dataset
 from ifrc_ns_data.common.cleaners import NSInfoCleaner, NSInfoMapper
@@ -22,7 +21,7 @@ class RecognitionLawsDataset(Dataset):
             raise TypeError('Please specify a path to the National Society recognition laws dataset.')
         super().__init__(name='Recognition Laws', filepath=filepath, sheet_name=sheet_name)
 
-    def process_data(self, data, latest=None):
+    def process_data(self, data):
         """
         Transform and process the data, including changing the structure and selecting columns.
 
@@ -34,10 +33,6 @@ class RecognitionLawsDataset(Dataset):
         latest : bool (default=None)
             Not in use.
         """
-        # Print a warning if filtering is given as this does not apply
-        if latest:
-            warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
-
         # Set the columns from the data row
         data.columns = data.iloc[0]
         data = data.iloc[1:]
