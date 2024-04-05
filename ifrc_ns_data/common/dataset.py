@@ -122,7 +122,10 @@ class Dataset:
                 raise ValueError(f'Unknown file extension {extension}')
         # Pull data from an API, if possible apply the filters
         else:
-            data = self.pull_data(filters)
+            try:
+                data = self.pull_data(filters=filters)
+            except TypeError:
+                data = self.pull_data()
 
         return data
 

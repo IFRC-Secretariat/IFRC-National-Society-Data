@@ -21,22 +21,10 @@ class ICRCPresenceDataset(Dataset):
     def __init__(self):
         super().__init__(name='ICRC Presence')
 
-    def pull_data(self, filters=None):
+    def pull_data(self):
         """
         Scrape data from the ICRC website at https://www.icrc.org/en/where-we-work.
-
-        Parameters
-        ----------
-        filters : dict (default=None)
-            Filters to filter by country or by National Society.
-            Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
-            Note that this is NOT IMPLEMENTED and is only included in this method to ensure
-            consistency with the parent class and other child classes.
         """
-        # The data cannot be filtered from the API so raise a warning if filters are provided
-        if (filters is not None) and (filters != {}):
-            warnings.warn(f'Filters {filters} not applied because the response cannot be filtered.')
-
         # Get the home page
         response = requests.get(url='https://www.icrc.org/en/where-we-work',
                                 headers={'User-Agent': ''})
