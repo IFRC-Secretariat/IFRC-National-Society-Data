@@ -121,8 +121,10 @@ class DataCollector:
 
         # Initiate the dataset classes list
         print(f'Getting datasets {filtered_datasets}...')
-        dataset_instances = self.initiate_datasets(datasets=filtered_datasets,
-                                                   dataset_args=dataset_args)
+        dataset_instances = self.initiate_datasets(
+            datasets=filtered_datasets,
+            dataset_args=dataset_args
+        )
 
         # Load the data from the source and process
         names_params = {
@@ -130,7 +132,10 @@ class DataCollector:
             'Country': 'country',
             'National Society name': 'ns'
         }
-        country_filters = {names_params[name]: country_filters[name] for name in country_filters}
+        country_filters = {
+            names_params[name]: country_filters[name]
+            for name in country_filters
+        }
         for dataset in dataset_instances:
             print(f'Getting {dataset.name} data...')
             dataset.get_data(latest=latest, **country_filters)
