@@ -91,14 +91,20 @@ class ICRCPresenceDataset(Dataset):
             warnings.warn(f'Filtering latest data does not apply to dataset {self.name}')
 
         # Remove regional responses, check country names, then merge in other information
-        data = data.loc[~data["Country"].isin(["Lake Chad", "Sahel"])]
+        data = data.loc[~data["Country"].isin(["Lake Chad", "Sahel", "test"])]
         data["Country"] = NSInfoCleaner().clean_country_names(data["Country"])
         new_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in new_columns:
-            ns_id_mapped = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)\
-                .rename(column)
-            data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
+            ns_id_mapped = ns_info_mapper.map(
+                data=data['Country'],
+                map_from='Country',
+                map_to=column
+            ).rename(column)
+            data = pd.concat(
+                [data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)],
+                axis=1
+            )
 
         # Reorder columns
         data = self.rename_columns(data, drop_others=True)
