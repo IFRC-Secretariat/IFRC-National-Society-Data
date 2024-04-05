@@ -4,7 +4,7 @@ Module to handle NS documents data from FDRS, including loading it from the API,
 import requests
 import pandas as pd
 from ifrc_ns_data.common import Dataset, NationalSocietiesInfo
-from ifrc_ns_data.common.cleaners import DatabankNSIDMap, NSInfoMapper
+from ifrc_ns_data.common.cleaners import NSInfoMapper
 
 
 class NSDocumentsDataset(Dataset):
@@ -19,7 +19,6 @@ class NSDocumentsDataset(Dataset):
     def __init__(self, api_key):
         super().__init__(name='NS Documents')
         self.api_key = api_key.strip()
-
 
     def pull_data(self, filters=None):
         """
@@ -38,12 +37,14 @@ class NSDocumentsDataset(Dataset):
         selected_ns_ids = [ns['National Society ID'] for ns in selected_ns if ns['National Society ID'] is not None]
 
         # Pull data from FDRS API
-        response = requests.get(url=f'https://data-api.ifrc.org/api/documents?ns={",".join(selected_ns_ids)}&apiKey={self.api_key}')
+        response = requests.get(
+            url=f'https://data-api.ifrc.org/api/documents?ns={",".join(selected_ns_ids)}&apiKey={self.api_key}'
+        )
         response.raise_for_status()
         results = response.json()
 
         # Make the format consistent for if one or multiple NSs are provided
-        if len(selected_ns_ids)==1:
+        if len(selected_ns_ids) == 1:
             results = [results]
 
         # Loop through the NS results and merge into a single DataFrame with a column giving the NS code
@@ -55,7 +56,6 @@ class NSDocumentsDataset(Dataset):
         data = pd.concat(data_list, axis='rows')
 
         return data
-
 
     def process_data(self, data, latest=False):
         """
@@ -73,14 +73,18 @@ class NSDocumentsDataset(Dataset):
         data = data[['National Society ID', 'name', 'document_type', 'year', 'url']].reset_index(drop=True)
         ns_info_mapper = NSInfoMapper()
         for column in self.index_columns:
-            ns_id_mapped = ns_info_mapper.map(data=data['National Society ID'], map_from='National Society ID', map_to=column, errors='raise')\
-                                         .rename(column)
+            ns_id_mapped = ns_info_mapper.map(
+                data=data['National Society ID'],
+                map_from='National Society ID',
+                map_to=column,
+                errors='raise'
+            ).rename(column)
             data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
 
         # Keep only the latest document for each document type and NS
         data = data.dropna(subset=['National Society name', 'document_type', 'year'], how='any')\
-                             .sort_values(by=['National Society name', 'document_type'], ascending=True)\
-                             .rename(columns={'url': 'Value', 'document_type': 'Indicator', 'year': 'Year'})
+            .sort_values(by=['National Society name', 'document_type'], ascending=True)\
+            .rename(columns={'url': 'Value', 'document_type': 'Indicator', 'year': 'Year'})
         data['Indicator'] = data['Indicator'].str.strip()
 
         # Drop columns which are not needed

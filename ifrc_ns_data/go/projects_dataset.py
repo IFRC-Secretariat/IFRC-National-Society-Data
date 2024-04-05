@@ -21,7 +21,6 @@ class GOProjectsDataset(Dataset):
     def __init__(self):
         super().__init__(name='GO Projects')
 
-
     def pull_data(self, filters=None):
         """
         Read in data from the IFRC GO API and save to file.
@@ -62,7 +61,6 @@ class GOProjectsDataset(Dataset):
 
         return data
 
-
     def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
@@ -82,9 +80,11 @@ class GOProjectsDataset(Dataset):
 
         # Expand dict-type columns
         expand_columns = ['project_country_detail', 'dtype_detail', 'event_detail', 'reporting_ns_detail']
-        data = DictColumnExpander().clean(data=data,
-                                               columns=expand_columns,
-                                               drop=True)
+        data = DictColumnExpander().clean(
+            data=data,
+            columns=expand_columns,
+            drop=True
+        )
 
         # Convert the date type columns to pandas datetimes
         for column in ['start_date', 'end_date']:
@@ -92,13 +92,17 @@ class GOProjectsDataset(Dataset):
 
         # Keep only data with a NS specified
         data = data.rename(columns={'project_country_detail.society_name': 'National Society name'})\
-                             .dropna(subset=['National Society name'])
+            .dropna(subset=['National Society name'])
 
         # Clean NS names and add additional NS information
         data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
-        new_columns = [column for column in self.index_columns if column!='National Society name']
+        new_columns = [column for column in self.index_columns if column != 'National Society name']
         for column in new_columns:
-            data[column] = NSInfoMapper().map(data['National Society name'], map_from='National Society name', map_to=column)
+            data[column] = NSInfoMapper().map(
+                data['National Society name'],
+                map_from='National Society name',
+                map_to=column
+            )
 
         # Check all data is public, and select only ongoing projects
         if data['visibility'].unique() != ['public']:

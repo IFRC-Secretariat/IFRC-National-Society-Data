@@ -21,17 +21,17 @@ class ICRCPresenceDataset(Dataset):
     def __init__(self):
         super().__init__(name='ICRC Presence')
 
-
     def pull_data(self, filters=None):
         """
         Scrape data from the ICRC website at https://www.icrc.org/en/where-we-work.
-        
+
         Parameters
         ----------
         filters : dict (default=None)
             Filters to filter by country or by National Society.
             Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
-            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
+            Note that this is NOT IMPLEMENTED and is only included in this method to ensure
+            consistency with the parent class and other child classes.
         """
         # The data cannot be filtered from the API so raise a warning if filters are provided
         if (filters is not None) and (filters != {}):
@@ -61,8 +61,11 @@ class ICRCPresenceDataset(Dataset):
                         country_page = requests.get(url=url, headers={'User-Agent': ''})
                         country_page.raise_for_status()
                         country_soup = BeautifulSoup(country_page.content, 'html.parser')
-                        description = country_soup.find("div", {"class": "block-introduction"}).find_all()[2].text.strip()
-                    except Exception as err:
+                        description = country_soup\
+                            .find("div", {"class": "block-introduction"})\
+                            .find_all()[2]\
+                            .text.strip()
+                    except Exception:
                         pass
                 # Append all the information to the list
                 country_list.append({"Country": name,
@@ -71,9 +74,8 @@ class ICRCPresenceDataset(Dataset):
                                      "Key operation": key_operation,
                                      "Description": description})
         data = pd.DataFrame(country_list)
-        
-        return data
 
+        return data
 
     def process_data(self, data, latest=None):
         """
@@ -91,13 +93,13 @@ class ICRCPresenceDataset(Dataset):
         # Remove regional responses, check country names, then merge in other information
         data = data.loc[~data["Country"].isin(["Lake Chad", "Sahel"])]
         data["Country"] = NSInfoCleaner().clean_country_names(data["Country"])
-        new_columns = [column for column in self.index_columns if column!='Country']
+        new_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in new_columns:
             ns_id_mapped = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)\
-                                         .rename(column)
+                .rename(column)
             data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
-        
+
         # Reorder columns
         data = self.rename_columns(data, drop_others=True)
         data = self.order_index_columns(data)

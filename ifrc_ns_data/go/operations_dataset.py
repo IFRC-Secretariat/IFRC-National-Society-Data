@@ -16,7 +16,6 @@ class GOOperationsDataset(Dataset):
     def __init__(self):
         super().__init__(name='GO Operations')
 
-
     def pull_data(self, filters=None):
         """
         Read in data from the IFRC GO API.
@@ -57,7 +56,6 @@ class GOOperationsDataset(Dataset):
 
         return data
 
-
     def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
@@ -77,9 +75,11 @@ class GOOperationsDataset(Dataset):
 
         # Expand dict-type columns
         expand_columns = ['dtype', 'region', 'country']
-        data = DictColumnExpander().clean(data=data,
-                                               columns=expand_columns,
-                                               drop=True)
+        data = DictColumnExpander().clean(
+            data=data,
+            columns=expand_columns,
+            drop=True
+        )
 
         # Convert the date type columns to pandas datetimes
         for column in ['start_date', 'end_date']:
@@ -88,18 +88,22 @@ class GOOperationsDataset(Dataset):
 
         # Drop columns that aren't needed
         data = data.rename(columns={'country.society_name': 'National Society name'})\
-                             .dropna(subset=['National Society name'])\
-                             .drop(columns=['country.name'])
+            .dropna(subset=['National Society name'])\
+            .drop(columns=['country.name'])
 
         # Check the NS names, and merge in other information
-        data = data.loc[data['National Society name']!='']
+        data = data.loc[data['National Society name'] != '']
         data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
-        new_columns = [column for column in self.index_columns if column!='National Society name']
+        new_columns = [column for column in self.index_columns if column != 'National Society name']
         for column in new_columns:
-            data[column] = NSInfoMapper().map(data['National Society name'], map_from='National Society name', map_to=column)
+            data[column] = NSInfoMapper().map(
+                data['National Society name'],
+                map_from='National Society name',
+                map_to=column
+            )
 
         # Select only active operations
-        data = data.loc[data['status_display']=='Active']
+        data = data.loc[data['status_display'] == 'Active']
         data[['amount_funded', 'amount_requested']] = data[['amount_funded', 'amount_requested']].astype(float)
         data['funding'] = 100*(data['amount_funded']/data['amount_requested']).round(0)
 

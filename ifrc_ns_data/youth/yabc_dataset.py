@@ -21,7 +21,6 @@ class YABCDataset(Dataset):
             raise TypeError('Please specify a path to the IFRC Youth YABC dataset.')
         super().__init__(name='YABC', filepath=filepath, sheet_name=sheet_name)
 
-
     def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
@@ -46,11 +45,11 @@ class YABCDataset(Dataset):
         # Clean up the column names
         clean_columns = {column: column.strip() for column in data.columns}
         data = data.rename(columns=clean_columns, errors='raise')
-        data = data.loc[data['Country']!='TOTAL']
+        data = data.loc[data['Country'] != 'TOTAL']
 
         # Check that the NS names are consistent with the centralised names list
         data['Country'] = NSInfoCleaner().clean_country_names(data['Country'].str.strip())
-        extra_columns = [column for column in self.index_columns if column!='Country']
+        extra_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
             data[column] = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)

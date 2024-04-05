@@ -22,7 +22,6 @@ class DatabankNSIDMap:
     def __init__(self, api_key):
         self.api_key = api_key.strip()
 
-
     def get_map(self, reverse=False):
         """
         Get a map of National Society IDs from the NS Databank, to National Society names.
@@ -34,12 +33,16 @@ class DatabankNSIDMap:
         """
         # Pull the data from the databank API
         if DatabankNSIDMapper.api_response is None:
-            DatabankNSIDMapper.api_response = requests.get(url=f'https://data-api.ifrc.org/api/entities/ns?apiKey={self.api_key}')
+            DatabankNSIDMapper.api_response = requests.get(
+                url=f'https://data-api.ifrc.org/api/entities/ns?apiKey={self.api_key}'
+            )
             DatabankNSIDMapper.api_response.raise_for_status()
 
         # Get a map of NS IDs to NS names
-        ns_ids_names_map = pd.DataFrame(DatabankNSIDMapper.api_response.json()).set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
-        if reverse: ns_ids_names_map = {v: k for k, v in ns_ids_names_map.items()}
+        ns_ids_names_map = pd.DataFrame(DatabankNSIDMapper.api_response.json())\
+            .set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
+        if reverse:
+            ns_ids_names_map = {v: k for k, v in ns_ids_names_map.items()}
 
         return ns_ids_names_map
 
@@ -58,7 +61,6 @@ class DatabankNSIDMapper:
     def __init__(self, api_key):
         self.api_key = api_key.strip()
 
-
     def map(self, data, reverse=False, clean_names=False):
         """
         Convert National Society IDs from the NS Databank, to National Society names.
@@ -76,12 +78,16 @@ class DatabankNSIDMapper:
         """
         # Pull the data from the databank API
         if DatabankNSIDMapper.api_response is None:
-            DatabankNSIDMapper.api_response = requests.get(url=f'https://data-api.ifrc.org/api/entities/ns?apiKey={self.api_key}')
+            DatabankNSIDMapper.api_response = requests.get(
+                url=f'https://data-api.ifrc.org/api/entities/ns?apiKey={self.api_key}'
+            )
             DatabankNSIDMapper.api_response.raise_for_status()
 
         # Get a map of NS IDs to NS names
-        ns_ids_names_map = pd.DataFrame(DatabankNSIDMapper.api_response.json()).set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
-        if reverse: ns_ids_names_map = {v: k for k, v in ns_ids_names_map.items()}
+        ns_ids_names_map = pd.DataFrame(DatabankNSIDMapper.api_response.json())\
+            .set_index('KPI_DON_code')['NSO_DON_name'].to_dict()
+        if reverse:
+            ns_ids_names_map = {v: k for k, v in ns_ids_names_map.items()}
 
         # Try to detect and clean NS names and convert them to IDs
         unknown_ids = list(set(data).difference(ns_ids_names_map.keys()))
@@ -121,7 +127,6 @@ class NSInfoCleaner:
     def __init__(self):
         pass
 
-
     def clean(self, data, column, errors='raise'):
         """
         Compare the NS names in the provided data series to a known list of National Society names.
@@ -148,7 +153,10 @@ class NSInfoCleaner:
             data = [' '.join(item.split()) for item in data]
 
         # Map the list of known alternative names including country names to the main name
-        alternative_names = {'National Society name': 'Alternative National Society names', 'Country': 'Alternative country names'}
+        alternative_names = {
+            'National Society name': 'Alternative National Society names',
+            'Country': 'Alternative country names'
+        }
         if column not in alternative_names:
             raise ValueError(f'Unrecognised column name for cleaning {column}')
         alt_column = alternative_names[column]
@@ -169,17 +177,16 @@ class NSInfoCleaner:
         else:
             unrecognised_values = set(data).difference(set([ns[column] for ns in ns_info]))
         if unrecognised_values:
-            if errors=='ignore':
+            if errors == 'ignore':
                 pass
-            elif errors=='warn':
+            elif errors == 'warn':
                 warnings.warn(f'Unknown NS names in data: {unrecognised_values}')
-            elif errors=='raise':
+            elif errors == 'raise':
                 raise ValueError(f'Unknown NS names in data: {unrecognised_values}')
             else:
                 raise ValueError(f'Unrecognised values for parameter errors: {errors}')
 
         return data
-
 
     def clean_ns_names(self, data, errors='raise'):
         """
@@ -195,7 +202,6 @@ class NSInfoCleaner:
         """
         data = self.clean(data=data, column='National Society name', errors=errors)
         return data
-
 
     def clean_country_names(self, data, errors='raise'):
         """
@@ -220,7 +226,6 @@ class NSInfoMapper:
     def __init__(self):
         pass
 
-
     def map(self, data, map_from, map_to, errors='warn'):
         """
         Map NS information from one variable to another.
@@ -231,10 +236,12 @@ class NSInfoMapper:
             List or pandas Series to be mapped.
 
         map_from : string (required)
-            Name of the variable to map from. Can be one of ['National Society name', 'Country', 'ISO3', 'ISO2', 'Region', 'National Society ID']
+            Name of the variable to map from.
+            Can be one of ['National Society name', 'Country', 'ISO3', 'ISO2', 'Region', 'National Society ID']
 
         map_to : string (required)
-            Name of the column to map onto the data. Can be one of ['National Society name', 'Country', 'ISO3', 'ISO2', 'Region', 'National Society ID']
+            Name of the column to map onto the data.
+            Can be one of ['National Society name', 'Country', 'ISO3', 'ISO2', 'Region', 'National Society ID']
 
         errors : string (default='warn')
             What to do with errors: raise, warn, or ignore.
@@ -245,23 +252,33 @@ class NSInfoMapper:
 
         # Check if there are any unknown values
         if isinstance(data, pd.Series):
-            unknown_values = [value for value in data.dropna().unique() if (value==value) and (value.lower() not in ns_map)]
+            unknown_values = [
+                value
+                for value in data.dropna().unique()
+                if (value == value) and (value.lower() not in ns_map)
+            ]
         else:
             unknown_values = []
             for value in list(set(data)):
-                if (value!=value) or (value is None):
+                if (value != value) or (value is None):
                     continue
                 if value.lower() not in ns_map:
                     unknown_values.append(value)
         if unknown_values:
-            if errors=='ignore':
+            if errors == 'ignore':
                 pass
-            elif errors=='warn':
-                warnings.warn(f'Unknown {map_from} values in data will not be converted to {map_to}: {unknown_values}')
-            elif errors=='raise':
-                raise ValueError(f'Unknown {map_from} values in data will not be converted to {map_to}: {unknown_values}')
+            elif errors == 'warn':
+                warnings.warn(
+                    f'Unknown {map_from} values in data will not be converted to {map_to}: {unknown_values}'
+                )
+            elif errors == 'raise':
+                raise ValueError(
+                    f'Unknown {map_from} values in data will not be converted to {map_to}: {unknown_values}'
+                )
             else:
-                raise ValueError(f'Unrecognised values for parameter errors: {errors}')
+                raise ValueError(
+                    f'Unrecognised values for parameter errors: {errors}'
+                )
 
         # Map the NS names to the NS IDs in the provided data
         if isinstance(data, pd.Series):
@@ -270,7 +287,6 @@ class NSInfoMapper:
             mapped_data = [ns_map[item.lower()] if item.lower() in ns_map else item for item in data]
 
         return mapped_data
-
 
     def map_iso_to_ns(self, data, errors='ignore'):
         """
@@ -284,7 +300,6 @@ class NSInfoMapper:
         mapped_data = self.map(data=data, map_from='ISO3', map_to='National Society name', errors=errors)
         return mapped_data
 
-
     def map_nsid_to_ns(self, data, errors='raise'):
         """
         Map NS IDs to NS names.
@@ -296,7 +311,6 @@ class NSInfoMapper:
         """
         mapped_data = self.map(data=data, map_from='National Society ID', map_to='National Society name', errors=errors)
         return mapped_data
-
 
     def map_ns_to_nsid(self, data, clean=True, errors='raise'):
         """
@@ -313,7 +327,6 @@ class NSInfoMapper:
         mapped_data = self.map(data=data, map_from='National Society name', map_to='National Society ID', errors=errors)
 
         return mapped_data
-
 
     def map_country_to_ns(self, data, clean=True, errors='raise'):
         """
@@ -339,7 +352,6 @@ class DictColumnExpander:
     def __init__(self):
         pass
 
-
     def clean(self, data, columns, drop=False):
         """
         Expand the dict-type column into multiple columns
@@ -364,7 +376,9 @@ class DictColumnExpander:
 
         # Loop through the columns to expand, rename them, and append them to the original dataframe
         for column, drop_column in zip(columns, drop):
-            data[column] = data[column].apply(lambda x: x if x!=x else literal_eval(str(x)))
+            data[column] = data[column].apply(
+                lambda x: x if x != x else literal_eval(str(x))
+            )
             expanded_column = pd.json_normalize(data[column])
             expanded_column.rename(columns={dict_key: f'{column}.{dict_key}' for dict_key in expanded_column.columns},
                                    errors='raise',

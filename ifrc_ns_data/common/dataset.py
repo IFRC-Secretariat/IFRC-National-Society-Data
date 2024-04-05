@@ -7,6 +7,7 @@ import yaml
 from ifrc_ns_data.definitions import DATASETS_CONFIG_PATH
 from .national_societies_info import NationalSocietiesInfo
 
+
 class Dataset:
     """
     Dataset class to handle data, including to load, clean, and process data.
@@ -14,7 +15,8 @@ class Dataset:
     Parameters
     ----------
     filepath : string (default=None)
-        If reading from file, this is the location of the source file data. This is required for datasets which are not pulled from elsewhere (e.g. API).
+        If reading from file, this is the location of the source file data.
+        This is required for datasets which are not pulled from elsewhere (e.g. API).
 
     sheet_name : string (default=None)
         Required when the filepath is a path to an Excel document.
@@ -29,7 +31,7 @@ class Dataset:
                 if sheet_name is None:
                     raise ValueError('Excel file must have sheet_name specified')
             elif extension not in ['csv']:
-                raise ValueError(f'File specified in filepath must be Excel (xlsx or xls) or CSV (csv)')
+                raise ValueError('File specified in filepath must be Excel (xlsx or xls) or CSV (csv)')
         self.filepath = filepath
         self.sheet_name = sheet_name
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
@@ -38,7 +40,6 @@ class Dataset:
         dataset_info = yaml.safe_load(open(DATASETS_CONFIG_PATH, encoding='utf-8'))[self.name]
         for info in dataset_info:
             setattr(self, info.lower(), dataset_info[info])
-
 
     def get_data(self, latest=None, iso3=None, country=None, ns=None):
         """
@@ -70,7 +71,7 @@ class Dataset:
                 filters[name] = val
             else:
                 raise TypeError(f'{val} is not a list or string')
-                
+
         # Check all countries and NS names are valid
         if filters:
             ns_info = NationalSocietiesInfo()
@@ -80,7 +81,10 @@ class Dataset:
             for filter_name, val_list in filters.items():
                 unrecognised_values = [item for item in val_list if item not in check_values[filter_name]]
                 if unrecognised_values:
-                    raise ValueError(f'Unrecognised values {unrecognised_values}.\n\nThe allowed values are: {check_values[filter_name]}')
+                    raise ValueError(
+                        f'Unrecognised values {unrecognised_values}.\
+                        \n\nThe allowed values are: {check_values[filter_name]}'
+                    )
 
         # Get the data from file or API
         raw_data = self.load_source_data(filters)
@@ -98,11 +102,10 @@ class Dataset:
 
         return processed_data
 
-
     def load_source_data(self, filters=None):
         """
         Read in the data from the source: either as a CSV or Excel file from a given file path, or pull from an API.
-        
+
         Parameters
         ----------
         filters : dict (default=None)
@@ -111,7 +114,7 @@ class Dataset:
         # Read in the data from a CSV or Excel file
         if self.filepath is not None:
             extension = os.path.splitext(self.filepath)[1][1:]
-            if extension=='csv':
+            if extension == 'csv':
                 data = pd.read_csv(self.filepath)
             elif extension in ['xlsx', 'xls']:
                 data = pd.read_excel(self.filepath, sheet_name=self.sheet_name)
@@ -123,13 +126,11 @@ class Dataset:
 
         return data
 
-
     def pull_data(self):
         """
         Pull the data from an API.
         """
         raise NotImplementedError
-
 
     def process_data(self, data):
         """
@@ -141,7 +142,6 @@ class Dataset:
             Raw dataset to be processed.
         """
         raise NotImplementedError
-
 
     def rename_indicators(self, data, missing='raise'):
         """
@@ -159,8 +159,12 @@ class Dataset:
         rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators}
 
         # Raise an error if any indicators are missing from the dataset
-        if missing=='raise':
-            missing_indicators = [indicator for indicator in rename_indicators if indicator not in data['Indicator'].unique()]
+        if missing == 'raise':
+            missing_indicators = [
+                indicator
+                for indicator in rename_indicators
+                if indicator not in data['Indicator'].unique()
+            ]
             if missing_indicators:
                 raise KeyError(f"{missing_indicators} not found in dataset indicators")
 
@@ -169,7 +173,6 @@ class Dataset:
         data = data.loc[data['Indicator'].isin(rename_indicators.values())]
 
         return data
-
 
     def rename_columns(self, data, drop_others=False):
         """
@@ -181,7 +184,8 @@ class Dataset:
             Dataset to rename the columns of.
 
         drop_others : bool (default=False)
-            If True, then columns which are not index columns and which not in the dataset_info yml file will be dropped.
+            If True, then columns which are not index columns and which are
+            not in the dataset_info yml file will be dropped.
         """
         # Get a map of indicator current names to verbose names, and rename
         rename_columns = {column['source_name']: column['name'] for column in self.columns}
@@ -192,7 +196,6 @@ class Dataset:
             data = data[self.index_columns.copy()+list(rename_columns.values())]
 
         return data
-
 
     def order_index_columns(self, data, other_columns=None, drop_others=False):
         """
@@ -207,22 +210,22 @@ class Dataset:
             If not None, this will be used to order the other columns following the index columns.
 
         drop_others : bool (default=False)
-            If other_columns is not None and drop_others is True, drop columns which are not specified in other_columns or are index columns.
+            If other_columns is not None and drop_others is True, drop columns
+            which are not specified in other_columns or are index columns.
         """
         # Create a list giving the required order of columns
         columns_order = self.index_columns.copy()
         if other_columns is not None:
             columns_order += other_columns
             if not drop_others:
-                columns_order+=[column for column in data.columns if column not in columns_order]
+                columns_order += [column for column in data.columns if column not in columns_order]
         else:
-            columns_order+=[column for column in data.columns if column not in columns_order]
+            columns_order += [column for column in data.columns if column not in columns_order]
 
         # Order columns
         data = data[columns_order]
 
         return data
-
 
     def filter_latest_indicators(self, data):
         """
@@ -234,8 +237,9 @@ class Dataset:
             Dataset to filter.
         """
         # Keep only the latest values for each indicator: keep the smallest value if there are duplicates
-        data = data.sort_values(by=['Year', 'Value'], ascending=[False, True])\
-                    .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
-                    .sort_values(by=['National Society name', 'Indicator'], ascending=True)
+        data = data\
+            .sort_values(by=['Year', 'Value'], ascending=[False, True])\
+            .drop_duplicates(subset=['National Society name', 'Indicator'], keep='first')\
+            .sort_values(by=['National Society name', 'Indicator'], ascending=True)
 
         return data

@@ -22,7 +22,6 @@ class LogisticsProjectsDataset(Dataset):
         super().__init__(name='Logistics Projects', filepath=filepath, sheet_name=sheet_name)
         pass
 
-
     def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
@@ -44,7 +43,7 @@ class LogisticsProjectsDataset(Dataset):
 
         # Clean the country column and map on extra information
         data['Country'] = NSInfoCleaner().clean_country_names(data['Country'])
-        extra_columns = [column for column in self.index_columns if column!='Country']
+        extra_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
             data[column] = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)

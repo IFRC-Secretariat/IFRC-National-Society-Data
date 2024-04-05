@@ -27,7 +27,6 @@ class OCACDataset(Dataset):
                 '(there is not yet an API).')
         super().__init__(name='OCAC', filepath=filepath, sheet_name=sheet_name)
 
-
     def process_data(self, data, latest=False):
         """
         Transform and process the data, including changing the structure and selecting columns.
@@ -44,20 +43,32 @@ class OCACDataset(Dataset):
         data = data.rename(columns={'Name': 'Indicator'})
         data.loc[data['Indicator'].isnull(), 'Indicator'] = data['Code']
         data['Indicator'] = data['Indicator'].str.strip()
-        data = data.drop(columns=['Code'])\
-                             .set_index(['Indicator'])\
-                             .dropna(how='all')\
-                             .transpose()\
-                             .drop(columns=['iso', 'Region', 'SubRegion', 'Month', 'Version', 'Principal facilitator', 'Second facilitator', 'NS Focal point', 'OCAC data public', 'OCAC report public'], errors='ignore')\
-                             .reset_index(drop=True)\
-                             .rename(columns={'National Society': 'National Society name'})
+        data = data\
+            .drop(columns=['Code'])\
+            .set_index(['Indicator'])\
+            .dropna(how='all')\
+            .transpose()\
+            .drop(
+                columns=[
+                    'iso', 'Region', 'SubRegion', 'Month', 'Version',
+                    'Principal facilitator', 'Second facilitator',
+                    'NS Focal point', 'OCAC data public', 'OCAC report public'
+                ],
+                errors='ignore'
+            )\
+            .reset_index(drop=True)\
+            .rename(columns={'National Society': 'National Society name'})
 
         # Check that the NS names are consistent with the centralised names list, and add extra information
         data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
-        extra_columns = [column for column in self.index_columns if column!='National Society name']
+        extra_columns = [column for column in self.index_columns if column != 'National Society name']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            data[column] = ns_info_mapper.map(data=data['National Society name'], map_from='National Society name', map_to=column)
+            data[column] = ns_info_mapper.map(
+                data=data['National Society name'],
+                map_from='National Society name',
+                map_to=column
+            )
 
         # Convert data types
         data['Year'] = pd.to_numeric(data['Year'], errors='raise')
@@ -87,7 +98,6 @@ class OCACAssessmentDatesDataset(Dataset):
         super().__init__(name='OCAC Assessment Dates')
         self.api_key = api_key.strip()
 
-
     def pull_data(self, filters=None):
         """
         Read in raw data from the OCAC Assessments Dates API from the NS databank.
@@ -97,7 +107,8 @@ class OCACAssessmentDatesDataset(Dataset):
         filters : dict (default=None)
             Filters to filter by country or by National Society.
             Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
-            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
+            Note that this is NOT IMPLEMENTED and is only included in this method to ensure
+            consistency with the parent class and other child classes.
         """
         # The data cannot be filtered from the API so raise a warning if filters are provided
         if (filters is not None) and (filters != {}):
@@ -112,7 +123,6 @@ class OCACAssessmentDatesDataset(Dataset):
         data = pd.DataFrame(results)
 
         return data
-
 
     def process_data(self, data, latest=False):
         """
@@ -129,8 +139,12 @@ class OCACAssessmentDatesDataset(Dataset):
         # Use the NS code to add other NS information
         ns_info_mapper = NSInfoMapper()
         for column in self.index_columns:
-            ns_id_mapped = ns_info_mapper.map(data=data['NsId'], map_from='National Society ID', map_to=column, errors='raise')\
-                                         .rename(column)
+            ns_id_mapped = ns_info_mapper.map(
+                data=data['NsId'],
+                map_from='National Society ID',
+                map_to=column,
+                errors='raise'
+            ).rename(column)
             data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
         data = data.drop(columns=['NsId', 'NsName'])
 

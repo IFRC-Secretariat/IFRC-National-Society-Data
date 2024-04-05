@@ -19,9 +19,8 @@ class DataCollector:
     """
     def __init__(self):
         self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH, encoding='utf-8'))
-        archived_datasets = ['UNDP Human Development'] # Archived because the API has stopped working
+        archived_datasets = ['UNDP Human Development']  # Archived because the API has stopped working
         self.dataset_names = [name for name in self.datasets_info if name not in archived_datasets]
-
 
     def get_data(self, datasets=None, dataset_args=None, iso3=None, country=None, ns=None, filters=None, latest=None):
         """
@@ -33,8 +32,10 @@ class DataCollector:
             List of names of datasets to return. If None, all datasets are returned.
 
         dataset_args : dict (default=None)
-            Arguments that need to be passed to each dataset class, e.g. API key or filepath. Note that if no arguments are required for a datset then this does not need to be provided.
-            Should be a dict with keys as dataset names, and values a dict with arguments required for the dataset class.
+            Arguments that need to be passed to each dataset class, e.g. API key or filepath. Note that if no arguments
+            are required for a datset then this does not need to be provided.
+            Should be a dict with keys as dataset names, and values a dict with arguments required for the dataset
+            class.
             E.g. {'FDRS': {'api_key': 'xxxxxx'}, 'OCAC': {'filepath': 'ocac_data.xlsx', 'sheet_name': 'Sheet1'}}
 
         iso3 : string or list (default=None)
@@ -47,7 +48,8 @@ class DataCollector:
             String or list of National Society names to filter the dataset.
 
         filters : dict (default=None)
-            Filters to apply to the datasets list, e.g. {'format': 'indicators'} to get all indicator datasets, or {'privacy': 'public'} to get all public datasets.
+            Filters to apply to the datasets list, e.g. {'format': 'indicators'} to get all indicator datasets, or
+            {'privacy': 'public'} to get all public datasets.
             Note that if datasets is also provided, it will be filtered by this filter.
 
         latest : bool (default=None)
@@ -57,7 +59,8 @@ class DataCollector:
         Returns
         -------
         dataset_instances : list of Dataset objects
-            List of Dataset objects. The attribute 'data' is a pandas DataFrame containing the data. Other attributes contain information about the dataset such as source, focal_point, and privacy.
+            List of Dataset objects. The attribute 'data' is a pandas DataFrame containing the data. Other attributes
+            contain information about the dataset such as source, focal_point, and privacy.
         """
         # Validate the provided dataset names, or set to all
         if datasets is not None:
@@ -87,7 +90,10 @@ class DataCollector:
             for filter_name, val_list in country_filters.items():
                 unrecognised_values = [item for item in val_list if item not in check_values[filter_name]]
                 if unrecognised_values:
-                    raise ValueError(f'Unrecognised values {unrecognised_values}.\n\nThe allowed values are: {check_values[filter_name]}')
+                    raise ValueError(
+                        f'Unrecognised values {unrecognised_values}.\n\n\
+                        The allowed values are: {check_values[filter_name]}'
+                    )
 
         # Deal with filters
         if (filters is not None) and (filters != {}):
@@ -107,7 +113,7 @@ class DataCollector:
                 dataset_info = self.datasets_info[dataset_name]
                 if any(filter not in dataset_info for filter in filters):
                     continue
-                if all(dataset_info[filter]==filters[filter] for filter in filters):
+                if all(dataset_info[filter] == filters[filter] for filter in filters):
                     filtered_datasets.append(dataset_name)
 
         else:
@@ -119,9 +125,11 @@ class DataCollector:
                                                    dataset_args=dataset_args)
 
         # Load the data from the source and process
-        names_params = {'ISO3': 'iso3', 
-                        'Country': 'country', 
-                        'National Society name': 'ns'}
+        names_params = {
+            'ISO3': 'iso3',
+            'Country': 'country',
+            'National Society name': 'ns'
+        }
         country_filters = {names_params[name]: country_filters[name] for name in country_filters}
         for dataset in dataset_instances:
             print(f'Getting {dataset.name} data...')
@@ -129,12 +137,13 @@ class DataCollector:
 
         return dataset_instances
 
-
     def get_indicators_data(self, datasets=None, dataset_args=None, filters=None, latest=None, quantitative=None):
         """
         Get a dataset in indicators format of data on National Societies.
-        Indicator format contains columns about the National Society/ country, an indicator name, the indicator value, the year, and optionally a description and URL.
-        This includes whole datasets which are already in "indicator" format (e.g. the FDRS dataset), or parts of other datasets, such as ICRC presence.
+        Indicator format contains columns about the National Society/ country, an indicator name, the indicator value,
+        the year, and optionally a description and URL.
+        This includes whole datasets which are already in "indicator" format (e.g. the FDRS dataset), or parts of other
+        datasets, such as ICRC presence.
 
         Parameters
         ----------
@@ -142,8 +151,10 @@ class DataCollector:
             List of names of datasets to return. If None, all datasets are returned.
 
         dataset_args : dict (default=None)
-            Arguments that need to be passed to each dataset class, e.g. API key or filepath. Note that if no arguments are required for a datset then this does not need to be provided.
-            Should be a dict with keys as dataset names, and values a dict with arguments required for the dataset class.
+            Arguments that need to be passed to each dataset class, e.g. API key or filepath. Note that if no arguments
+            are required for a datset then this does not need to be provided.
+            Should be a dict with keys as dataset names, and values a dict with arguments required for the dataset
+            class.
             E.g. {'FDRS': {'api_key': 'xxxxxx'}, 'OCAC': {'filepath': 'ocac_data.xlsx', 'sheet_name': 'Sheet1'}}
 
         latest : bool (default=None)
@@ -151,18 +162,27 @@ class DataCollector:
             For datasets where this is not valid the whole dataset is returned and a warning is printed.
 
         quantitative : bool (default=None)
-            If True, only return quantitative data (some datasets contain a mix of qualitative and quantitative indicators so this cannot be filtered at dataset-level).
+            If True, only return quantitative data (some datasets contain a mix of qualitative and quantitative
+            indicators so this cannot be filtered at dataset-level).
         """
         # Get each dataset and turn into indicator-format
-        indicator_datasets = ["NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "BOCA Assessment Dates", "World Development Indicators", "INFORM Risk", "ICRC Presence", "IFRC Disaster Law", "Corruption Perception Index", "Youth Engagement"]
+        indicator_datasets = [
+            "NS Contacts", "FDRS", "NS Documents", "OCAC Assessment Dates", "BOCA Assessment Dates",
+            "World Development Indicators", "INFORM Risk", "ICRC Presence", "IFRC Disaster Law",
+            "Corruption Perception Index", "Youth Engagement"
+        ]
         indicator_datasets_lower = [dataset.lower() for dataset in indicator_datasets]
-        column_names = ['National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Value', 'Year', 'Description', 'URL']
+        column_names = [
+            'National Society name', 'Country', 'ISO3', 'Region', 'Indicator', 'Value', 'Year', 'Description', 'URL'
+        ]
         if datasets is None:
             datasets = indicator_datasets
         else:
             invalid_datasets = [dataset for dataset in datasets if dataset.lower() not in indicator_datasets_lower]
             if invalid_datasets:
-                warnings.warn(f'Dropping datasets {invalid_datasets} because they cannot be formatted in indcator format.')
+                warnings.warn(
+                    f'Dropping datasets {invalid_datasets} because they cannot be formatted in indcator format.'
+                )
                 datasets = [dataset for dataset in datasets if dataset.lower() in indicator_datasets_lower]
 
         # Initiate the dataset classes for these datasets and get data
@@ -190,8 +210,10 @@ class DataCollector:
 
             # BOCA assessment dates
             elif dataset.name == 'BOCA Assessment Dates':
-                dataset.data = dataset.data.groupby(['National Society name', 'Country', 'ISO3', 'Region'])['Assessment code'].count().reset_index()
-                dataset.data = dataset.data.rename(columns={'Assessment code': 'Value'})
+                dataset.data = dataset.data\
+                    .groupby(['National Society name', 'Country', 'ISO3', 'Region'])['Assessment code'].count()\
+                    .reset_index()\
+                    .rename(columns={'Assessment code': 'Value'})
                 dataset.data['Indicator'] = 'Number of BOCA assessments'
                 dataset.data['Year'] = None
 
@@ -217,12 +239,14 @@ class DataCollector:
 
             # Youth engagement
             elif dataset.name == 'Youth Engagement':
-                dataset.data = pd.melt(dataset.data, 
-                                       id_vars=['National Society name', 'Country', 'ISO3', 'Region', 'Year'],
-                                       value_vars=['Youth Policy', 'Youth Engagement Strategy', 'Youth in GB', 'Youth-led structure'],
-                                       var_name='Indicator',
-                                       value_name='Value',
-                                       ignore_index=True)
+                dataset.data = pd.melt(
+                    dataset.data,
+                    id_vars=['National Society name', 'Country', 'ISO3', 'Region', 'Year'],
+                    value_vars=['Youth Policy', 'Youth Engagement Strategy', 'Youth in GB', 'Youth-led structure'],
+                    var_name='Indicator',
+                    value_name='Value',
+                    ignore_index=True
+                )
                 dataset.data['URL'] = 'https://volunteeringredcross.org/en/global-youth-survey-en/'
 
             else:
@@ -237,24 +261,28 @@ class DataCollector:
             if set(dataset.data.columns) != set(column_names):
                 extra_columns = [column for column in dataset.data.columns if column not in column_names]
                 missing_columns = [column for column in column_names if column not in dataset.data.columns]
-                raise ValueError(f'Columns of dataset {dataset.name} do not match the indicator format. Extra columns: {extra_columns}. Missing columns: {missing_columns}')
+                raise ValueError(
+                    f'Columns of dataset {dataset.name} do not match the indicator format.\
+                    Extra columns: {extra_columns}.\
+                    Missing columns: {missing_columns}'
+                )
             dataset.data['Dataset'] = dataset.name
             indicator_data = pd.concat([dataset.data for dataset in dataset_instances])
 
         # Tidy: sort columns, sort rows
         indicator_data = indicator_data[column_names+['Dataset']]
-        indicator_data = indicator_data.sort_values(by=['Dataset', 'National Society name', 'Indicator', 'Year', 'Value'])\
-                                        .reset_index(drop=True)
+        indicator_data = indicator_data\
+            .sort_values(by=['Dataset', 'National Society name', 'Indicator', 'Year', 'Value'])\
+            .reset_index(drop=True)
 
         # Filter for only quantitative data or only qualitative data
-        if quantitative==True:
+        if quantitative is True:
             indicator_data = indicator_data.loc[indicator_data['Value'].astype(str).str.isnumeric()]
             indicator_data['Value'] = indicator_data['Value'].astype(float)
-        elif quantitative==False:
+        elif quantitative is False:
             indicator_data = indicator_data.loc[~indicator_data['Value'].astype(str).str.isnumeric()]
 
         return indicator_data
-
 
     def validate_dataset_names(self, datasets):
         """
@@ -267,12 +295,14 @@ class DataCollector:
         if datasets is not None:
             for dataset in datasets:
                 if dataset.lower().strip() not in available_datasets:
-                    warnings.warn(f'Dataset {dataset} not recognised, skipping. Dataset options are: {list(self.datasets_info.keys())}')
+                    warnings.warn(
+                        f'Dataset {dataset} not recognised, skipping.\
+                        Dataset options are: {list(self.datasets_info.keys())}'
+                    )
                 else:
                     valid_datasets.append(case_map[dataset.lower().strip()])
 
         return valid_datasets
-
 
     def initiate_datasets(self, datasets=None, dataset_args=None):
         """
@@ -284,8 +314,10 @@ class DataCollector:
             List of names of datasets to return. If None, all datasets are returned.
 
         dataset_args : dict (default=None)
-            Arguments that need to be passed to each dataset class, e.g. API key or filepath. Note that if no arguments are required for a datset then this does not need to be provided.
-            Should be a dict with keys as dataset names, and values a dict with arguments required for the dataset class.
+            Arguments that need to be passed to each dataset class, e.g. API key or filepath. Note that if
+            no arguments are required for a datset then this does not need to be provided.
+            Should be a dict with keys as dataset names, and values a dict with arguments required for the
+            dataset class.
             E.g. {'FDRS': {'api_key': 'xxxxxx'}, 'OCAC': {'filepath': 'ocac_data.xlsx', 'sheet_name': 'Sheet1'}}
         """
         # Lowercase all provided arguments

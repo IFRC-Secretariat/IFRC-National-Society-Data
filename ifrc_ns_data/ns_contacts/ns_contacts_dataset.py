@@ -23,11 +23,10 @@ class NSContactsDataset(Dataset):
         super().__init__(name='NS Contacts')
         self.api_key = api_key.strip()
 
-
     def pull_data(self, filters=None):
         """
         Read in data from the NS Databank API and save to file, or read in as a CSV file from the given filepath.
-        
+
         Parameters
         ----------
         filters : dict (default=None)
@@ -41,12 +40,13 @@ class NSContactsDataset(Dataset):
         selected_ns_ids = [ns['National Society ID'] for ns in selected_ns if ns['National Society ID'] is not None]
 
         # Pull data from FDRS API
-        response = requests.get(url=f'https://data-api.ifrc.org/api/entities/ns/?{",".join(selected_ns_ids)}&apiKey={self.api_key}')
+        response = requests.get(
+            url=f'https://data-api.ifrc.org/api/entities/ns/?{",".join(selected_ns_ids)}&apiKey={self.api_key}'
+        )
         response.raise_for_status()
         data = pd.DataFrame(response.json())
 
         return data
-
 
     def process_data(self, data, latest=None):
         """
@@ -74,7 +74,11 @@ class NSContactsDataset(Dataset):
 
         # Melt into indicator format
         data = pd.melt(data,
-                       id_vars=self.index_columns, value_vars=[column for column in data.columns if column not in self.index_columns],
+                       id_vars=self.index_columns, value_vars=[
+                           column
+                           for column in data.columns
+                           if column not in self.index_columns
+                        ],
                        var_name="Indicator",
                        value_name="Value")
         data['Year'] = ''

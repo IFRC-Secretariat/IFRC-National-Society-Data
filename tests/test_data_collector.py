@@ -13,16 +13,18 @@ class TestAllData(unittest.TestCase):
         self.fdrs_api_key = os.environ.get('FDRS_PUBLIC_API_KEY')
         self.data_collector = ifrc_ns_data.DataCollector()
         test_datasets_path = os.path.join(ROOT_DIR, 'tests', 'data')
-        self.dataset_args = {'FDRS': {'api_key': self.fdrs_api_key},
-                             'NS Contacts': {'api_key': self.fdrs_api_key},
-                             'NS Documents': {'api_key': self.fdrs_api_key},
-                             'Statutes': {'filepath': os.path.join(test_datasets_path, 'statutes.csv')},
-                             'Recognition laws': {'filepath': os.path.join(test_datasets_path, 'recognition_laws.csv')},
-                             'Logistics projects': {'filepath': os.path.join(test_datasets_path, 'logistics_projects.csv')},
-                             'OCAC': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
-                             'OCAC assessment dates': {'api_key': self.fdrs_api_key},
-                             'BOCA assessment dates': {'api_key': self.fdrs_api_key},
-                             'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}}
+        self.dataset_args = {
+            'FDRS': {'api_key': self.fdrs_api_key},
+            'NS Contacts': {'api_key': self.fdrs_api_key},
+            'NS Documents': {'api_key': self.fdrs_api_key},
+            'Statutes': {'filepath': os.path.join(test_datasets_path, 'statutes.csv')},
+            'Recognition laws': {'filepath': os.path.join(test_datasets_path, 'recognition_laws.csv')},
+            'Logistics projects': {'filepath': os.path.join(test_datasets_path, 'logistics_projects.csv')},
+            'OCAC': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
+            'OCAC assessment dates': {'api_key': self.fdrs_api_key},
+            'BOCA assessment dates': {'api_key': self.fdrs_api_key},
+            'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}
+        }
         self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
 
     def test_get_data(self):
@@ -51,8 +53,10 @@ class TestAllData(unittest.TestCase):
         Test getting data for only one country, filtering by ISO3.
         """
         # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, 
-                                                    iso3='AFG')
+        all_datasets = self.data_collector.get_data(
+            dataset_args=self.dataset_args,
+            iso3='AFG'
+        )
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
@@ -63,8 +67,10 @@ class TestAllData(unittest.TestCase):
         Test getting data for only one country, filtering by country name.
         """
         # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, 
-                                                    country='Afghanistan')
+        all_datasets = self.data_collector.get_data(
+            dataset_args=self.dataset_args,
+            country='Afghanistan'
+        )
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
@@ -75,8 +81,10 @@ class TestAllData(unittest.TestCase):
         Test getting data for only one country, filtering by National Society name.
         """
         # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, 
-                                                    ns='Afghan Red Crescent')
+        all_datasets = self.data_collector.get_data(
+            dataset_args=self.dataset_args,
+            ns='Afghan Red Crescent'
+        )
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
@@ -87,8 +95,10 @@ class TestAllData(unittest.TestCase):
         Test getting data for multiple countries, filtering by ISO3.
         """
         # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, 
-                                                    iso3=['AFG', 'ZWE'])
+        all_datasets = self.data_collector.get_data(
+            dataset_args=self.dataset_args,
+            iso3=['AFG', 'ZWE']
+        )
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
@@ -99,8 +109,10 @@ class TestAllData(unittest.TestCase):
         Test getting data for multiple countries, filtering by country name.
         """
         # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, 
-                                                    country=['Afghanistan', 'Zimbabwe'])
+        all_datasets = self.data_collector.get_data(
+            dataset_args=self.dataset_args,
+            country=['Afghanistan', 'Zimbabwe']
+        )
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
@@ -111,31 +123,39 @@ class TestAllData(unittest.TestCase):
         Test getting data for multiple countries, filtering by National Society name.
         """
         # Get country data for all datasets
-        all_datasets = self.data_collector.get_data(dataset_args=self.dataset_args, 
-                                                    ns=['Afghan Red Crescent', 'Zimbabwe Red Cross Society'])
+        all_datasets = self.data_collector.get_data(
+            dataset_args=self.dataset_args,
+            ns=['Afghan Red Crescent', 'Zimbabwe Red Cross Society']
+        )
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
-            self.assertEqual(sorted(dataset.data['National Society name'].unique()), ['Afghan Red Crescent', 'Zimbabwe Red Cross Society'])
+            self.assertEqual(
+                sorted(dataset.data['National Society name'].unique()),
+                ['Afghan Red Crescent', 'Zimbabwe Red Cross Society']
+            )
 
 
 class TestIndicatorData(unittest.TestCase):
     def setUp(self):
         self.index_columns = ['National Society name', 'Country', 'ISO3', 'Region']
-        self.indicator_dataset_columns = self.index_columns+['Indicator', 'Value', 'Year', 'Description', 'URL', 'Dataset']
+        self.indicator_dataset_columns = self.index_columns +\
+            ['Indicator', 'Value', 'Year', 'Description', 'URL', 'Dataset']
         self.fdrs_api_key = os.environ.get('FDRS_PUBLIC_API_KEY')
         self.data_collector = ifrc_ns_data.DataCollector()
         test_datasets_path = os.path.join(ROOT_DIR, 'tests', 'data')
-        self.dataset_args = {'FDRS': {'api_key': self.fdrs_api_key},
-                             'NS Contacts': {'api_key': self.fdrs_api_key},
-                             'NS Documents': {'api_key': self.fdrs_api_key},
-                             'Statutes': {'filepath': os.path.join(test_datasets_path, 'statutes.csv')},
-                             'Recognition laws': {'filepath': os.path.join(test_datasets_path, 'recognition_laws.csv')},
-                             'Logistics projects': {'filepath': os.path.join(test_datasets_path, 'logistics_projects.csv')},
-                             'OCAC': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
-                             'OCAC assessment dates': {'api_key': self.fdrs_api_key},
-                             'BOCA assessment dates': {'api_key': self.fdrs_api_key},
-                             'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}}
+        self.dataset_args = {
+            'FDRS': {'api_key': self.fdrs_api_key},
+            'NS Contacts': {'api_key': self.fdrs_api_key},
+            'NS Documents': {'api_key': self.fdrs_api_key},
+            'Statutes': {'filepath': os.path.join(test_datasets_path, 'statutes.csv')},
+            'Recognition laws': {'filepath': os.path.join(test_datasets_path, 'recognition_laws.csv')},
+            'Logistics projects': {'filepath': os.path.join(test_datasets_path, 'logistics_projects.csv')},
+            'OCAC': {'filepath': os.path.join(test_datasets_path, 'ocac.csv')},
+            'OCAC assessment dates': {'api_key': self.fdrs_api_key},
+            'BOCA assessment dates': {'api_key': self.fdrs_api_key},
+            'YABC': {'filepath': os.path.join(test_datasets_path, 'yabc.csv')}
+        }
         self.datasets_info = yaml.safe_load(open(DATASETS_CONFIG_PATH))
 
     def test_get_indicator_data(self):
@@ -153,7 +173,10 @@ class TestIndicatorData(unittest.TestCase):
         Test getting all the indicator data.
         """
         # Get the indicator data filtered by privacy public
-        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args, filters={'privacy': 'public'})
+        indicator_dataset = self.data_collector.get_indicators_data(
+            dataset_args=self.dataset_args,
+            filters={'privacy': 'public'}
+        )
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
 
@@ -166,8 +189,10 @@ class TestIndicatorData(unittest.TestCase):
         Test getting the latest indicator data, only returning the latest result for each NS/ indicator.
         """
         # Get the indicator data and check the return is a non-empty pandas DataFrame
-        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args,
-                                                                          latest=True)
+        indicator_dataset = self.data_collector.get_indicators_data(
+            dataset_args=self.dataset_args,
+            latest=True
+        )
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
 
@@ -180,15 +205,19 @@ class TestIndicatorData(unittest.TestCase):
         Test getting the merged indicator data, but filtered by quantitative only.
         """
         # Get the indicator data and check the return value is numeric
-        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args,
-                                                                          quantitative=True)
+        indicator_dataset = self.data_collector.get_indicators_data(
+            dataset_args=self.dataset_args,
+            quantitative=True
+        )
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
         self.assertEqual(indicator_dataset['Value'].dtype, np.float64)
 
         # Get the indicator data and check the return value is numeric
-        indicator_dataset = self.data_collector.get_indicators_data(dataset_args=self.dataset_args,
-                                                                          quantitative=False)
+        indicator_dataset = self.data_collector.get_indicators_data(
+            dataset_args=self.dataset_args,
+            quantitative=False
+        )
         self.assertTrue(isinstance(indicator_dataset, pd.DataFrame))
         self.assertFalse(indicator_dataset.empty)
         self.assertEqual(indicator_dataset['Value'].dtype, 'object')

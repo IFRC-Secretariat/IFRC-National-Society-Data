@@ -19,7 +19,6 @@ class HumanDevelopmentDataset(Dataset):
     def __init__(self):
         super().__init__(name='UNDP Human Development')
 
-
     def pull_data(self):
         """
         Pull data from the UNDP Human Development API and save to file.
@@ -27,14 +26,17 @@ class HumanDevelopmentDataset(Dataset):
         # Pull the data for each indicator
         data = pd.DataFrame()
         for indicator in self.indicators:
-            response = requests.get(url=f'http://ec2-54-174-131-205.compute-1.amazonaws.com/API/HDRO_API.php/indicator_id={indicator["source_name"]}')
+            response = requests.get(
+                url=f'http://ec2-54-174-131-205.compute-1.amazonaws.com/API/HDRO_API.php/indicator_id=\
+                    {indicator["source_name"]}'
+            )
             response.raise_for_status()
 
             # Unnest the data from the API into a tabular format
             indicator_data = pd.DataFrame(response.json()['indicator_value'])\
-                                         .reset_index()\
-                                         .rename(columns={'index': 'Indicator'})\
-                                         .melt(id_vars='Indicator', var_name='iso3')
+                .reset_index()\
+                .rename(columns={'index': 'Indicator'})\
+                .melt(id_vars='Indicator', var_name='iso3')
             indicator_data = pd.concat([indicator_data.drop(columns=['value']),
                                         pd.json_normalize(indicator_data['value'])], axis=1)
 
@@ -42,7 +44,6 @@ class HumanDevelopmentDataset(Dataset):
             data = pd.concat([data, indicator_data])
 
         return data
-
 
     def process_data(self, data, latest=False):
         """
@@ -58,10 +59,14 @@ class HumanDevelopmentDataset(Dataset):
         """
         # Map ISO3 codes to NS names, and add extra columns
         data['National Society name'] = NSInfoMapper().map_iso_to_ns(data=data['iso3'])
-        extra_columns = [column for column in self.index_columns if column!='National Society name']
+        extra_columns = [column for column in self.index_columns if column != 'National Society name']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
-            data[column] = ns_info_mapper.map(data=data['National Society name'], map_from='National Society name', map_to=column)
+            data[column] = ns_info_mapper.map(
+                data=data['National Society name'],
+                map_from='National Society name',
+                map_to=column
+            )
 
         # Melt the data into a log format
         data = data.drop(columns=['iso3'])\

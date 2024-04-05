@@ -22,7 +22,6 @@ class StatutesDataset(Dataset):
             raise TypeError('Please specify a path to the National Society statutes dataset.')
         super().__init__(name='Statutes', filepath=filepath, sheet_name=sheet_name)
 
-
     def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
@@ -45,13 +44,16 @@ class StatutesDataset(Dataset):
         data = data.dropna(how='all')
 
         # Clean up the column names
-        clean_columns = {column: re.sub(r'^\d.', "", column.strip()).strip().replace('\n', ' ') for column in data.columns}
+        clean_columns = {
+            column: re.sub(r'^\d.', "", column.strip()).strip().replace('\n', ' ')
+            for column in data.columns
+        }
         data.rename(columns=clean_columns, inplace=True, errors='raise')
         data.rename(columns={'National Society (NS)': 'Country'}, inplace=True, errors='raise')
 
         # Add in other NS information
         data['Country'] = NSInfoCleaner().clean_country_names(data=data['Country'])
-        extra_columns = [column for column in self.index_columns if column!='Country']
+        extra_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
             data[column] = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)

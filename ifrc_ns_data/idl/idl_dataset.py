@@ -21,17 +21,17 @@ class IFRCDisasterLawDataset(Dataset):
     def __init__(self):
         super().__init__(name='IFRC Disaster Law')
 
-
     def pull_data(self, filters=None):
         """
         Scrape data from the IFRC Disaster Law website at https://disasterlaw.ifrc.org/where-we-work.
-        
+
         Parameters
         ----------
         filters : dict (default=None)
             Filters to filter by country or by National Society.
             Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
-            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
+            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency
+            with the parent class and other child classes.
         """
         # The data cannot be filtered from the API so raise a warning if filters are provided
         if (filters is not None) and (filters != {}):
@@ -47,7 +47,7 @@ class IFRCDisasterLawDataset(Dataset):
             try:
                 country_options = soup.find("select", {"data-drupal-selector": "edit-country"})\
                                 .find_all("option")
-            except Exception as err:
+            except Exception:
                 continue
 
             # Loop through countries and get information
@@ -66,17 +66,18 @@ class IFRCDisasterLawDataset(Dataset):
                     description = country_soup.find("div", {"class": "field--name-field-paragraphs"})\
                                               .find_all("p")
                     description = "\n".join([para.text for para in description])
-                except Exception as err:
+                except Exception:
                     pass
                 # Add all information to the country list
-                country_list.append({"Country": country_name,
-                                    "ID": country_id,
-                                    "URL": country_url,
-                                    "Description": description})
+                country_list.append({
+                    "Country": country_name,
+                    "ID": country_id,
+                    "URL": country_url,
+                    "Description": description
+                })
         data = pd.DataFrame(country_list)
 
         return data
-
 
     def process_data(self, data, latest=None):
         """
@@ -93,7 +94,7 @@ class IFRCDisasterLawDataset(Dataset):
 
         # Remove regional responses, check country names, then merge in other information
         data["Country"] = NSInfoCleaner().clean_country_names(data["Country"])
-        new_columns = [column for column in self.index_columns if column!='Country']
+        new_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in new_columns:
             ns_id_mapped = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)\

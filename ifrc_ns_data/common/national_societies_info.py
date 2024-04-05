@@ -22,8 +22,10 @@ class NationalSocietiesInfo:
 
     def __init__(self):
         if NationalSocietiesInfo.data is None:
-            NationalSocietiesInfo.data = yaml.safe_load(open(os.path.join(ROOT_DIR, 'ifrc_ns_data', 'common', 'national_societies_info.yml'), encoding='utf-8'))
-
+            NationalSocietiesInfo.data = yaml.safe_load(open(
+                    os.path.join(ROOT_DIR, 'ifrc_ns_data', 'common', 'national_societies_info.yml'),
+                    encoding='utf-8'
+            ))
 
     @property
     def ns_list(self):
@@ -33,7 +35,6 @@ class NationalSocietiesInfo:
         ns_list = [ns['National Society name'] for ns in NationalSocietiesInfo.data]
         return ns_list
 
-
     @property
     def country_list(self):
         """
@@ -42,7 +43,6 @@ class NationalSocietiesInfo:
         country_list = [ns['Country'] for ns in NationalSocietiesInfo.data]
         return country_list
 
-    
     @property
     def iso3_list(self):
         """
@@ -50,7 +50,6 @@ class NationalSocietiesInfo:
         """
         iso3_list = [ns['ISO3'] for ns in NationalSocietiesInfo.data]
         return iso3_list
-
 
     @property
     def df(self):

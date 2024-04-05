@@ -22,7 +22,6 @@ class RecognitionLawsDataset(Dataset):
             raise TypeError('Please specify a path to the National Society recognition laws dataset.')
         super().__init__(name='Recognition Laws', filepath=filepath, sheet_name=sheet_name)
 
-
     def process_data(self, data, latest=None):
         """
         Transform and process the data, including changing the structure and selecting columns.
@@ -50,7 +49,7 @@ class RecognitionLawsDataset(Dataset):
 
         # Check that the NS names are consistent with the centralised names list
         data['Country'] = NSInfoCleaner().clean_country_names(data['Country'].str.strip())
-        extra_columns = [column for column in self.index_columns if column!='Country']
+        extra_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
             ns_id_mapped = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)\

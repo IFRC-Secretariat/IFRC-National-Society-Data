@@ -21,7 +21,6 @@ class BOCAAssessmentDatesDataset(Dataset):
         super().__init__(name='BOCA Assessment Dates')
         self.api_key = api_key.strip()
 
-
     def pull_data(self, filters=None):
         """
         Read in raw data from the BOCA Assessments Dates API from the NS databank.
@@ -31,7 +30,8 @@ class BOCAAssessmentDatesDataset(Dataset):
         filters : dict (default=None)
             Filters to filter by country or by National Society.
             Keys can only be "Country", "National Society name", or "ISO3". Values are lists.
-            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency with the parent class and other child classes.
+            Note that this is NOT IMPLEMENTED and is only included in this method to ensure consistency
+            with the parent class and other child classes.
         """
         # The data cannot be filtered from the API so raise a warning if filters are provided
         if (filters is not None) and (filters != {}):
@@ -46,7 +46,6 @@ class BOCAAssessmentDatesDataset(Dataset):
         data = pd.DataFrame(results)
 
         return data
-
 
     def process_data(self, data, latest=False):
         """
@@ -63,8 +62,12 @@ class BOCAAssessmentDatesDataset(Dataset):
         # Use the NS code to add other NS information
         ns_info_mapper = NSInfoMapper()
         for column in self.index_columns:
-            ns_id_mapped = ns_info_mapper.map(data=data['NsId'], map_from='National Society ID', map_to=column, errors='raise')\
-                                         .rename(column)
+            ns_id_mapped = ns_info_mapper.map(
+                data=data['NsId'],
+                map_from='National Society ID',
+                map_to=column,
+                errors='raise'
+            ).rename(column)
             data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
         data = data.drop(columns=['NsId', 'NsName'])
 
