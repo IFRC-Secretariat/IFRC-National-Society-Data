@@ -61,9 +61,9 @@ class INFORMRiskDataset(Dataset):
         data = pd.DataFrame()
         for indicator in self.indicators:
             response = requests.get(
-                f'https://drmkc.jrc.ec.europa.eu/Inform-Index/API/InformAPI/countries/Scores/?\
-                    WorkflowId={workflow_id}&\
-                    IndicatorId={indicator["source_name"]}'
+                'https://drmkc.jrc.ec.europa.eu/Inform-Index/API/InformAPI/countries/Scores/?'
+                f'WorkflowId={workflow_id}&'
+                f'IndicatorId={indicator["source_name"]}'
             )
             response.raise_for_status()
 
