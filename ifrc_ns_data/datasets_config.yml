@@ -185,21 +185,6 @@ GO Operations:
   Link: https://go.ifrc.org/
   privacy: public
   Focal point: Luke Caley
-  columns:
-    - name: Operation name
-      source_name: name
-    - name: Type
-      source_name: atype_display
-    - name: Number of beneficiaries
-      source_name: num_beneficiaries
-    - name: Requested amount
-      source_name: amount_requested
-    - name: Funded amount
-      source_name: amount_funded
-    - name: Disaster type
-      source_name: dtype.name
-    - name: Funding
-      source_name: funding
 
 GO Projects:
   source: API
@@ -208,31 +193,6 @@ GO Projects:
   privacy: public
   Link: https://go.ifrc.org/three-w/
   Focal point: Luke Caley
-  columns:
-    - name: Project name
-      source_name: name
-    - name: Disaster type
-      source_name: dtype_detail.name
-    - name: Event description
-      source_name: event_detail.name
-    - name: Sector
-      source_name: primary_sector_display
-    - name: Programme type
-      source_name: programme_type_display
-    - name: Operation type
-      source_name: operation_type_display
-    - name: Start date
-      source_name: start_date
-    - name: End date
-      source_name: end_date
-    - name: Budget amount
-      source_name: budget_amount
-    - name: Actual expenditure
-      source_name: actual_expenditure
-    - name: Target total
-      source_name: target_total
-    - name: Reached total
-      source_name: reached_total
 
 World Development Indicators:
   source: API

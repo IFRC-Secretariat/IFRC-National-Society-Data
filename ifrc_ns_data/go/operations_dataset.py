@@ -99,8 +99,20 @@ class GOOperationsDataset(Dataset):
         data[['amount_funded', 'amount_requested']] = data[['amount_funded', 'amount_requested']].astype(float)
         data['funding'] = 100*(data['amount_funded']/data['amount_requested']).round(0)
 
-        # Rename, order and select columns
-        data = self.rename_columns(data, drop_others=True)
+        # Rename columns
+        rename_columns = {
+            'name': 'Operation name',
+            'atype_display': 'Type',
+            'num_beneficiaries': 'Number of beneficiaries',
+            'amount_requested': 'Requested amount',
+            'amount_funded': 'Funded amount',
+            'dtype.name': 'Disaster type',
+            'funding': 'Funding'
+        }
+        data = data.rename(columns=rename_columns, errors='raise')
+        data = data[self.index_columns.copy() + list(rename_columns.values())]
+
+        # Order columns
         data = self.order_index_columns(data)
 
         return data

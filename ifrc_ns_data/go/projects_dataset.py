@@ -103,8 +103,25 @@ class GOProjectsDataset(Dataset):
         if data['visibility'].unique() != ['public']:
             raise ValueError('Dataset contains non-public data.')
 
+        # Rename columns
+        rename_columns = {
+            'name': 'Project name',
+            'dtype_detail.name': 'Disaster type',
+            'event_detail.name': 'Event description',
+            'primary_sector_display': 'Sector',
+            'programme_type_display': 'Programme type',
+            'operation_type_display': 'Operation type',
+            'start_date': 'Start date',
+            'end_date': 'End date',
+            'budget_amount': 'Budget amount',
+            'actual_expenditure': 'Actual expenditure',
+            'target_total': 'Target total',
+            'reached_total': 'Reached total',
+        }
+        data = data.rename(columns=rename_columns, errors='raise')
+        data = data[self.index_columns.copy() + list(rename_columns.values())]
+
         # Rename, order and select columns
-        data = self.rename_columns(data, drop_others=True)
         data = self.order_index_columns(data)
 
         return data
