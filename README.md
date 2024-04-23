@@ -190,3 +190,18 @@ in
 | IFRC Disaster Law | IFRC Disaster Law overview | IFRC Disaster Law website | IFRCDisasterLawDataset | |
 | Corruption Perception Index | The CPI ranks 180 countries and territories around the world by their perceived levels of public sector corruption, scoring on a scale of 0 (highly corrupt) to 100 (very clean). | Transparency International | CorruptionPerceptionIndexDataset | |
 | Youth Engagement | IFRC Youth engagement global survey | IFRC VODPLA website | YouthEngagementDataset | |
+
+
+## Contributing
+
+To add a new dataset to this module, do the following steps:
+
+1. Create a new file (in a new or existing folder) in `ifrc_ns_data`. If adding a new folder, add the folder name to be imported in `ifrc_ns_data/__init__.py`, and add an `__init__.py` file to the new folder to import the new class.
+
+2. Create a new class for the dataset. Use an existing file as a template to add the `pull_data` and `process_data` methods.
+
+3. Add the dataset with information to the `ifrc_ns_data/datasets_config.yml` file.
+
+4. Add the new dataset class name to the `class_names` list in `ifrc_ns_data/data_collector.py`.
+
+5. Add the new dataset to the [README datasets table](#datasets-table).
