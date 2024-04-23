@@ -55,11 +55,13 @@ class ICRCPresenceDataset(Dataset):
                     except Exception:
                         pass
                 # Append all the information to the list
-                country_list.append({"Country": name,
-                                     "ICRC presence": presence,
-                                     "URL": url,
-                                     "Key operation": key_operation,
-                                     "Description": description})
+                country_list.append({
+                    "Country": name,
+                    "ICRC presence": presence,
+                    "URL": url,
+                    "Key operation": key_operation,
+                    "Description": description
+                })
         data = pd.DataFrame(country_list)
 
         return data
