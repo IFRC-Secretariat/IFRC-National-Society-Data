@@ -1,5 +1,6 @@
 # Import datasets
 from . import common
+from .evaluations import *
 from .fdrs import *
 from .go import *
 from .inform import *

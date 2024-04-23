@@ -171,6 +171,7 @@ in
 
 | Dataset   |      Description      |      Source      |  Class name       | Arguments       |
 |-----------|----------------------|------------------|------------------|-------------------|
+| Evaluations | IFRC evaluation documents | IFRC public website | EvaluationsDataset | |
 | FDRS |  FDRS data gives an overview of a National Society in a number of indicators | NS Databank API | FDRSDataset | api_key |
 | NS documents | Links to key documents including annual plans and financial statements | FDRS API | NSDocumentsDataset | api_key |
 | NS contacts | Contact information and social media links | FDRS API | NSContactsDataset | api_key |

@@ -14,6 +14,13 @@ NS Contacts:
     - name: Other social
       source_name: othersocial
 
+Evaluations:
+  source: website
+  privacy: public
+  source_description: IFRC evaluations
+  type: external
+  link: https://www.ifrc.org/evaluations
+
 FDRS:
   Source: API
   type: internal
@@ -242,7 +249,7 @@ ICRC Presence:
   source_description: ICRC presence
   Type: External
   Link: https://www.icrc.org/en/where-we-work
-  Columns:
+  columns:
     - name: ICRC presence
       source_name: ICRC presence
     - name: Key operation
@@ -258,7 +265,7 @@ IFRC Disaster Law:
   source_description: IFRC disaster law information
   Type: External
   Link: https://disasterlaw.ifrc.org/where-we-work
-  Columns:
+  columns:
     - name: ID
       source_name: ID
     - name: URL

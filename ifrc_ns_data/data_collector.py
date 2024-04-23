@@ -345,6 +345,7 @@ class DataCollector:
 
         # Initiate all dataset classes including providing arguments. Skip when arguments are not provided.
         class_names = {
+            'Evaluations': ifrc_ns_data.EvaluationsDataset,
             'FDRS': ifrc_ns_data.FDRSDataset,
             'NS Documents': ifrc_ns_data.NSDocumentsDataset,
             'NS Contacts': ifrc_ns_data.NSContactsDataset,

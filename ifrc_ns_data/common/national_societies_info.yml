@@ -32,6 +32,7 @@
   Alternative National Society names: []
   Alternative country names:
   - United States of America
+  - United states of america (the)
 - National Society name: Andorran Red Cross
   Country: Andorra
   ISO3: AND
@@ -1293,7 +1294,7 @@
   Region: Africa
   National Society ID: DSS001
   Alternative National Society names: []
-  Alternative country names: []
+  Alternative country names: [Republic of South Sudan]
 - National Society name: Spanish Red Cross
   Country: Spain
   ISO3: ESP
@@ -1436,6 +1437,7 @@
   Alternative country names:
   - Macedonia (The Republic of North Macedonia)
   - Macedonia
+  - Republic of North Macedonia
 - National Society name: The Red Cross of Serbia
   Country: Serbia
   ISO3: SRB
