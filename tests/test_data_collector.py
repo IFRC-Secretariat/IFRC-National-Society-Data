@@ -36,7 +36,7 @@ class TestAllData(unittest.TestCase):
             dataset_args=self.dataset_args
         )
         # Check total datasets and all not empty
-        self.assertEqual(len(all_datasets), 18)
+        self.assertEqual(len(all_datasets), 19)
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
             self.assertFalse(dataset.data.empty)
@@ -51,7 +51,7 @@ class TestAllData(unittest.TestCase):
             filters={'privacy': 'public'}
         )
         # Check total datasets and no private datasets
-        self.assertEqual(len(all_datasets), 13)
+        self.assertEqual(len(all_datasets), 14)
         dataset_names = [dataset.name for dataset in all_datasets]
         private_datsets = ['OCAC', 'Statutes', 'Recognition Laws', 'YABC', 'Logistics Projects']
         for dataset_name in private_datsets:
