@@ -90,9 +90,22 @@ class NSDocumentsDataset(Dataset):
         # Drop columns which are not needed
         data = data.drop(columns=['name', 'National Society ID'])
 
-        # Select and rename indicators
-        data = self.rename_indicators(data, missing='ignore')
-        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
+        # Rename indicators
+        rename_indicators = {
+            'Our Annual Report': 'Annual report',
+            'Our Audited Financial Statements': 'Financial statement (audited)',
+            'Our Strategic Plan': 'Strategic Plan',
+            'Our Unaudited Financial Statement': 'Financial statement (unaudited)',
+            'Our Red Cross Law': 'Red Cross law',
+            'Our Statutes in Force': 'Statutes in force',
+            'Our Emblem Law': 'Emblem law'
+        }
+        data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
+        data = data.loc[data['Indicator'].isin(rename_indicators.values())]
+
+        # Select and order columns
+        columns_order = self.index_columns.copy() + ['Indicator', 'Value', 'Year']
+        data = data[columns_order + [col for col in data.columns if col not in columns_order]]
 
         # Filter the dataset if required
         if latest:

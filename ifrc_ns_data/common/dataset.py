@@ -160,37 +160,6 @@ class Dataset:
         """
         raise NotImplementedError
 
-    def rename_indicators(self, data, missing='raise'):
-        """
-        Rename indicators in the 'Indicator' column in the dataset using the names in the yml file.
-
-        Parameters
-        ----------
-        data : pandas DataFrame (required)
-            Dataset to rename indicators in.
-
-        missing : string (default='raise')
-            If 'raise', raise an error if there are indicators in rename_indicators which are not in the dataset.
-        """
-        # Get a map of indicator current names to verbose names
-        rename_indicators = {indicator['source_name']: indicator['name'] for indicator in self.indicators}
-
-        # Raise an error if any indicators are missing from the dataset
-        if missing == 'raise':
-            missing_indicators = [
-                indicator
-                for indicator in rename_indicators
-                if indicator not in data['Indicator'].unique()
-            ]
-            if missing_indicators:
-                raise KeyError(f"{missing_indicators} not found in dataset indicators")
-
-        # Rename and select indicators
-        data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
-        data = data.loc[data['Indicator'].isin(rename_indicators.values())]
-
-        return data
-
     def order_index_columns(self, data, other_columns=None, drop_others=False):
         """
         Move the index columns containing NS information to the front of the dataset.

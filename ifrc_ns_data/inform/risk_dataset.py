@@ -45,20 +45,18 @@ class INFORMRiskDataset(Dataset):
         workflow_id = latest_workflow[0]['WorkflowId']
 
         # Pull the data for each indicator and save in a pandas DataFrame
-        data = pd.DataFrame()
-        for indicator in self.indicators:
-            response = requests.get(
-                'https://drmkc.jrc.ec.europa.eu/Inform-Index/API/InformAPI/countries/Scores/?'
-                f'WorkflowId={workflow_id}&'
-                f'IndicatorId={indicator["source_name"]}'
-            )
-            response.raise_for_status()
-
-            df_indicator = pd.DataFrame(response.json())
-            df_indicator.rename(columns={'IndicatorId': 'Indicator',
-                                         'IndicatorScore': 'Value'}, inplace=True)
-            df_indicator['Year'] = year
-            data = pd.concat([data, df_indicator])
+        response = requests.get(
+            'https://drmkc.jrc.ec.europa.eu/Inform-Index/API/InformAPI/countries/Scores/?'
+            f'WorkflowId={workflow_id}&'
+            f'IndicatorId=INFORM'
+        )
+        response.raise_for_status()
+        data = pd.DataFrame(response.json())
+        data.rename(
+            columns={'IndicatorId': 'Indicator', 'IndicatorScore': 'Value'},
+            inplace=True
+        )
+        data['Year'] = year
 
         return data
 
@@ -88,9 +86,14 @@ class INFORMRiskDataset(Dataset):
         # Set the indicator name and drop columns
         data = data.drop(columns=['Iso3', 'IndicatorName', 'nodelevel', 'ValidityYear', 'Unit', 'Note'])
 
-        # Select and rename indicators
-        data = self.rename_indicators(data)
-        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
+        # Rename indicators
+        rename_indicators = {'INFORM': 'INFORM Risk Index'}
+        data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
+        data = data.loc[data['Indicator'].isin(rename_indicators.values())]
+
+        # Select and order columns
+        columns_order = self.index_columns.copy() + ['Indicator', 'Value', 'Year']
+        data = data[columns_order + [col for col in data.columns if col not in columns_order]]
 
         # Filter the dataset if required
         if latest:

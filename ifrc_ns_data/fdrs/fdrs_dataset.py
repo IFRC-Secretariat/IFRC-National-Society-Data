@@ -124,9 +124,42 @@ class FDRSDataset(Dataset):
         latest_available['Value'] = latest_available['Year']
         data = pd.concat([data, latest_available]).reset_index(drop=True)
 
-        # Select and rename indicators
-        data = self.rename_indicators(data)
-        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year', 'URL'])
+        # Rename indicators
+        rename_indicators = {
+            'KPI_noLocalUnits': 'Number of local units',
+            'KPI_hasFinancialStatement': 'Financial statement available',
+            'audited': 'Audited financial statement available',
+            'KPI_IncomeLC': 'Total income in local currency',
+            'KPI_IncomeLC_CHF': 'Total income (Swiss Franc)',
+            'KPI_PeopleVol_Tot': 'Total number of people volunteering',
+            'KPI_noVolCoveredAI_Tot': 'Total number of volunteers covered by accident insurance',
+            'KPI_PStaff_Tot': 'Total number of paid staff',
+            'KPI_PStaffCoveredAI_Tot': 'Total number of paid staff covered by accident insurance',
+            'ar': 'Annual report available',
+            'sp': 'Strategic plan available',
+            'supported1': 'Supported NSs',
+            'received_support1': 'Received support from NSs',
+            'KPI_ReachDRER_CPD': 'Total number of people reached by disaster response and early recovery programmes',
+            'KPI_ReachLTSPD_CPD': 'Total number of people reached by long term services and development programmes',
+            'KPI_ReachDRR_CPD': 'Total number of people reached by disaster risk reduction',
+            'KPI_ReachS_CPD': 'Total number of people reached by shelter',
+            'KPI_ReachL_CPD': 'Total number of people reached by livelihoods',
+            'KPI_ReachH_CPD': 'Total number of people reached by health',
+            'KPI_ReachWASH_CPD': 'Total number of people reached by water, sanitation and hygiene',
+            'KPI_ReachM_CPD': 'Total number of people reached by migration',
+            'KPI_ReachCTP_CPD': 'Total number of people reached by cash transfer programming',
+            'KPI_ReachSI_CPD': 'Total number of people reached by social inclusion and building a culture of non-violence and peace',
+            'Year of latest financial statement': 'Year of latest financial statement',
+            'Year of latest audited financial statement': 'Year of latest audited financial statement',
+            'Year of latest annual report': 'Year of latest annual report',
+            'Year of latest strategic plan': 'Year of latest strategic plan'
+        }
+        data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
+        data = data.loc[data['Indicator'].isin(rename_indicators.values())]
+
+        # Select and order columns
+        columns_order = self.index_columns.copy() + ['Indicator', 'Value', 'Year', 'URL']
+        data = data[columns_order + [col for col in data.columns if col not in columns_order]]
 
         # Filter the dataset if required
         if latest:

@@ -16,82 +16,12 @@ FDRS:
   privacy: public
   link: https://data.ifrc.org/fdrs
   focal point: Rania Alerksoussi
-  indicators:
-    - name: Number of local units
-      source_name: KPI_noLocalUnits
-    - name: Financial statement available
-      source_name: KPI_hasFinancialStatement
-    - name: Audited financial statement available
-      source_name: audited
-    - name: Total income in local currency
-      source_name: KPI_IncomeLC
-    - name: Total income (Swiss Franc)
-      source_name: KPI_IncomeLC_CHF
-    - name: Total number of people volunteering
-      source_name: KPI_PeopleVol_Tot
-    - name: Total number of volunteers covered by accident insurance
-      source_name: KPI_noVolCoveredAI_Tot
-    - name: Total number of paid staff
-      source_name: KPI_PStaff_Tot
-    - name: Total number of paid staff covered by accident insurance
-      source_name: KPI_PStaffCoveredAI_Tot
-    - name: Annual report available
-      source_name: ar
-    - name: Strategic plan available
-      source_name: sp
-    - name: Supported NSs
-      source_name: supported1
-    - name: Received support from NSs
-      source_name: received_support1
-    - name: Total number of people reached by disaster response and early recovery programmes
-      source_name: KPI_ReachDRER_CPD
-    - name: Total number of people reached by long term services and development programmes
-      source_name: KPI_ReachLTSPD_CPD
-    - name: Total number of people reached by disaster risk reduction
-      source_name: KPI_ReachDRR_CPD
-    - name: Total number of people reached by shelter
-      source_name: KPI_ReachS_CPD
-    - name: Total number of people reached by livelihoods
-      source_name: KPI_ReachL_CPD
-    - name: Total number of people reached by health
-      source_name: KPI_ReachH_CPD
-    - name: Total number of people reached by water, sanitation and hygiene
-      source_name: KPI_ReachWASH_CPD
-    - name: Total number of people reached by migration
-      source_name: KPI_ReachM_CPD
-    - name: Total number of people reached by cash transfer programming
-      source_name: KPI_ReachCTP_CPD
-    - name: Total number of people reached by social inclusion and building a culture of non-violence and peace
-      source_name: KPI_ReachSI_CPD
-    - name: Year of latest financial statement
-      source_name: Year of latest financial statement
-    - name: Year of latest audited financial statement
-      source_name: Year of latest audited financial statement
-    - name: Year of latest annual report
-      source_name: Year of latest annual report
-    - name: Year of latest strategic plan
-      source_name: Year of latest strategic plan
 
 NS Documents:
   source: API
   type: internal
   privacy: public
   link: https://data.ifrc.org/fdrs
-  indicators:
-  - name: Annual report
-    source_name: Our Annual Report
-  - name: Financial statement (audited)
-    source_name: Our Audited Financial Statements
-  - name: Strategic Plan
-    source_name: Our Strategic Plan
-  - name: Financial statement (unaudited)
-    source_name: Our Unaudited Financial Statement
-  - name: Red Cross law
-    source_name: Our Red Cross Law
-  - name: Statutes in force
-    source_name: Our Statutes in Force
-  - name: Emblem law
-    source_name: Our Emblem Law
 
 OCAC:
   source: file
@@ -164,21 +94,6 @@ World Development Indicators:
   source_description: WorldBank World Development Indicators
   type: External
   link: https://databank.worldbank.org/source/world-development-indicators
-  indicators:
-    - name: Population, total
-      source_name: SP.POP.TOTL
-    - name: GDP (US dollars)
-      source_name: NY.GDP.MKTP.CD
-    - name: Poverty headcount ratio at national poverty lines (% of population)
-      source_name: SI.POV.NAHC
-    - name: GNI per capita, Atlas method (current US$)
-      source_name: NY.GNP.PCAP.CD
-    - name: Life expectancy at birth, total years
-      source_name: SP.DYN.LE00.IN
-    - name: Literacy rate, adult total (% of people ages 15 and above)
-      source_name: SE.ADT.LITR.ZS
-    - name: Urban population (% of total)
-      source_name: SP.URB.TOTL.IN.ZS
 
 UNDP Human Development:
   source: API
@@ -186,9 +101,6 @@ UNDP Human Development:
   source_description: UNDP
   type: External
   link: https://hdr.undp.org/en/content/human-development-index-hdi
-  indicators:
-    - name: Human Development Index (HDI)
-      source_name: 137506
 
 INFORM Risk:
   source: API
@@ -196,9 +108,6 @@ INFORM Risk:
   source_description: EC DRMKC INFORM
   type: External
   link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
-  indicators:
-    - name: INFORM Risk Index
-      source_name: INFORM
 
 ICRC Presence:
   source: website

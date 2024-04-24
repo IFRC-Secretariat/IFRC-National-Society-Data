@@ -41,7 +41,11 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         # When testing pull only 5 pages because otherwise it takes a long time
         total_pages = 5 if self.test_flag else None
         while True:
-            api_indicators = ';'.join([indicator['source_name'] for indicator in self.indicators])
+            api_indicators = ';'.join([
+                'SP.POP.TOTL', 'NY.GDP.MKTP.CD', 'SI.POV.NAHC',
+                'NY.GNP.PCAP.CD', 'SP.DYN.LE00.IN', 'SE.ADT.LITR.ZS',
+                'SP.URB.TOTL.IN.ZS'
+            ])
             url = 'https://api.worldbank.org/v2/country/'\
                 f'{selected_countries}/indicator/{api_indicators}?'\
                 f'source=2&page={page}&format=json&per_page={per_page}'
@@ -100,8 +104,21 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         if latest:
             data = self.filter_latest_indicators(data)
 
-        # Select and rename indicators
-        data = self.rename_indicators(data, missing=('ignore' if self.test_flag else 'raise'))
-        data = self.order_index_columns(data, other_columns=['Indicator', 'Value', 'Year'])
+        # Rename indicators
+        rename_indicators = {
+            'SP.POP.TOTL': 'Population, total',
+            'NY.GDP.MKTP.CD': 'GDP (US dollars)',
+            'SI.POV.NAHC': 'Poverty headcount ratio at national poverty lines (% of population)',
+            'NY.GNP.PCAP.CD': 'GNI per capita, Atlas method (current US$)',
+            'SP.DYN.LE00.IN': 'Life expectancy at birth, total years',
+            'SE.ADT.LITR.ZS': 'Literacy rate, adult total (% of people ages 15 and above)',
+            'SP.URB.TOTL.IN.ZS': 'Urban population (% of total)'
+        }
+        data['Indicator'] = data['Indicator'].replace(rename_indicators, regex=False)
+        data = data.loc[data['Indicator'].isin(rename_indicators.values())]
+
+        # Select and order columns
+        columns_order = self.index_columns.copy() + ['Indicator', 'Value', 'Year']
+        data = data[columns_order + [col for col in data.columns if col not in columns_order]]
 
         return data
