@@ -46,8 +46,14 @@ class YABCDataset(Dataset):
         for column in extra_columns:
             data[column] = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)
 
-        # Rename and select columns
-        data = self.rename_columns(data, drop_others=True)
-        data = self.order_index_columns(data)
+        # Rename and order the columns
+        rename_columns = {
+            'number of YABC trainings to date': 'Number of YABC trainings to date',
+            'peer educators': 'Number of peer educators',
+            'trainers': 'Number of trainers',
+            'Comment': 'Comment'
+        }
+        data = data.rename(columns=rename_columns, errors='raise')
+        data = data[self.index_columns.copy() + list(rename_columns.values())]
 
         return data

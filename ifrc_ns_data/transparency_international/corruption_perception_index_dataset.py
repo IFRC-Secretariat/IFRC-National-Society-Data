@@ -56,9 +56,16 @@ class CorruptionPerceptionIndexDataset(Dataset):
                                          .rename(column)
             data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
 
-        # Reorder columns
-        data = self.rename_columns(data, drop_others=True)
-        data = self.order_index_columns(data)
+        # Rename and order the columns
+        rename_columns = {
+            'score': 'Score',
+            'rank': 'Rank',
+            'sources': 'Sources',
+            'standardError': 'Standard error',
+            'year': 'Year'
+        }
+        data = data.rename(columns=rename_columns, errors='raise')
+        data = data[self.index_columns.copy() + list(rename_columns.values())]
 
         # Filter only the latest data
         if latest:

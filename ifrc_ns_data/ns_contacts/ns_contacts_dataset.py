@@ -61,18 +61,30 @@ class NSContactsDataset(Dataset):
         data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
 
         # Rename and order columns
-        data = data.rename(columns={'country': 'Country', 'iso_3': 'ISO3', 'NSO_ZON_name': 'Region'})
-        data = self.rename_columns(data, drop_others=True)
+        rename_columns = {
+            'country': 'Country',
+            'iso_3': 'ISO3',
+            'NSO_ZON_name': 'Region',
+            'cur_code': 'Currency',
+            'url': 'URL',
+            'facebook': 'Facebook',
+            'twitter': 'Twitter',
+            'othersocial': 'Other social'
+        }
+        data = data.rename(columns=rename_columns, errors='raise')
+        data = data[self.index_columns.copy() + list(rename_columns.values())]
 
         # Melt into indicator format
-        data = pd.melt(data,
-                       id_vars=self.index_columns, value_vars=[
-                           column
-                           for column in data.columns
-                           if column not in self.index_columns
-                        ],
-                       var_name="Indicator",
-                       value_name="Value")
+        data = pd.melt(
+            data,
+            id_vars=self.index_columns, value_vars=[
+                column
+                for column in data.columns
+                if column not in self.index_columns
+            ],
+            var_name="Indicator",
+            value_name="Value"
+        )
         data['Year'] = ''
         data = self.order_index_columns(data)
 

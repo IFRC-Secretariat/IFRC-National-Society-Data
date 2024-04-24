@@ -55,8 +55,15 @@ class BOCAAssessmentDatesDataset(Dataset):
             data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
         data = data.drop(columns=['NsId', 'NsName'])
 
-        # Add other columns and order the columns
-        data = self.rename_columns(data, drop_others=True)
-        data = self.order_index_columns(data)
+        # Rename and order the columns
+        rename_columns = {
+            'BranchName': 'Branch name',
+            'AssementCode': 'Assessment code',
+            'YearOfAssesment': 'Year of assessment',
+            'SubmissionDate': 'Submission date',
+            'URL': 'URL'
+        }
+        data = data.rename(columns=rename_columns, errors='raise')
+        data = data[self.index_columns.copy() + list(rename_columns.values())]
 
         return data

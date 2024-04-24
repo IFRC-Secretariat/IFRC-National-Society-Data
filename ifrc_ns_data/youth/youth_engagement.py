@@ -64,8 +64,8 @@ class YouthEngagementDataset(Dataset):
         # Convert data types
         data['Year'] = pd.to_numeric(data['Year'], errors='raise')
 
-        # Reorder columns
-        data = self.rename_columns(data, drop_others=True)
-        data = self.order_index_columns(data)
+        # Rename and order the columns
+        select_columns = ['Year', 'Youth Policy', 'Youth Engagement Strategy', 'Youth in GB', 'Youth-led structure']
+        data = data[self.index_columns.copy() + select_columns]
 
         return data

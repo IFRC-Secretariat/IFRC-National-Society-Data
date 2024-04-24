@@ -80,12 +80,18 @@ class IFRCDisasterLawDataset(Dataset):
         new_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in new_columns:
-            ns_id_mapped = ns_info_mapper.map(data=data['Country'], map_from='Country', map_to=column)\
-                                         .rename(column)
-            data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
+            ns_id_mapped = ns_info_mapper.map(
+                data=data['Country'],
+                map_from='Country',
+                map_to=column
+            ).rename(column)
+            data = pd.concat(
+                [data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], 
+                axis=1
+            )
 
-        # Reorder columns
-        data = self.rename_columns(data, drop_others=True)
-        data = self.order_index_columns(data)
+        # Rename and order the columns
+        select_columns = ['ID', 'URL', 'Description']
+        data = data[self.index_columns.copy() + select_columns]
 
         return data

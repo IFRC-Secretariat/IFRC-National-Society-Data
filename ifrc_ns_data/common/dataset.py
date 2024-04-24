@@ -191,29 +191,6 @@ class Dataset:
 
         return data
 
-    def rename_columns(self, data, drop_others=False):
-        """
-        Rename columns in the dataset using the names in the yml file.
-
-        Parameters
-        ----------
-        data : pandas DataFrame (required)
-            Dataset to rename the columns of.
-
-        drop_others : bool (default=False)
-            If True, then columns which are not index columns and which are
-            not in the dataset_info yml file will be dropped.
-        """
-        # Get a map of indicator current names to verbose names, and rename
-        rename_columns = {column['source_name']: column['name'] for column in self.columns}
-        data = data.rename(columns=rename_columns, errors='raise')
-
-        # Drop columns that were not in the rename list
-        if drop_others:
-            data = data[self.index_columns.copy()+list(rename_columns.values())]
-
-        return data
-
     def order_index_columns(self, data, other_columns=None, drop_others=False):
         """
         Move the index columns containing NS information to the front of the dataset.

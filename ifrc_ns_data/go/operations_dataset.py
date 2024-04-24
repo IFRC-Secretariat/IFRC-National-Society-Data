@@ -112,7 +112,4 @@ class GOOperationsDataset(Dataset):
         data = data.rename(columns=rename_columns, errors='raise')
         data = data[self.index_columns.copy() + list(rename_columns.values())]
 
-        # Order columns
-        data = self.order_index_columns(data)
-
         return data

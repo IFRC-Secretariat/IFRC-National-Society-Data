@@ -48,8 +48,11 @@ class RecognitionLawsDataset(Dataset):
                                          .rename(column)
             data = pd.concat([data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)], axis=1)
 
-        # Rename and order columns
-        data = self.rename_columns(data)
-        data = self.order_index_columns(data)
+        # Rename and order the columns
+        rename_columns = {
+            'Law/other regulations in force': 'NS recognition laws/ other regulations in force',
+        }
+        data = data.rename(columns=rename_columns, errors='raise')
+        data = data[self.index_columns.copy() + list(rename_columns.values())]
 
         return data

@@ -2,17 +2,6 @@ NS Contacts:
   source: API
   type: internal
   privacy: public
-  columns:
-    - name: Currency
-      source_name: cur_code
-    - name: URL
-      source_name: url
-    - name: Facebook
-      source_name: facebook
-    - name: Twitter
-      source_name: twitter
-    - name: Other social
-      source_name: othersocial
 
 Evaluations:
   source: website
@@ -118,15 +107,6 @@ OCAC Assessment Dates:
   privacy: public
   link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
   focal point: Roger Fischli
-  columns:
-    - name: Assessment code
-      source_name: AssementCode
-    - name: Year of assessment
-      source_name: YearOfAssesment
-    - name: Submission date
-      source_name: SubmissionDate
-    - name: URL
-      source_name: URL
 
 BOCA Assessment Dates:
   source: API
@@ -135,17 +115,6 @@ BOCA Assessment Dates:
   privacy: public
   link: https://data-api.ifrc.org/Backoffice/BOCA/Form?app=boca
   focal point: Roger Fischli
-  columns:
-    - name: Branch name
-      source_name: BranchName
-    - name: Assessment code
-      source_name: AssementCode
-    - name: Year of assessment
-      source_name: YearOfAssesment
-    - name: Submission date
-      source_name: SubmissionDate
-    - name: URL
-      source_name: URL
 
 Statutes:
   source: file
@@ -158,9 +127,6 @@ Recognition Laws:
   privacy: confidential
   type: Internal
   focal point: Drina Karahasanovic
-  columns:
-    - name: NS recognition laws/ other regulations in force
-      source_name: Law/other regulations in force
 
 YABC:
   source: file
@@ -168,15 +134,6 @@ YABC:
   type: Internal
   privacy: confidential
   focal point: Amjad Saleem
-  columns:
-    - name: Number of YABC trainings to date
-      source_name: number of YABC trainings to date
-    - name: Number of peer educators
-      source_name: peer educators
-    - name: Number of trainers
-      source_name: trainers
-    - name: Comment
-      source_name: Comment
 
 Logistics Projects:
   source: file
@@ -249,15 +206,6 @@ ICRC Presence:
   source_description: ICRC presence
   type: External
   link: https://www.icrc.org/en/where-we-work
-  columns:
-    - name: ICRC presence
-      source_name: ICRC presence
-    - name: Key operation
-      source_name: Key operation
-    - name: URL
-      source_name: URL
-    - name: Description
-      source_name: Description
 
 IFRC Disaster Law:
   source: website
@@ -265,13 +213,6 @@ IFRC Disaster Law:
   source_description: IFRC disaster law information
   type: External
   link: https://disasterlaw.ifrc.org/where-we-work
-  columns:
-    - name: ID
-      source_name: ID
-    - name: URL
-      source_name: URL
-    - name: Description
-      source_name: Description
 
 Corruption Perception Index:
   source: website
@@ -279,17 +220,6 @@ Corruption Perception Index:
   source_description: Transparency International (TI) Corruption Perception Index (CPI)
   type: external
   link: https://www.transparency.org/en/
-  columns:
-    - name: Score
-      source_name: score
-    - name: Rank
-      source_name: rank
-    - name: Sources
-      source_name: sources
-    - name: Standard error
-      source_name: standardError
-    - name: Year
-      source_name: year
 
 Youth Engagement:
   source: website
@@ -297,14 +227,3 @@ Youth Engagement:
   source_description: IFRC Youth engagement global survey.
   type: internal
   link: https://volunteeringredcross.org/en/global-youth-survey-en/
-  columns:
-    - name: Year
-      source_name: Year
-    - name: Youth Policy
-      source_name: Youth Policy
-    - name: Youth Engagement Strategy
-      source_name: Youth Engagement Strategy
-    - name: Youth in GB
-      source_name: Youth in GB
-    - name: Youth-led structure
-      source_name: Youth-led structure

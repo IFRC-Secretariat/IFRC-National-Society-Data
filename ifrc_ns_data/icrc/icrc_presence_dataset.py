@@ -25,8 +25,10 @@ class ICRCPresenceDataset(Dataset):
         Scrape data from the ICRC website at https://www.icrc.org/en/where-we-work.
         """
         # Get the home page
-        response = requests.get(url='https://www.icrc.org/en/where-we-work',
-                                headers={'User-Agent': ''})
+        response = requests.get(
+            url='https://www.icrc.org/en/where-we-work',
+            headers={'User-Agent': ''}
+        )
         response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -91,8 +93,8 @@ class ICRCPresenceDataset(Dataset):
                 axis=1
             )
 
-        # Reorder columns
-        data = self.rename_columns(data, drop_others=True)
-        data = self.order_index_columns(data)
+        # Rename and order the columns
+        select_columns = ['ICRC presence', 'Key operation', 'URL', 'Description']
+        data = data[self.index_columns.copy() + select_columns]
 
         return data
