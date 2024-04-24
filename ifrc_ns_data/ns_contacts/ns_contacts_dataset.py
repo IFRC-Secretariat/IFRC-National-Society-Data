@@ -72,14 +72,14 @@ class NSContactsDataset(Dataset):
             'othersocial': 'Other social'
         }
         data = data.rename(columns=rename_columns, errors='raise')
-        data = data[self.index_columns.copy() + list(rename_columns.values())]
+        data = data[list(set(self.index_columns.copy() + list(rename_columns.values())))]
 
         # Melt into indicator format
         data = pd.melt(
             data,
-            id_vars=self.index_columns, value_vars=[
-                column
-                for column in data.columns
+            id_vars=self.index_columns,
+            value_vars=[
+                column for column in data.columns
                 if column not in self.index_columns
             ],
             var_name="Indicator",
