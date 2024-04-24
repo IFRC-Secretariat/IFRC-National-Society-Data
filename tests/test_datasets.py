@@ -147,3 +147,10 @@ class TestDatasets(unittest.TestCase):
         self.assertTrue(isinstance(data, pd.DataFrame))
         self.assertFalse(data.empty)
         self.assertEqual(data.columns.to_list()[:4], self.index_columns)
+
+    def test_evaluations(self):
+        dataset = ifrc_ns_data.EvaluationsDataset()
+        data = dataset.get_data()
+        self.assertTrue(isinstance(data, pd.DataFrame))
+        self.assertFalse(data.empty)
+        self.assertEqual(data.columns.to_list()[:4], self.index_columns)
