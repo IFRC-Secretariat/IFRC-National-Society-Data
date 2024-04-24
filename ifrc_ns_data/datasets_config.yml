@@ -22,11 +22,11 @@ Evaluations:
   link: https://www.ifrc.org/evaluations
 
 FDRS:
-  Source: API
+  source: API
   type: internal
   privacy: public
-  Link: https://data.ifrc.org/fdrs
-  Focal point: Rania Alerksoussi
+  link: https://data.ifrc.org/fdrs
+  focal point: Rania Alerksoussi
   indicators:
     - name: Number of local units
       source_name: KPI_noLocalUnits
@@ -84,7 +84,7 @@ FDRS:
       source_name: Year of latest strategic plan
 
 NS Documents:
-  Source: API
+  source: API
   type: internal
   privacy: public
   link: https://data.ifrc.org/fdrs
@@ -105,19 +105,19 @@ NS Documents:
     source_name: Our Emblem Law
 
 OCAC:
-  Source: file
-  Type: Internal
+  source: file
+  type: Internal
   privacy: confidential
-  Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
-  Focal point: Roger Fischli
+  link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
+  focal point: Roger Fischli
 
 OCAC Assessment Dates:
   source: API
   source_description: NS databank
-  Type: Internal
+  type: Internal
   privacy: public
-  Link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
-  Focal point: Roger Fischli
+  link: https://data-api.ifrc.org/Backoffice/OCAC/Form?app=ocac
+  focal point: Roger Fischli
   columns:
     - name: Assessment code
       source_name: AssementCode
@@ -131,10 +131,10 @@ OCAC Assessment Dates:
 BOCA Assessment Dates:
   source: API
   source_description: NS databank
-  Type: Internal
+  type: Internal
   privacy: public
-  Link: https://data-api.ifrc.org/Backoffice/BOCA/Form?app=boca
-  Focal point: Roger Fischli
+  link: https://data-api.ifrc.org/Backoffice/BOCA/Form?app=boca
+  focal point: Roger Fischli
   columns:
     - name: Branch name
       source_name: BranchName
@@ -148,16 +148,16 @@ BOCA Assessment Dates:
       source_name: URL
 
 Statutes:
-  Source: file
-  Type: Internal
+  source: file
+  type: Internal
   privacy: confidential
-  Focal point: Drina Karahasanovic
+  focal point: Drina Karahasanovic
 
 Recognition Laws:
-  Source: file
+  source: file
   privacy: confidential
-  Type: Internal
-  Focal point: Drina Karahasanovic
+  type: Internal
+  focal point: Drina Karahasanovic
   columns:
     - name: NS recognition laws/ other regulations in force
       source_name: Law/other regulations in force
@@ -165,9 +165,9 @@ Recognition Laws:
 YABC:
   source: file
   source_description: IFRC Youth
-  Type: Internal
+  type: Internal
   privacy: confidential
-  Focal point: Amjad Saleem
+  focal point: Amjad Saleem
   columns:
     - name: Number of YABC trainings to date
       source_name: number of YABC trainings to date
@@ -181,32 +181,32 @@ YABC:
 Logistics Projects:
   source: file
   source_description: IFRC Logistics
-  Type: Internal
+  type: Internal
   privacy: confidential
-  Focal point: Juan Galvez
+  focal point: Juan Galvez
 
 GO Operations:
   source: API
   source_description: IFRC GO
-  Type: Internal
-  Link: https://go.ifrc.org/
+  type: Internal
+  link: https://go.ifrc.org/
   privacy: public
-  Focal point: Luke Caley
+  focal point: Luke Caley
 
 GO Projects:
   source: API
   source_description: IFRC GO
-  Type: Internal
+  type: Internal
   privacy: public
-  Link: https://go.ifrc.org/three-w/
-  Focal point: Luke Caley
+  link: https://go.ifrc.org/three-w/
+  focal point: Luke Caley
 
 World Development Indicators:
   source: API
   privacy: public
   source_description: WorldBank World Development Indicators
-  Type: External
-  Link: https://databank.worldbank.org/source/world-development-indicators
+  type: External
+  link: https://databank.worldbank.org/source/world-development-indicators
   indicators:
     - name: Population, total
       source_name: SP.POP.TOTL
@@ -227,8 +227,8 @@ UNDP Human Development:
   source: API
   privacy: public
   source_description: UNDP
-  Type: External
-  Link: https://hdr.undp.org/en/content/human-development-index-hdi
+  type: External
+  link: https://hdr.undp.org/en/content/human-development-index-hdi
   indicators:
     - name: Human Development Index (HDI)
       source_name: 137506
@@ -237,8 +237,8 @@ INFORM Risk:
   source: API
   privacy: public
   source_description: EC DRMKC INFORM
-  Type: External
-  Link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
+  type: External
+  link: https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Risk
   indicators:
     - name: INFORM Risk Index
       source_name: INFORM
@@ -247,8 +247,8 @@ ICRC Presence:
   source: website
   privacy: public
   source_description: ICRC presence
-  Type: External
-  Link: https://www.icrc.org/en/where-we-work
+  type: External
+  link: https://www.icrc.org/en/where-we-work
   columns:
     - name: ICRC presence
       source_name: ICRC presence
@@ -263,8 +263,8 @@ IFRC Disaster Law:
   source: website
   privacy: public
   source_description: IFRC disaster law information
-  Type: External
-  Link: https://disasterlaw.ifrc.org/where-we-work
+  type: External
+  link: https://disasterlaw.ifrc.org/where-we-work
   columns:
     - name: ID
       source_name: ID
