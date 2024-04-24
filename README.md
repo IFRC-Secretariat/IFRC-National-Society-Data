@@ -202,7 +202,7 @@ To add a new dataset to this module, do the following steps:
 
 3. Add the dataset with information to the `ifrc_ns_data/datasets_config.yml` file.
 
-4. Add the new dataset class name to the `class_names` list in `ifrc_ns_data/data_collector.py`.
+4. Add the new dataset class name to the `class_names` list in `ifrc_ns_data/data_collector.py`. If the dataset is in indicators format, add it to the `indicator_datasets` list in `get_indicators_data`.
 
 5. Add the new dataset to the [README datasets table](#datasets-table).
 
