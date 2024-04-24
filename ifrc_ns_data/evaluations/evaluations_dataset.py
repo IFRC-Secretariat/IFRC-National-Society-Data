@@ -100,6 +100,8 @@ class EvaluationsDataset(Dataset):
                 evaluations_data.append(evaluation_info)
 
             page += 1
+            if self.test_flag:
+                break
 
         data = pd.DataFrame(evaluations_data)
 

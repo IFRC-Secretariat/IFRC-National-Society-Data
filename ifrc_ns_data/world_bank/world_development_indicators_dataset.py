@@ -2,7 +2,6 @@
 Module to handle World Bank data, including pulling it from the World Bank API, cleaning, and processing.
 """
 import requests
-import os
 import pandas as pd
 from ifrc_ns_data.common import Dataset, NationalSocietiesInfo
 from ifrc_ns_data.common.cleaners import DictColumnExpander, NSInfoMapper
@@ -18,7 +17,6 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         Path to save the dataset when pulled, and to read the dataset from.
     """
     def __init__(self):
-        self.test_flag = os.environ.get('TEST_FLAG')
         super().__init__(name='World Development Indicators')
 
     def pull_data(self, filters=None):

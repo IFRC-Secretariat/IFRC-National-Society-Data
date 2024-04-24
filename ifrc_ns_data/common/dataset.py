@@ -23,6 +23,7 @@ class Dataset:
     """
     def __init__(self, name, filepath=None, sheet_name=None):
         self.name = name
+        self.test_flag = os.environ.get('TEST_FLAG')
 
         # Validate the filepath and sheet_name
         if filepath is not None:
