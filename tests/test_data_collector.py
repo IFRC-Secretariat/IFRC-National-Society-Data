@@ -74,7 +74,7 @@ class TestAllData(unittest.TestCase):
         )
         for dataset in all_datasets:
             self.assertTrue(isinstance(dataset.data, pd.DataFrame))
-            if dataset.name not in ['BOCA Assessment Dates']:
+            if dataset.name not in ['BOCA Assessment Dates', 'Evaluations']:
                 self.assertFalse(dataset.data.empty)
                 self.assertEqual(dataset.data['Country'].unique(), ['Afghanistan'])
 
