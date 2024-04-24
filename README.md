@@ -205,3 +205,5 @@ To add a new dataset to this module, do the following steps:
 4. Add the new dataset class name to the `class_names` list in `ifrc_ns_data/data_collector.py`.
 
 5. Add the new dataset to the [README datasets table](#datasets-table).
+
+6. Update the tests, including updating the `test_get_data` and `test_get_public_data` dataset lengths in the `TestAllData` class, file `test_data_collector.py`.
