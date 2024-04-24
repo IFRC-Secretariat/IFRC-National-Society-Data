@@ -57,7 +57,11 @@ class NSContactsDataset(Dataset):
             Raw data to be processed.
         """
         # Make sure the NS names agree with the central list
-        data.rename(columns={'NSO_DON_name': 'National Society name'}, errors='raise', inplace=True)
+        data.rename(
+            columns={'NSO_DON_name': 'National Society name'},
+            errors='raise',
+            inplace=True
+        )
         data['National Society name'] = NSInfoCleaner().clean_ns_names(data['National Society name'])
 
         # Rename and order columns
