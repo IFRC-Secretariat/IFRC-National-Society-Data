@@ -103,38 +103,6 @@ class EvaluationsDataset(Dataset):
 
         data = pd.DataFrame(evaluations_data)
 
-        # Expand the country column
-        def rename_countries(txt):
-            country_renames = {
-                'Korea, Republic Of': 'Republic of Korea',
-                'Iran, Islamic Republic Of': 'Iran',
-                'Moldova, Republic Of': 'Moldova',
-                'Taiwan, Province of China': 'Taiwan',
-                'Congo, The Democratic Republic Of The': 'Democratic Republic of the Congo',
-                "Korea, Democratic People'S Republic Of": "Democratic people's republic of Korea",
-                'Palestinian Territory, Occupied': 'Palestine',
-                'Micronesia, Federated States Of': 'Micronesia',
-                'Tanzania, United Republic Of': 'Tanzania'
-            }
-            if txt:
-                for key, repl in country_renames.items():
-                    txt = txt.replace(key, repl)
-            return txt
-        data['Country'] = data['Country'].str.strip().apply(
-            lambda country_string: rename_countries(country_string).strip().split(',')
-        )
-        data = data.explode('Country')
-        data['Country'] = data['Country'].str.strip().replace({
-            '-': None,
-            'Global': None,
-            'Europe': None,
-            'Middle East and North Africa': None,
-            'Africa': None,
-            'Asia Pacific': None,
-            'Americas': None
-        })
-        data = data.dropna(subset=['Country'])
-
         return data
 
     def process_data(self, data):
@@ -146,19 +114,60 @@ class EvaluationsDataset(Dataset):
         data : pandas DataFrame (required)
             Raw data to be processed.
         """
-        # Remove regional responses, check country names, then merge in other information
-        data["Country"] = NSInfoCleaner().clean_country_names(data["Country"])
-        new_columns = [column for column in self.index_columns if column != 'Country']
+        # Expand the country column
+        def rename_countries_commas(txt):
+            country_renames_commas = {
+                'Korea, Republic Of': 'Republic of Korea',
+                'Iran, Islamic Republic Of': 'Iran',
+                'Moldova, Republic Of': 'Moldova',
+                'Taiwan, Province of China': 'Taiwan',
+                'Congo, The Democratic Republic Of The': 'Democratic Republic of the Congo',
+                "Korea, Democratic People'S Republic Of": "Democratic people's republic of Korea",
+                'Palestinian Territory, Occupied': 'Palestine',
+                'Micronesia, Federated States Of': 'Micronesia',
+                'Tanzania, United Republic Of': 'Tanzania'
+            }
+            if txt:
+                for key, repl in country_renames_commas.items():
+                    txt = txt.replace(key, repl)
+            return txt
+        data['Country'] = data['Country'].str.strip().apply(
+            lambda country_string: rename_countries_commas(country_string).strip().split(',')
+        )
+        remove_items = [
+            '-', 'nan',
+            'global',
+            'europe', 'middle east and north africa', 'africa', 'asia pacific', 'americas'
+        ]
+        data['Country'] = data['Country'].apply(
+            lambda country_list: [
+                x.strip() for x in country_list
+                if (x.strip().lower() not in remove_items) and (x == x)
+            ]
+        )
+        data = data.dropna(subset=['Country'])
+
+        # Clean the country names
+        country_names = data["Country"].explode().drop_duplicates().dropna()
+        cleaned_country_names = NSInfoCleaner().clean_country_names(country_names)
+        rename_countries = dict(zip(country_names.tolist(), cleaned_country_names.tolist()))
+        data['Country'] = data['Country'].apply(
+            lambda country_list: [
+                rename_countries[country] if country in rename_countries
+                else country
+                for country in country_list
+            ]
+        )
+
+        # Add in other country columns: NS name, ISO3, region
         ns_info_mapper = NSInfoMapper()
-        for column in new_columns:
-            ns_id_mapped = ns_info_mapper.map(
-                data=data['Country'],
-                map_from='Country',
-                map_to=column
-            ).rename(column)
-            data = pd.concat(
-                [data.reset_index(drop=True), ns_id_mapped.reset_index(drop=True)],
-                axis=1
+        for column in ['National Society name', 'ISO3', 'Region']:
+            data[column] = data['Country'].apply(
+                lambda country_list: ns_info_mapper.map(
+                    data=country_list,
+                    map_from="Country",
+                    map_to=column
+                )
             )
 
         # Reorder columns

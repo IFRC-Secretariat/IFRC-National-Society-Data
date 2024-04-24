@@ -43,7 +43,9 @@ class Dataset:
 
     def get_data(self, latest=None, iso3=None, country=None, ns=None):
         """
-        Pull the raw data, process it, and return the final dataset.
+        Pull the raw data from file or API. Process the data.
+        Filter the dataset by National Society name/ Country/ ISO3,
+        and optionally by latest (gets only the latest data for each dataset).
 
         Parameters
         ----------
@@ -75,9 +77,11 @@ class Dataset:
         # Check all countries and NS names are valid
         if filters:
             ns_info = NationalSocietiesInfo()
-            check_values = {'ISO3': ns_info.iso3_list,
-                            'Country': ns_info.country_list,
-                            'National Society name': ns_info.ns_list}
+            check_values = {
+                'ISO3': ns_info.iso3_list,
+                'Country': ns_info.country_list,
+                'National Society name': ns_info.ns_list
+            }
             for filter_name, val_list in filters.items():
                 unrecognised_values = [item for item in val_list if item not in check_values[filter_name]]
                 if unrecognised_values:
@@ -89,16 +93,23 @@ class Dataset:
         # Get the data from file or API
         raw_data = self.load_source_data(filters)
 
-        # Process the data: tidy, add country/ NS info, restructure
+        # Process the data, get latest data if this is an option (if not catch the TypeError)
         try:
             processed_data = self.process_data(data=raw_data, latest=latest)
         except TypeError:
             processed_data = self.process_data(data=raw_data)
-        processed_data = processed_data.dropna(subset=['National Society name'])
 
-        # Filter the processed data
+        # Filter the processed data by country/ NS name/ ISO3
         for filter_name, filter_values in filters.items():
-            processed_data = processed_data.loc[processed_data[filter_name].isin(filter_values)]
+            # If the country column is a list of countries
+            if isinstance(processed_data[filter_name].dropna().iloc[0], list):
+                processed_data = processed_data[
+                    processed_data[filter_name].apply(
+                        lambda x: bool(set(x) & set(filter_values))
+                    )
+                ]
+            else:
+                processed_data = processed_data.loc[processed_data[filter_name].isin(filter_values)]
         processed_data.reset_index(inplace=True, drop=True)
 
         self.data = processed_data
