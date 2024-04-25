@@ -109,7 +109,6 @@ class TestAllData(unittest.TestCase):
         # Add in data from data_cache
         for details in self.datasets:
             raw_data_path = os.path.join(ROOT_DIR, 'tests', 'data_cache', f'{details["name"]}.csv')
-            details['raw_data'] = None
             if os.path.exists(raw_data_path):
                 raw_data = pd.read_csv(raw_data_path)
                 details['raw_data'] = raw_data
@@ -134,10 +133,10 @@ class TestAllData(unittest.TestCase):
         for details in self.datasets:
             # Setup the dataset class and get data
             dataset = details['class'](
-                **({} if 'args' not in details else details['args'])
+                **(details['args'] if 'args' in details else {})
             )
             data = dataset.get_data(
-                raw_data=details['raw_data']
+                raw_data=(details['raw_data'] if 'raw_data' in details else None)
             )
             # Tests
             self.assertTrue(isinstance(data, pd.DataFrame))
