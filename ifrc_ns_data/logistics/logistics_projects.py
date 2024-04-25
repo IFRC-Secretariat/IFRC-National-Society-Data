@@ -34,7 +34,7 @@ class LogisticsProjectsDataset(Dataset):
         data = data.drop(columns=['Region']).dropna(how='all')
 
         # Clean the country column and map on extra information
-        data['Country'] = NSInfoCleaner().clean_country_names(data['Country'])
+        data.loc[:, 'Country'] = NSInfoCleaner().clean_country_names(data.loc[:, 'Country'])
         extra_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:

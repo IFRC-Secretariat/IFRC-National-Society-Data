@@ -76,7 +76,7 @@ class IFRCDisasterLawDataset(Dataset):
             Raw data to be processed.
         """
         # Remove regional responses, check country names, then merge in other information
-        data["Country"] = NSInfoCleaner().clean_country_names(data["Country"])
+        data.loc[:, "Country"] = NSInfoCleaner().clean_country_names(data.loc[:, "Country"])
         new_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in new_columns:

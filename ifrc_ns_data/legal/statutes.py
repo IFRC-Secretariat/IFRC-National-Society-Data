@@ -44,7 +44,7 @@ class StatutesDataset(Dataset):
         data.rename(columns={'National Society (NS)': 'Country'}, inplace=True, errors='raise')
 
         # Add in other NS information
-        data['Country'] = NSInfoCleaner().clean_country_names(data=data['Country'])
+        data.loc[:, 'Country'] = NSInfoCleaner().clean_country_names(data=data.loc[:, 'Country'])
         extra_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:

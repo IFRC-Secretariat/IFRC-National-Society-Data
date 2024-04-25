@@ -79,7 +79,7 @@ class ICRCPresenceDataset(Dataset):
         """
         # Remove regional responses, check country names, then merge in other information
         data = data.loc[~data["Country"].isin(["Lake Chad", "Sahel", "test"])]
-        data["Country"] = NSInfoCleaner().clean_country_names(data["Country"])
+        data.loc[:, "Country"] = NSInfoCleaner().clean_country_names(data.loc[:, "Country"])
         new_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in new_columns:

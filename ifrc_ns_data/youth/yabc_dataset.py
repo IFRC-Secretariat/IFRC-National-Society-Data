@@ -40,7 +40,7 @@ class YABCDataset(Dataset):
         data = data.loc[data['Country'] != 'TOTAL']
 
         # Check that the NS names are consistent with the centralised names list
-        data['Country'] = NSInfoCleaner().clean_country_names(data['Country'].str.strip())
+        data.loc[:, 'Country'] = NSInfoCleaner().clean_country_names(data.loc[:, 'Country'].str.strip())
         extra_columns = [column for column in self.index_columns if column != 'Country']
         ns_info_mapper = NSInfoMapper()
         for column in extra_columns:
