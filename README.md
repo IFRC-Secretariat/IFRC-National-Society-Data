@@ -207,3 +207,11 @@ To add a new dataset to this module, do the following steps:
 5. Add the new dataset to the [README datasets table](#datasets-table).
 
 6. Update the tests, including adding the dataset and any arguments to `self.datasets` in `setUp`, and updating the `test_get_data` and `test_get_public_data` dataset lengths in the `TestAllData` class.
+
+## Testing
+
+The tests can be run using pytest:
+```bash
+pytest
+```
+Note that to save time, the raw data (data pulled from sourced but not processed) is saved in `tests/data_cache/`. This is then passed to the tests to avoid having to pull the data multiple times, as this is time consuming. If any of the `pull_data` methods are changed, the data should be deleted before the tests are run.
