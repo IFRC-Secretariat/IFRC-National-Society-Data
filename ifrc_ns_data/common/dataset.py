@@ -23,7 +23,6 @@ class Dataset:
     """
     def __init__(self, name, filepath=None, sheet_name=None):
         self.name = name
-        self.test_flag = os.environ.get('TEST_FLAG')
 
         # Validate the filepath and sheet_name
         if filepath is not None:
@@ -42,7 +41,7 @@ class Dataset:
         for info in dataset_info:
             setattr(self, info.lower(), dataset_info[info])
 
-    def get_data(self, latest=None, iso3=None, country=None, ns=None):
+    def get_data(self, latest=None, iso3=None, country=None, ns=None, raw_data=None):
         """
         Pull the raw data from file or API. Process the data.
         Filter the dataset by National Society name/ Country/ ISO3,
@@ -62,6 +61,8 @@ class Dataset:
         latest : bool (default=None)
             If True, only the latest data for each National Society and indicator will be returned.
         """
+        self.raw_data = raw_data
+
         # Process the input parameters
         inputs = {'ISO3': iso3, 'Country': country, 'National Society name': ns}
         filters = {}
@@ -92,13 +93,14 @@ class Dataset:
                     )
 
         # Get the data from file or API
-        raw_data = self.load_source_data(filters)
+        if self.raw_data is None:
+            self.raw_data = self.load_source_data(filters)
 
         # Process the data, get latest data if this is an option (if not catch the TypeError)
         try:
-            processed_data = self.process_data(data=raw_data, latest=latest)
+            processed_data = self.process_data(data=self.raw_data.copy(), latest=latest)
         except TypeError:
-            processed_data = self.process_data(data=raw_data)
+            processed_data = self.process_data(data=self.raw_data.copy())
 
         # Filter the processed data by country/ NS name/ ISO3
         for filter_name, filter_values in filters.items():

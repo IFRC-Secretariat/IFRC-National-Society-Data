@@ -22,7 +22,12 @@ class DataCollector:
         archived_datasets = ['UNDP Human Development']  # Archived because the API has stopped working
         self.dataset_names = [name for name in self.datasets_info if name not in archived_datasets]
 
-    def get_data(self, datasets=None, dataset_args=None, iso3=None, country=None, ns=None, filters=None, latest=None):
+    def get_data(
+            self,
+            datasets=None,
+            dataset_args=None, iso3=None, country=None, ns=None, filters=None, latest=None,
+            raw_data=None
+    ):
         """
         Get all available datasets.
 
@@ -137,12 +142,26 @@ class DataCollector:
             for name in country_filters
         }
         for dataset in dataset_instances:
-            print(f'Getting {dataset.name} data...')
-            dataset.get_data(latest=latest, **country_filters)
+            # Get the raw_data - cached data used in testing
+            dataset_raw_data = None
+            if raw_data is not None:
+                if dataset.name in raw_data:
+                    dataset_raw_data = raw_data[dataset.name]
+            # Get the data
+            dataset.get_data(
+                latest=latest,
+                **country_filters,
+                raw_data=dataset_raw_data
+            )
 
         return dataset_instances
 
-    def get_indicators_data(self, datasets=None, dataset_args=None, filters=None, latest=None, quantitative=None):
+    def get_indicators_data(
+            self,
+            datasets=None,
+            dataset_args=None, filters=None, latest=None, quantitative=None,
+            raw_data=None
+    ):
         """
         Get a dataset in indicators format of data on National Societies.
         Indicator format contains columns about the National Society/ country, an indicator name, the indicator value,
@@ -194,6 +213,7 @@ class DataCollector:
         dataset_instances = self.get_data(
             datasets=datasets,
             dataset_args=dataset_args,
+            raw_data=raw_data,
             filters=filters,
             latest=latest
         )
@@ -355,9 +375,9 @@ class DataCollector:
             'GO Operations': ifrc_ns_data.GOOperationsDataset,
             'GO Projects': ifrc_ns_data.GOProjectsDataset,
             'INFORM Risk': ifrc_ns_data.INFORMRiskDataset,
-            'Recognition laws': ifrc_ns_data.RecognitionLawsDataset,
+            'Recognition Laws': ifrc_ns_data.RecognitionLawsDataset,
             'Statutes': ifrc_ns_data.StatutesDataset,
-            'Logistics projects': ifrc_ns_data.LogisticsProjectsDataset,
+            'Logistics Projects': ifrc_ns_data.LogisticsProjectsDataset,
             'World Development Indicators': ifrc_ns_data.WorldDevelopmentIndicatorsDataset,
             'YABC': ifrc_ns_data.YABCDataset,
             'ICRC Presence': ifrc_ns_data.ICRCPresenceDataset,

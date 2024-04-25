@@ -37,7 +37,7 @@ class WorldDevelopmentIndicatorsDataset(Dataset):
         page = 1
         per_page = 1000
         # When testing pull only 5 pages because otherwise it takes a long time
-        total_pages = 5 if self.test_flag else None
+        total_pages = None
         while True:
             api_indicators = ';'.join([
                 'SP.POP.TOTL', 'NY.GDP.MKTP.CD', 'SI.POV.NAHC',

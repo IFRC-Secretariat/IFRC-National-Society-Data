@@ -206,4 +206,4 @@ To add a new dataset to this module, do the following steps:
 
 5. Add the new dataset to the [README datasets table](#datasets-table).
 
-6. Update the tests, including updating the `test_get_data` and `test_get_public_data` dataset lengths in the `TestAllData` class, file `test_data_collector.py`.
+6. Update the tests, including adding the dataset and any arguments to `self.datasets` in `setUp`, and updating the `test_get_data` and `test_get_public_data` dataset lengths in the `TestAllData` class.

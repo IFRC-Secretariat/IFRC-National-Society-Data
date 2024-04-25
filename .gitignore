@@ -5,3 +5,5 @@ __pycache__/
 *.egg-info/
 scripts/config.yml
 *.pyc
+tests/data_cache/*
+!tests/data_cache/.data
