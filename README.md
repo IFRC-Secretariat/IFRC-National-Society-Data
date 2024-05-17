@@ -228,6 +228,13 @@ The tests can be run using pytest. If you don't have pytest installed, you can i
 python -m pip install pytest
 ```
 
+To run the tests, you first need to set environment variables. From a Windows terminal you can do this as follows (replacing `xxxxx` with your API keys):
+```bash
+$env:FDRS_PUBLIC_API_KEY = 'xxxxx'
+$env:GO_API_KEY = 'xxxxx'
+$env:IPC_API_KEY = 'xxxxx'
+```
+
 Next, run the tests:
 ```bash
 python -m pytest
