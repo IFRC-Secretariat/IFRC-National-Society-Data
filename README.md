@@ -6,27 +6,40 @@ This library can be used for getting data on a National Society/ country level f
 
 These instructions are for setting up on Windows.
 
-This package requires Python 3.8+. If you don't have it already, download and install Python from the [Microsoft Store](https://apps.microsoft.com/detail/python-3-11/9NRWMJP3717K?hl=en-gb&gl=CH). You also need to download and install [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
+1. This package requires Python 3.8+. If you don't have it already, download and install Python from the [Microsoft Store](https://apps.microsoft.com/detail/python-3-11/9NRWMJP3717K?hl=en-gb&gl=CH). You also need to download and install [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
 
-Next, required Python packages can be installed from the requirements file:
+2. First, clone the repository from Github. From the [repository Github page](https://github.com/IFRC-Secretariat/IFRC-National-Society-Data), click the green `Code` button, and then click `Open with GitHub Desktop`. Github Desktop will then copy the repository to your computer.
 
-```bash
-python -m pip install -r requirements.txt
-```
+3. Next, open a terminal and change directory to inside the repository on your computer. Required Python packages can be installed from the requirements file:
 
-To install the package, run the following command in a bash terminal from the root directory:
+    ```bash
+    python -m pip install -r requirements.txt
+    ```
 
-```bash
-python -m pip install .
-```
+4. To install the package, run the following command in a bash terminal from the root directory:
 
-To check that the package has installed correctly, and check the version and location, run the following:
+    ```bash
+    python -m pip install .
+    ```
 
-```bash
-python -m pip show ifrc_ns_data
-```
+    To check that the package has installed correctly, and check the version and location, run the following:
+
+    ```bash
+    python -m pip show ifrc_ns_data
+    ```
 
 Note that depending on your setup, you may need to use ```pip3``` instead in these examples.
+
+
+## Pulling updates
+
+If updates have been pushed to Github, you can pull those locally as follows:
+
+1. Open a terminal, and change directory to the location where you cloned the repository (you can see this in Github Desktop).
+
+2. Pull the updates from Github with: `git pull`
+
+3. Install the updates with pip: `python -m pip install .`
 
 
 ## Usage
@@ -210,8 +223,14 @@ To add a new dataset to this module, do the following steps:
 
 ## Testing
 
-The tests can be run using pytest:
+The tests can be run using pytest. If you don't have pytest installed, you can install it with:
 ```bash
-pytest
+python -m pip install pytest
 ```
-Note that to save time, the raw data (data pulled from sourced but not processed) is saved in `tests/data_cache/`. This is then passed to the tests to avoid having to pull the data multiple times, as this is time consuming. If any of the `pull_data` methods are changed, the data should be deleted before the tests are run.
+
+Next, run the tests:
+```bash
+python -m pytest
+```
+
+Note that to save time, the raw data (data pulled from sourced but not processed) is saved in `tests/data_cache/`. This is then passed to the tests to avoid having to pull the data multiple times, as this is time consuming. If any of the `pull_data` methods are changed, the corresponding data file in `tests/data_cache/` should be deleted before the tests are run.
